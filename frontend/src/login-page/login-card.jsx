@@ -34,6 +34,12 @@ const Form = () => {
     const validateInputs = (allValues) => {
         const errors={};
         const regex=/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i;
+        if(!allValues.firstname){
+            errors.firstname="Enter First Name";
+        }
+        if(!allValues.lastname){
+            errors.lastname="Enter Last Name";
+        }
         if(!allValues.username){
             errors.username="Enter Username";
         }
@@ -62,6 +68,20 @@ const Form = () => {
         const regex=/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i;
         const errors = {};
         switch (name) {
+          case "firstname":
+            if(!value){
+                errors.firstname="Enter First Name";
+            } else {
+                errors.firstname="";
+            }
+            break;
+          case "lastname":
+            if(!value){
+                errors.lastname="Enter Last Name";
+            } else {
+                errors.lastname="";
+            }
+            break;
           case "username":
             if (!value) {
               errors.username = "Enter Username";
@@ -113,15 +133,26 @@ const Form = () => {
         <p className="title">Register </p>
         <p className="message">Sign up now to access all features. </p>
         <div className="flex">
+        <div className="flex flex-col ">
           <label>
             <input className="input" type="text" placeholder="" name="firstname"  value={formValues.firstname} onChange={handleChange}/>
             <span>Firstname</span>
           </label>
+          {formErrors.firstname && (
+            <p className=" self-start text-xs text-rose-600">{formErrors.firstname}</p>
+        )}
+        </div>
+
+        <div className="flex flex-col ">
 
           <label>
             <input className="input" type="text" placeholder="" name="lastname" value={formValues.lastname} onChange={handleChange} />
             <span>Lastname</span>
           </label>
+          {formErrors.lastname && (
+            <p className=" self-start text-xs text-rose-600">{formErrors.lastname}</p>
+        )}
+        </div>
         </div>
 
 
