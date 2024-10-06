@@ -140,7 +140,6 @@ const Form = () => {
           <form className="form" onSubmit={handleSubmit}>
             <div className="flex justify-between">
               <p className="title">Register </p>
-              <Slider /> {/* Your slider component */}
             </div>
             <p className="message">Sign up now to access all features. </p>
             <div className="flex">
