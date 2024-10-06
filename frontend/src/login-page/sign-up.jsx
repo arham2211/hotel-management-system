@@ -1,12 +1,19 @@
 import React from "react";
 import styled from "styled-components";
 import { useState,useEffect } from "react";
+import Slider from "./slider"
+import Login from './login'
 
 const Form = () => {
     const initialValues = {firstname: "", lastname:"", username: "",email:"", password:"",confirmPassword:""};
     const [formValues, setFormValues] = useState(initialValues);
     const [formErrors,setErrors] = useState({});
     const [isSubmit,setIsSubmit] = useState(false);
+    const [showSignIn, setShowSignIn] = useState(false);
+
+    const toggleForm = () => {
+      setShowSignIn((prev) => !prev); // Toggle between SignIn and SignUp
+    };
 
 
     const handleChange = (e) => {
@@ -126,85 +133,139 @@ const Form = () => {
 
 
   return (
-    <div className="border-2 border-black flex justify-center min-h-[700px] items-center"> 
-    <StyledWrapper>
-        <pre>{JSON.stringify(formValues,undefined,2)}</pre>
-      <form className="form" onSubmit={handleSubmit}>
-        <p className="title">Register </p>
-        <p className="message">Sign up now to access all features. </p>
-        <div className="flex">
-        <div className="flex flex-col ">
-          <label>
-            <input className="input" type="text" placeholder="" name="firstname"  value={formValues.firstname} onChange={handleChange}/>
-            <span>Firstname</span>
-          </label>
-          {formErrors.firstname && (
-            <p className=" self-start text-xs text-rose-600">{formErrors.firstname}</p>
+      <StyledWrapper>
+        {showSignIn ? (
+          <Login /> // Show the SignIn component if showSignIn is true
+        ) : (
+          <form className="form" onSubmit={handleSubmit}>
+            <div className="flex justify-between">
+              <p className="title">Register </p>
+              <Slider /> {/* Your slider component */}
+            </div>
+            <p className="message">Sign up now to access all features. </p>
+            <div className="flex">
+              <div className="flex flex-col ">
+                <label>
+                  <input
+                    className="input"
+                    type="text"
+                    name="firstname"
+                    value={formValues.firstname}
+                    onChange={handleChange}
+                    placeholder=""
+                  />
+                  <span>Firstname</span>
+                </label>
+                {formErrors.firstname && (
+                  <p className="self-start text-xs text-rose-600">
+                    {formErrors.firstname}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex flex-col ">
+                <label>
+                  <input
+                    className="input"
+                    type="text"
+                    name="lastname"
+                    value={formValues.lastname}
+                    onChange={handleChange}
+                    placeholder=""
+                  />
+                  <span>Lastname</span>
+                </label>
+                {formErrors.lastname && (
+                  <p className="self-start text-xs text-rose-600">
+                    {formErrors.lastname}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col ">
+              <label>
+                <input
+                  className="input"
+                  type="text"
+                  name="username"
+                  value={formValues.username}
+                  onChange={handleChange}
+                  placeholder=""
+                />
+                <span>Username</span>
+              </label>
+              {formErrors.username && (
+                <p className="self-start text-xs text-rose-600">
+                  {formErrors.username}
+                </p>
+              )}
+            </div>
+
+            <div className="flex flex-col ">
+              <label>
+                <input
+                  className="input"
+                  type="text"
+                  name="email"
+                  value={formValues.email}
+                  onChange={handleChange}
+                  placeholder=""
+                />
+                <span>Email</span>
+              </label>
+              {formErrors.email && (
+                <p className="text-xs self-start text-rose-600">
+                  {formErrors.email}
+                </p>
+              )}
+            </div>
+
+            <div className="flex flex-col ">
+              <label>
+                <input
+                  className="input"
+                  type="password"
+                  name="password"
+                  value={formValues.password}
+                  onChange={handleChange}
+                  placeholder=""
+                />
+                <span>Password</span>
+              </label>
+              {formErrors.password && (
+                <p className="text-xs self-start text-rose-600">
+                  {formErrors.password}
+                </p>
+              )}
+            </div>
+
+            <div className="flex flex-col ">
+              <label>
+                <input
+                  className="input"
+                  type="password"
+                  name="confirmPassword"
+                  value={formValues.confirmPassword}
+                  onChange={handleChange}
+                  placeholder=""
+                />
+                <span>Confirm password</span>
+              </label>
+              {formErrors.confirmPassword && (
+                <p className="text-xs self-start text-rose-600">
+                  {formErrors.confirmPassword}
+                </p>
+              )}
+            </div>
+            <button className="submit">Submit</button>
+            <p className="signin">
+              Already have an account?{" "}
+              <span onClick={toggleForm} className="cursor-pointer text-blue-500">Sign in</span>
+            </p>
+          </form>
         )}
-        </div>
-
-        <div className="flex flex-col ">
-
-          <label>
-            <input className="input" type="text" placeholder="" name="lastname" value={formValues.lastname} onChange={handleChange} />
-            <span>Lastname</span>
-          </label>
-          {formErrors.lastname && (
-            <p className=" self-start text-xs text-rose-600">{formErrors.lastname}</p>
-        )}
-        </div>
-        </div>
-
-
-        <div className="flex flex-col ">
-        <label>
-          <input className="input" type="text" placeholder=""  name= "username" value={formValues.username}  onChange={handleChange}/>
-          <span>Username</span>
-        </label>
-        {formErrors.username && (
-            <p className=" self-start text-xs text-rose-600">{formErrors.username}</p>
-        )}
-        </div>
-
-        <div className="flex flex-col ">
-        <label>
-          <input className="input" type="text" placeholder="" name="email"  value={formValues.email}  onChange={handleChange}/>
-          <span>Email</span>
-        </label>
-        {formErrors.email && (
-            <p className="text-xs self-start text-rose-600">{formErrors.email}</p>
-        )}
-        </div>
-
-
-        <div className="flex flex-col ">
-
-        <label>
-          <input className="input" type="password" placeholder="" name= "password" value={formValues.password}  onChange={handleChange}/>
-          <span>Password</span>
-        </label>
-        {formErrors.password && (
-            <p className="text-xs self-start text-rose-600">{formErrors.password}</p>
-        )}
-        </div>
-
-        <div className="flex flex-col ">
-            
-        <label>
-          <input className="input" type="password" placeholder="" name= "confirmPassword" value={formValues.confirmPassword}  onChange={handleChange}/>
-          <span>Confirm password</span>
-        </label>
-        {formErrors.confirmPassword && (
-            <p className="text-xs self-start text-rose-600">{formErrors.confirmPassword}</p>
-        )}
-        </div>
-        <button className="submit">Submit</button>
-        <p className="signin">
-          Already have an acount ? <a href="#">Signin</a>{" "}
-        </p>
-      </form>
-    </StyledWrapper>
-</div>
+      </StyledWrapper>
   );
 };
 

@@ -1,13 +1,18 @@
 import { useState } from 'react'
 import './App.css'
-import LoginCard from './login-page/login-card'
+import SignUpCard from './login-page/sign-up'
+import LoginCard from './login-page/login'
+import Slider from './login-page/slider'
+
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-      <LoginCard></LoginCard>
+    <div>
+      <SignUpCard></SignUpCard>
+      </div>
     </>
   )
 }
