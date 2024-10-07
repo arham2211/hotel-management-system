@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import './App.css'
-import SignUpCard from './login-page/sign-up'
-import LoginCard from './login-page/login'
-import Slider from './login-page/slider'
+import SignUpCard from './components/SignUpCard'
+import './components/SignUpCard.css'
 
 
 function App() {
@@ -11,8 +10,10 @@ function App() {
   return (
     <>
     <div>
+
       <SignUpCard></SignUpCard>
-      </div>
+    </div>
+      
     </>
   )
 }
