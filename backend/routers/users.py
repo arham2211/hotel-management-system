@@ -24,15 +24,20 @@ def get_all_users(db: Session= Depends(get_db)):
 def sign_up(signUp: schemas.User, db: Session= Depends(get_db)):
     
     verify_user = db.query(models.User).filter(models.User.username == signUp.username).first()
+    verify_email = db.query(models.User).filter(models.User.email == signUp.email).first()
     
     if verify_user:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail = "User Already Exists")
+    
+    if verify_email:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail = "Email Already Registered")
     
     new_user = models.User(first_name = signUp.first_name, last_name = signUp.last_name, username = signUp.username, email = signUp.email, password = Hash.get_password_hash(signUp.password))
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return new_user
+
 
 
 @router.get("/{id}")
