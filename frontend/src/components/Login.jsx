@@ -1,55 +1,97 @@
-import React from "react";
-import { useState } from "react";
-
+import React, { useState, useContext } from "react";
+import api from '../Api.jsx'
 
 const Login = () => {
   const [showSignUp, setShowSignUp] = useState(false);
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [formValues, setFormValues] = useState({ username: "", password: "" });
+  const [errorMessage, setErrorMessage] = useState("");
+
   const toggleForm = () => {
-    setShowSignUp((prev) => !prev); // Toggle between SignIn and SignUp
+    setShowSignUp((prev) => !prev);
   };
 
-  const initialValues = { username: "", password: "" };
-  const [formValues, setFormValues] = useState(initialValues);
-
-  const handleChange = (e) => {
+  // Handle input change
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value })
-    console.log(formValues)
-  }
+    setFormValues({ ...formValues, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent page refresh on form submission
+
+    try {
+      const response = await api.post(
+        "/login/",
+        `grant_type=password&username=${formValues.username}&password=${formValues.password}&scope=&client_id=string&client_secret=string`,
+        {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        }
+      );
+
+      const data = await response.data;
+
+      if (response.status === 200) {
+        // Store token in localStorage
+        localStorage.setItem("token", data.access_token);
+        setToken(data.access_token);
+        console.log(data.access_token);
+      } else {
+        setErrorMessage(data.detail);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("An error occurred. Please try again.");
+    }
+  };
 
   return (
-    <>
+    <div className="flip-card__back">
+      <form className="form" onSubmit={handleSubmit}>
+        <div className="flex justify-between">
+          <p className="title">Login </p>
+        </div>
+        <p className="message">Login using your credentials</p>
 
+        <label>
+          <input
+            className="input"
+            name="username"
+            type="text"
+            placeholder="Username"
+            value={formValues.username}
+            onChange={handleInputChange}
+          />
+          <span>Email/Username</span>
+        </label>
 
-      <div className="flip-card__back">
-        <form className="form">
-          <div className="flex justify-between">
-            <p className="title">Login </p>
-          </div>
-          <p className="message">Login using your credentials </p>
+        <label>
+          <input
+            className="input"
+            name="password"
+            type="password"
+            placeholder="Password"
+            value={formValues.password}
+            onChange={handleInputChange}
+          />
+          <span>Password</span>
+        </label>
 
-          <label>
-            <input className="input" name="username" type="text" placeholder="" required onChange={handleChange} />
-            <span>Email/Username</span>
-          </label>
+        <button className="submit" type="submit">
+          Submit
+        </button>
 
-          <label>
-            <input className="input" name="password" type="password" placeholder="" required onChange={handleChange} />
-            <span>Password</span>
-          </label>
+        {errorMessage && <p className="error">{errorMessage}</p>}
 
-          <button className="submit">Submit</button>
-          <p className="signin">
-            Do not have an account?{" "}
-            <span onClick={toggleForm} className="cursor-pointer text-blue-500">Sign Up</span>
-          </p>
-        </form>
-      </div>
-
-
-    </>
+        <p className="signin">
+          Do not have an account?{" "}
+          <span onClick={toggleForm} className="cursor-pointer text-blue-500">
+            Sign Up
+          </span>
+        </p>
+      </form>
+    </div>
   );
 };
-
 
 export default Login;

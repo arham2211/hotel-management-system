@@ -1,21 +1,16 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import Login from './Login';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-
+import api from '../Api';
 
 const SignUp = () => {
-  const initialValues = { firstname: "", lastname: "", username: "", email: "", password: "", confirmPassword: "" };
+  const initialValues = { first_name: "", last_name: "", username: "", email: "", password: "", confirmPassword: "" };
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
-  const [showSignIn, setShowSignIn] = useState(false);
   const [showError, setShowError] = useState(false); // New state for error vibration
   const [passwordVisible, setPasswordVisible] = useState(false);
 
-  // const toggleForm = () => {
-  //   setShowSignIn((prev) => !prev);
-  // };
 
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
@@ -30,17 +25,53 @@ const SignUp = () => {
     setErrors((prevErrors) => ({ ...prevErrors, ...fieldErrors }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const errors = validateInputs(formValues);
     setErrors(errors);
     setIsSubmit(true);
 
     if (Object.keys(errors).length > 0) {
-      setShowError(true); // Set error state to true if there are errors
-      setTimeout(() => setShowError(false), 300); // Reset after 300ms
+      setShowError(true);
+      setTimeout(() => setShowError(false), 300);
+      return;
+    }
+
+    try {
+      const response = await api.post("/users/", formValues);
+      console.log("Response:", response.data);
+      setFormValues(initialValues);
+    } catch (error) {
+
+      if (error.response) {
+        console.error("Error status:", error.response.status);
+        console.error("Error data:", error.response.data);
+        if (error.response.data.detail == "User Already Exists") {
+          setFormValues((prevValues) => ({
+            ...prevValues,
+            username: "",
+          }));
+
+          setErrors({
+            ...errors,
+            apiError1: error.response.data.detail || "An error occurred",
+          });
+        }
+        if (error.response.data.detail == "Email Already Registered") {
+          setFormValues((prevValues) => ({
+            ...prevValues,
+            email: "",
+          }));
+
+          setErrors({
+            ...errors,
+            apiError2: error.response.data.detail || "An error occurred",
+          });
+        }
+      }
     }
   };
+
 
   useEffect(() => {
     console.log(formErrors);
@@ -52,11 +83,11 @@ const SignUp = () => {
   const validateInputs = (allValues) => {
     const errors = {};
     const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i;
-    if (!allValues.firstname) {
-      errors.firstname = "Enter First Name";
+    if (!allValues.first_name) {
+      errors.first_name = "Enter First Name";
     }
-    if (!allValues.lastname) {
-      errors.lastname = "Enter Last Name";
+    if (!allValues.last_name) {
+      errors.last_name = "Enter Last Name";
     }
     if (!allValues.username) {
       errors.username = "Enter Username";
@@ -83,18 +114,18 @@ const SignUp = () => {
     const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i;
     const errors = {};
     switch (name) {
-      case "firstname":
+      case "first_name":
         if (!value) {
-          errors.firstname = "Enter First Name";
+          errors.first_name = "Enter First Name";
         } else {
-          errors.firstname = "";
+          errors.first_name = "";
         }
         break;
-      case "lastname":
+      case "last_name":
         if (!value) {
-          errors.lastname = "Enter Last Name";
+          errors.last_name = "Enter Last Name";
         } else {
-          errors.lastname = "";
+          errors.last_name = "";
         }
         break;
       case "username":
@@ -148,25 +179,25 @@ const SignUp = () => {
             <p className="title">Register </p>
           </div>
 
-          <p className="message">Sign up now to access all features. </p>
+          <p className="message mb-5 mt-2">Sign up now to access all features. </p>
           <div className="flex">
             <div className="flex flex-col">
               <label>
                 <input
                   className="input mb-1"
                   type="text"
-                  name="firstname"
-                  value={formValues.firstname}
+                  name="first_name"
+                  value={formValues.first_name}
                   onChange={handleChange}
                   placeholder=""
                   autoComplete="off"
                 />
                 <span>Firstname</span>
               </label>
-              {formErrors.firstname && (
-                <p className={`self-start text-xs text-rose-600 ${showError && formErrors.firstname ? 'error' : ''}`}>
+              {formErrors.first_name && (
+                <p className={`self-start text-xs text-rose-600 ${showError && formErrors.first_name ? 'error' : ''}`}>
 
-                  {formErrors.firstname}
+                  {formErrors.first_name}
                 </p>
               )}
             </div>
@@ -176,18 +207,18 @@ const SignUp = () => {
                 <input
                   className="input mb-1"
                   type="text"
-                  name="lastname"
-                  value={formValues.lastname}
+                  name="last_name"
+                  value={formValues.last_name}
                   onChange={handleChange}
                   placeholder=""
                   autoComplete="off"
                 />
-                <span>Lastname</span>
+                <span>Last name</span>
               </label>
-              {formErrors.lastname && (
-                <p className={`self-start text-xs text-rose-600 ${showError && formErrors.lastname ? 'error' : ''}`}>
+              {formErrors.last_name && (
+                <p className={`self-start text-xs text-rose-600 ${showError && formErrors.last_name ? 'error' : ''}`}>
 
-                  {formErrors.lastname}
+                  {formErrors.last_name}
                 </p>
               )}
             </div>
@@ -212,6 +243,13 @@ const SignUp = () => {
                 {formErrors.username}
               </p>
             )}
+
+            {formErrors.apiError1 && (
+              <p className={`self-start text-xs text-rose-600`}>
+
+                {formErrors.apiError1}
+              </p>
+            )}
           </div>
 
           <div className="flex flex-col">
@@ -230,6 +268,12 @@ const SignUp = () => {
             {formErrors.email && (
               <p className={`text-xs self-start text-rose-600 ${showError && formErrors.email ? 'error' : ''}`}>
                 {formErrors.email}
+              </p>
+            )}
+            {formErrors.apiError2 && (
+              <p className={`self-start text-xs text-rose-600`}>
+
+                {formErrors.apiError2}
               </p>
             )}
           </div>
