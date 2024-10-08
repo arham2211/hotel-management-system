@@ -54,7 +54,7 @@ const SignUp = () => {
 
           setErrors({
             ...errors,
-            apiError1: error.response.data.detail || "An error occurred",
+            UsernameTaken: error.response.data.detail || "An error occurred",
           });
         }
         if (error.response.data.detail == "Email Already Registered") {
@@ -65,7 +65,7 @@ const SignUp = () => {
 
           setErrors({
             ...errors,
-            apiError2: error.response.data.detail || "An error occurred",
+            EmailTaken: error.response.data.detail || "An error occurred",
           });
         }
       }
@@ -170,9 +170,7 @@ const SignUp = () => {
 
 
   return (
-
     <>
-
       <div className="flip-card__front">
         <form className="form" onSubmit={handleSubmit}>
           <div className="flex justify-between">
@@ -244,10 +242,10 @@ const SignUp = () => {
               </p>
             )}
 
-            {formErrors.apiError1 && (
+            {formErrors.UsernameTaken && (
               <p className={`self-start text-xs text-rose-600`}>
 
-                {formErrors.apiError1}
+                {formErrors.UsernameTaken}
               </p>
             )}
           </div>
@@ -270,10 +268,10 @@ const SignUp = () => {
                 {formErrors.email}
               </p>
             )}
-            {formErrors.apiError2 && (
+            {formErrors.EmailTaken && (
               <p className={`self-start text-xs text-rose-600`}>
 
-                {formErrors.apiError2}
+                {formErrors.EmailTaken}
               </p>
             )}
           </div>

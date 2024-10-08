@@ -6,6 +6,8 @@ const Login = () => {
   const [token, setToken] = useState(localStorage.getItem("token"));
   const [formValues, setFormValues] = useState({ username: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
+  const [errors, setErrors] = useState({});
+
 
   const toggleForm = () => {
     setShowSignUp((prev) => !prev);
@@ -42,8 +44,32 @@ const Login = () => {
     } catch (error) {
       console.error(error);
       setErrorMessage("An error occurred. Please try again.");
-    }
-  };
+
+      //PASTED HERE 
+      if (error.response) {
+        console.error("Error status:", error.response.status);
+        console.error("Error data:", error.response.data);
+        if (error.response.data.detail == "Wrong Credentials") {
+          setErrors({
+            ...errors,
+            WrongCredentials: error.response.data.detail || "An error occurred",
+          });
+        }
+
+        }
+        if (error.response.data.detail == "Incorrect Password") {
+            setErrors({
+              ...errors,
+              WrongPassword: error.response.data.detail || "An error occurred",
+            });
+          }
+      }
+
+      //TILL HERE
+
+
+
+    };
 
   return (
     <div className="flip-card__back">
@@ -58,24 +84,34 @@ const Login = () => {
             className="input"
             name="username"
             type="text"
-            placeholder="Username"
             value={formValues.username}
             onChange={handleInputChange}
           />
           <span>Email/Username</span>
         </label>
+        {errors.WrongCredentials && (
+              <p className={`self-start text-xs text-rose-600`}>
+              {formErrors.WrongCredentials}
+            </p>
+            )}
+ 
 
         <label>
           <input
             className="input"
             name="password"
             type="password"
-            placeholder="Password"
             value={formValues.password}
             onChange={handleInputChange}
           />
           <span>Password</span>
         </label>
+        {errors.WrongPassword && (
+              <p className={`self-start text-xs text-rose-600`}>
+              {formErrors.WrongPassword}
+            </p>
+            )}
+
 
         <button className="submit" type="submit">
           Submit
@@ -83,15 +119,8 @@ const Login = () => {
 
         {errorMessage && <p className="error">{errorMessage}</p>}
 
-        <p className="signin">
-          Do not have an account?{" "}
-          <span onClick={toggleForm} className="cursor-pointer text-blue-500">
-            Sign Up
-          </span>
-        </p>
       </form>
     </div>
   );
 };
-
 export default Login;
