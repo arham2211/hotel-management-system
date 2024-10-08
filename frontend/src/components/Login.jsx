@@ -43,7 +43,7 @@ const Login = () => {
       }
     } catch (error) {
       console.error(error);
-      setErrorMessage("An error occurred. Please try again.");
+      setErrorMessage("Fill in the required fields");
 
       //PASTED HERE 
       if (error.response) {
@@ -56,20 +56,20 @@ const Login = () => {
           });
         }
 
-        }
-        if (error.response.data.detail == "Incorrect Password") {
-            setErrors({
-              ...errors,
-              WrongPassword: error.response.data.detail || "An error occurred",
-            });
-          }
       }
+      if (error.response.data.detail == "Invalid Password") {
+        setErrors({
+          ...errors,
+          WrongPassword: error.response.data.detail || "An error occurred",
+        });
+      }
+    }
 
-      //TILL HERE
+    //TILL HERE
 
 
 
-    };
+  };
 
   return (
     <div className="flip-card__back">
@@ -90,11 +90,11 @@ const Login = () => {
           <span>Email/Username</span>
         </label>
         {errors.WrongCredentials && (
-              <p className={`self-start text-xs text-rose-600`}>
-              {formErrors.WrongCredentials}
-            </p>
-            )}
- 
+          <p className={`self-start text-xs text-rose-600`}>
+            {errors.WrongCredentials}
+          </p>
+        )}
+
 
         <label>
           <input
@@ -107,10 +107,10 @@ const Login = () => {
           <span>Password</span>
         </label>
         {errors.WrongPassword && (
-              <p className={`self-start text-xs text-rose-600`}>
-              {formErrors.WrongPassword}
-            </p>
-            )}
+          <p className={`self-start text-xs text-rose-600`}>
+            {errors.WrongPassword}
+          </p>
+        )}
 
 
         <button className="submit" type="submit">
