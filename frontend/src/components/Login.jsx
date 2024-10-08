@@ -4,8 +4,10 @@ import { useState } from "react";
 
 const Login = () => {
   const [showSignUp, setShowSignUp] = useState(false);
+
   const toggleForm = () => {
-    setShowSignUp((prev) => !prev); // Toggle between SignIn and SignUp
+    setShowSignUp((prev) => !prev);
+  
   };
 
   const initialValues = { username: "", password: "" };

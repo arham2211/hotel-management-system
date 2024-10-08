@@ -1,11 +1,17 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import SignUp from './SignUp';
 import Login from './Login';
 
 
 const Form = () => {
+
+    const [showSignUp, setShowSignUp] = useState(true); 
+
+    // Handle the toggle switch
+    const handleToggle = () => {
+        setShowSignUp((prev) => !prev); // Switch between true/false
+    };
 
     return (
         <>
@@ -14,21 +20,25 @@ const Form = () => {
 
                     <label className="switch">
 
-                        <input type="checkbox" className="toggle" />
+                        <input
+                            type="checkbox"
+                            className="toggle"
+                            onChange={handleToggle} // Switch form when toggled
+                            checked={!showSignUp} // Set checkbox state based on `showSignUp`
+                        />
                         <span className="slider" />
                         <span className="card-side" />
 
-                        <div className="flip-card__inner">
 
-                            <SignUp />
-                            <Login />
-
-                        </div>
 
                     </label>
 
                 </div>
             </div>
+
+
+
+            {showSignUp ? <SignUp /> : <Login />}
 
 
         </>
