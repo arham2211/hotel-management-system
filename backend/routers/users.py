@@ -35,7 +35,7 @@ def sign_up(signUp: schemas.User, db: Session= Depends(get_db)):
     if verify_email:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail = "Email Already Registered")
     
-    new_user = models.User(first_name = signUp.first_name, last_name = signUp.last_name, username = signUp.username, email = signUp.email, password = Hash.get_password_hash(signUp.password))
+    new_user = models.User(username = signUp.username, email = signUp.email, password = Hash.get_password_hash(signUp.password))
     db.add(new_user)
     db.commit()
     db.refresh(new_user)

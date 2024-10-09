@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
-import api from '../Api.jsx'
+import api from "../Api.jsx";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
   const [showSignUp, setShowSignUp] = useState(false);
@@ -7,7 +8,11 @@ const Login = () => {
   const [formValues, setFormValues] = useState({ username: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
   const [errors, setErrors] = useState({});
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
+  const togglePasswordVisibility = () => {
+    setPasswordVisible((prev) => !prev);
+  };
 
   const toggleForm = () => {
     setShowSignUp((prev) => !prev);
@@ -45,7 +50,7 @@ const Login = () => {
       console.error(error);
       setErrorMessage("Fill in the required fields");
 
-      //PASTED HERE 
+      //PASTED HERE
       if (error.response) {
         console.error("Error status:", error.response.status);
         console.error("Error data:", error.response.data);
@@ -55,7 +60,6 @@ const Login = () => {
             WrongCredentials: error.response.data.detail || "An error occurred",
           });
         }
-
       }
       if (error.response.data.detail == "Invalid Password") {
         setErrors({
@@ -66,9 +70,6 @@ const Login = () => {
     }
 
     //TILL HERE
-
-
-
   };
 
   return (
@@ -79,9 +80,9 @@ const Login = () => {
         </div>
         <p className="message">Login using your credentials</p>
 
-        <label>
+        <label className="mt-2">
           <input
-            className="input"
+            className="input "
             name="username"
             type="text"
             value={formValues.username}
@@ -95,16 +96,21 @@ const Login = () => {
           </p>
         )}
 
-
-        <label>
+        <label className="my-2">
           <input
             className="input"
             name="password"
-            type="password"
+            type={passwordVisible ? "text" : "password"}
             value={formValues.password}
             onChange={handleInputChange}
           />
           <span>Password</span>
+          <span
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
+            onClick={togglePasswordVisibility}
+          >
+            {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+          </span>
         </label>
         {errors.WrongPassword && (
           <p className={`self-start text-xs text-rose-600`}>
@@ -112,13 +118,11 @@ const Login = () => {
           </p>
         )}
 
-
         <button className="submit" type="submit">
           Submit
         </button>
 
         {errorMessage && <p className="error">{errorMessage}</p>}
-
       </form>
     </div>
   );

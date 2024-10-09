@@ -1,21 +1,17 @@
-import { useState } from 'react'
-import './App.css'
-import SignUpCard from './components/SignUpCard'
-import './components/SignUpCard.css'
-
+import Home from "./routes/Home";
+import "./App.css";
+import "./components/Header"
+import './components/Carousel.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+
 
   return (
     <>
-    <div>
+      <Home />
 
-      <SignUpCard></SignUpCard>
-    </div>
-      
     </>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -41,6 +41,8 @@
     color: #fff;
     border: 1px solid #333;
     max-width: 400px;
+    width: 100%;
+    /* transform: translate(439px, 0px); */
 }
 
 .title {
@@ -196,9 +198,9 @@
 .card-side::before {
     position: absolute;
     content: 'Sign up';
-    left: -76px;
+    left: -54px;
     top: 0;
-    width: 100px;
+    /* width: 100px; */
     text-decoration: underline;
     color: white;
     font-weight: 600;
@@ -207,7 +209,7 @@
 .card-side::after {
     position: absolute;
     content: 'Log in';
-    left: 70px;
+    left: 84px;
     top: 0;
     width: 100px;
     text-decoration: none;
@@ -229,8 +231,8 @@
     position: absolute;
     cursor: pointer;
     top: 0;
-    left: 22px;
-    right: -23px;
+    left: 15px;
+    right: -16px;
     bottom: 0;
     background-color: var(--bg-colorcolor);
     transition: 0.3s;

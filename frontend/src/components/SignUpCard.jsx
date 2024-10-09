@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import SignUp from './SignUp';
 import Login from './Login';
-
+import './SignUpCard.css';
 
 const Form = () => {
 
@@ -48,4 +48,3 @@ const Form = () => {
 
 
 export default Form;
-

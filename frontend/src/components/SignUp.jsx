@@ -1,21 +1,24 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import api from '../Api';
+import api from "../Api";
 
 const SignUp = () => {
-  const initialValues = { first_name: "", last_name: "", username: "", email: "", password: "", confirmPassword: "" };
+  const initialValues = {
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  };
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
   const [showError, setShowError] = useState(false); // New state for error vibration
   const [passwordVisible, setPasswordVisible] = useState(false);
 
-
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
   };
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,7 +45,6 @@ const SignUp = () => {
       console.log("Response:", response.data);
       setFormValues(initialValues);
     } catch (error) {
-
       if (error.response) {
         console.error("Error status:", error.response.status);
         console.error("Error data:", error.response.data);
@@ -72,7 +74,6 @@ const SignUp = () => {
     }
   };
 
-
   useEffect(() => {
     console.log(formErrors);
     if (Object.keys(formErrors).length === 0 && isSubmit) {
@@ -83,12 +84,6 @@ const SignUp = () => {
   const validateInputs = (allValues) => {
     const errors = {};
     const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i;
-    if (!allValues.first_name) {
-      errors.first_name = "Enter First Name";
-    }
-    if (!allValues.last_name) {
-      errors.last_name = "Enter Last Name";
-    }
     if (!allValues.username) {
       errors.username = "Enter Username";
     }
@@ -114,20 +109,6 @@ const SignUp = () => {
     const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/i;
     const errors = {};
     switch (name) {
-      case "first_name":
-        if (!value) {
-          errors.first_name = "Enter First Name";
-        } else {
-          errors.first_name = "";
-        }
-        break;
-      case "last_name":
-        if (!value) {
-          errors.last_name = "Enter Last Name";
-        } else {
-          errors.last_name = "";
-        }
-        break;
       case "username":
         if (!value) {
           errors.username = "Enter Username";
@@ -168,7 +149,6 @@ const SignUp = () => {
     return errors;
   };
 
-
   return (
     <>
       <div className="flip-card__front">
@@ -177,50 +157,9 @@ const SignUp = () => {
             <p className="title">Register </p>
           </div>
 
-          <p className="message mb-5 mt-2">Sign up now to access all features. </p>
-          <div className="flex">
-            <div className="flex flex-col">
-              <label>
-                <input
-                  className="input mb-1"
-                  type="text"
-                  name="first_name"
-                  value={formValues.first_name}
-                  onChange={handleChange}
-                  placeholder=""
-                  autoComplete="off"
-                />
-                <span>Firstname</span>
-              </label>
-              {formErrors.first_name && (
-                <p className={`self-start text-xs text-rose-600 ${showError && formErrors.first_name ? 'error' : ''}`}>
-
-                  {formErrors.first_name}
-                </p>
-              )}
-            </div>
-
-            <div className="flex flex-col ">
-              <label>
-                <input
-                  className="input mb-1"
-                  type="text"
-                  name="last_name"
-                  value={formValues.last_name}
-                  onChange={handleChange}
-                  placeholder=""
-                  autoComplete="off"
-                />
-                <span>Last name</span>
-              </label>
-              {formErrors.last_name && (
-                <p className={`self-start text-xs text-rose-600 ${showError && formErrors.last_name ? 'error' : ''}`}>
-
-                  {formErrors.last_name}
-                </p>
-              )}
-            </div>
-          </div>
+          <p className="message mb-5 mt-2">
+            Sign up now to access all features.{" "}
+          </p>
 
           <div className="flex flex-col ">
             <label>
@@ -236,15 +175,17 @@ const SignUp = () => {
               <span>Username</span>
             </label>
             {formErrors.username && (
-              <p className={`self-start text-xs text-rose-600 ${showError && formErrors.username ? 'error' : ''}`}>
-
+              <p
+                className={`self-start text-xs text-rose-600 ${
+                  showError && formErrors.username ? "error" : ""
+                }`}
+              >
                 {formErrors.username}
               </p>
             )}
 
             {formErrors.UsernameTaken && (
               <p className={`self-start text-xs text-rose-600`}>
-
                 {formErrors.UsernameTaken}
               </p>
             )}
@@ -264,13 +205,16 @@ const SignUp = () => {
               <span>Email</span>
             </label>
             {formErrors.email && (
-              <p className={`text-xs self-start text-rose-600 ${showError && formErrors.email ? 'error' : ''}`}>
+              <p
+                className={`text-xs self-start text-rose-600 ${
+                  showError && formErrors.email ? "error" : ""
+                }`}
+              >
                 {formErrors.email}
               </p>
             )}
             {formErrors.EmailTaken && (
               <p className={`self-start text-xs text-rose-600`}>
-
                 {formErrors.EmailTaken}
               </p>
             )}
@@ -289,12 +233,17 @@ const SignUp = () => {
               <span>Password</span>
               <span
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                onClick={togglePasswordVisibility}>
+                onClick={togglePasswordVisibility}
+              >
                 {passwordVisible ? <FaEyeSlash /> : <FaEye />}
               </span>
             </label>
             {formErrors.password && (
-              <p className={`text-xs self-start text-rose-600 ${showError && formErrors.password ? 'error' : ''}`}>
+              <p
+                className={`text-xs self-start text-rose-600 ${
+                  showError && formErrors.password ? "error" : ""
+                }`}
+              >
                 {formErrors.password}
               </p>
             )}
@@ -313,7 +262,11 @@ const SignUp = () => {
               <span>Confirm password</span>
             </label>
             {formErrors.confirmPassword && (
-              <p className={`text-xs self-start text-rose-600 ${showError && formErrors.confirmPassword ? 'error' : ''}`}>
+              <p
+                className={`text-xs self-start text-rose-600 ${
+                  showError && formErrors.confirmPassword ? "error" : ""
+                }`}
+              >
                 {formErrors.confirmPassword}
               </p>
             )}
@@ -325,12 +278,8 @@ const SignUp = () => {
           </p> */}
         </form>
       </div>
-
     </>
-
   );
 };
 
-
 export default SignUp;
-
