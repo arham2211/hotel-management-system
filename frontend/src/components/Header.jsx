@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-import SignUpCard from './SignUpCard';  
-import './Header.css';  
+import SignUpCard from "./SignUpCard";
+import "./Header.css";
 
 export default function Header() {
   const [isSignUpVisible, setIsSignUpVisible] = useState(false);
@@ -14,12 +14,10 @@ export default function Header() {
 
   return (
     <>
-      <header className="navbar">
+      <header className="navbar sticky top-0 z-50">
         <div className="container mx-auto flex items-center justify-between p-4">
-          {/* Hotel Name + Logo */}
-          <div className="logo">
-            Hotel Name
-          </div>
+      
+          <div className="logo">Hotel Name</div>
 
           {/* Navbar Links */}
           <nav>
@@ -44,29 +42,10 @@ export default function Header() {
                   Rooms
                 </a>
               </li>
-
-              {/* Dropdown for Pages */}
-              <li className="dropdown relative">
-                <a href="/pages" className="menu-link">
-                  Pages
+              <li>
+                <a href="/rooms" className="menu-link">
+                  Testimonial
                 </a>
-                <ul className="dropdown-menu">
-                  <li>
-                    <a href="/gallery" className="dropdown-link">
-                      Booking
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/testimonials" className="dropdown-link">
-                      Our Team
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/blog" className="dropdown-link">
-                      Testimonial
-                    </a>
-                  </li>
-                </ul>
               </li>
               <li>
                 <a href="/contact" className="menu-link">
@@ -88,7 +67,10 @@ export default function Header() {
 
       {/* Conditionally render the SignUpCard */}
       {isSignUpVisible && (
-        <div onClick={toggleSignUp} className="modal-overlay flex items-center justify-center">
+        <div
+          onClick={toggleSignUp}
+          className="modal-overlay flex items-center justify-center"
+        >
           {/* Prevent click propagation inside modal content */}
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <SignUpCard onClose={toggleSignUp} />
