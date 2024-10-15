@@ -8,3 +8,12 @@ class User(Base):
     email = Column(String)
     password = Column(String)
     
+class Receptionist(Base):
+    __tablename__ = "Receptionist"
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String)
+    email = Column(String)
+    password = Column(String)   
+
+
+

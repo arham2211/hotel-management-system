@@ -4,6 +4,7 @@ from hashing import Hash
 import database, models, schemas
 from typing import Annotated
 import oauth2
+from repository import user
 
 router = APIRouter(
 
@@ -23,41 +24,19 @@ def get_all_users(db: Session = Depends(get_db),current_user: schemas.User = Dep
 
 
 @router.post("/")
-def sign_up(signUp: schemas.User, db: Session= Depends(get_db)):
-    
-    
-    verify_user = db.query(models.User).filter(models.User.username == signUp.username).first()
-    verify_email = db.query(models.User).filter(models.User.email == signUp.email).first()
-    
-    if verify_user:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail = "User Already Exists")
-    
-    if verify_email:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail = "Email Already Registered")
-    
-    new_user = models.User(username = signUp.username, email = signUp.email, password = Hash.get_password_hash(signUp.password))
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user
+def sign_up(request: schemas.User, db: Session= Depends(get_db)):  
+    if user.signUp(request,db):
+        return "Success"
 
 
-
-@router.get("/{id}")
+@router.get("/{id}",response_model=schemas.User)
 def get_user(id, db: Session= Depends(get_db)):
-    user = db.query(models.User).filter(models.User.id == id).first()
-    
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-    
-    return user
+    return user.getUserInfo(id,db)
+
+
 
 @router.delete("/{id}")
 def del_user(id, db: Session= Depends(get_db)):
-    user = db.query(models.User).filter(models.User.id == id)
-    
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = "User not found")
-    
-    user.delete(synchronize_session=False)
-    db.commit()
+    return user.deleteUser(id,db)
+        
+
