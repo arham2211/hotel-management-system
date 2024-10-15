@@ -4,6 +4,9 @@ from fastapi.security import OAuth2PasswordBearer
 import JWTtoken
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_staff = OAuth2PasswordBearer(tokenUrl="loginStaff")
+
+
 
 def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(

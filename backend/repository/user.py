@@ -1,9 +1,7 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import  Depends, status, HTTPException
 from sqlalchemy.orm import Session
 from hashing import Hash
-import database, models, schemas
-from typing import Annotated
-import oauth2
+import  models, schemas
 
 def signUp(request: schemas.User,db:Session):
     verify_user = db.query(models.User).filter(models.User.username == request.username).first()

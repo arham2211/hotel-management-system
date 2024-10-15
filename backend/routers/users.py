@@ -39,4 +39,4 @@ def get_user(id, db: Session= Depends(get_db)):
 def del_user(id, db: Session= Depends(get_db)):
     return user.deleteUser(id,db)
         
-
+ 

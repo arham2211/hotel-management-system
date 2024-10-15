@@ -6,6 +6,11 @@ class User(BaseModel):
     email: str
     password: str
 
+class Staff(BaseModel):
+    username: str
+    email: str
+    password: str
+    type: str
 
 class Login(BaseModel):
     email: str
