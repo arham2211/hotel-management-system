@@ -42,7 +42,7 @@
     border: 1px solid #333;
     max-width: 400px;
     width: 100%;
-    /* transform: translate(439px, 0px); */
+
 }
 
 .title {
@@ -270,31 +270,3 @@
     text-decoration: underline;
 }
 
-/* card */
-
-/* .flip-card__inner {
-    width: 400px;
-    transition: transform 0.8s;
-    transform-style: preserve-3d;
-}
-
-.toggle:checked~.flip-card__inner {
-    transform: rotateY(200deg);
-}
-
-.flip-card__front,
-.flip-card__back {
-
-    position: absolute;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    will-change: transform;
-
-
-}
-
-.flip-card__back {
-    width: 400px;
-
-    transform: rotateY(180deg);
-} */

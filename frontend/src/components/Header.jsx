@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import SignUpCard from "./SignUpCard";
-import "./Header.css";
 
 export default function Header() {
   const [isSignUpVisible, setIsSignUpVisible] = useState(false);
@@ -14,41 +13,60 @@ export default function Header() {
 
   return (
     <>
-      <header className="navbar sticky top-0 z-50">
-        <div className="container mx-auto flex items-center justify-between p-4">
-      
-          <div className="logo">Hotel Name</div>
+      <header className="sticky top-0 z-50 bg-[#002366] shadow-md">
+        <div className="container mx-auto flex items-center justify-between py-4 px-10">
+          <div className="text-[#ff8c00] font-[700] text-[1.875rem]">
+            Hotel Name
+          </div>
 
           {/* Navbar Links */}
           <nav>
-            <ul className="menu flex">
+            <ul className="flex gap-9">
               <li>
-                <a href="/" className="menu-link">
+                <a
+                  href="/"
+                  className="text-[#ffffff] transition-colors duration-300 ease-in-out hover:text-[#ff8c00]"
+                >
                   Home
                 </a>
               </li>
               <li>
-                <a href="/about" className="menu-link">
+                <a
+                  href="/about"
+                  className="text-[#ffffff] transition-colors duration-300 ease-in-out hover:text-[#ff8c00]"
+                >
                   About
                 </a>
               </li>
               <li>
-                <a href="/services" className="menu-link">
+                <a
+                  href="/services"
+                  className="text-[#ffffff] transition-colors duration-300 ease-in-out hover:text-[#ff8c00]"
+                >
                   Services
                 </a>
               </li>
               <li>
-                <a href="/rooms" className="menu-link">
+                <a
+                  href="/rooms"
+                  className="text-[#ffffff] transition-colors duration-300 ease-in-out hover:text-[#ff8c00]"
+                >
                   Rooms
                 </a>
               </li>
               <li>
-                <a href="/rooms" className="menu-link">
+                <a
+                  href="/rooms"
+                  className="text-[#ffffff] transition-colors duration-300 ease-in-out hover:text-[#ff8c00]"
+                >
                   Testimonial
                 </a>
               </li>
               <li>
-                <a href="/contact" className="menu-link">
+                <a
+                  href="/contact"
+                  className="text-[#ffffff] transition-colors duration-300 ease-in-out hover:text-[#ff8c00]"
+                >
                   Contact
                 </a>
               </li>
@@ -57,7 +75,11 @@ export default function Header() {
 
           {/* Register Button */}
           <div>
-            <button onClick={toggleSignUp} className="register-btn">
+            <button
+              onClick={toggleSignUp}
+              className="inline-flex items-center bg-[#ff8c00] text-[#ffffff] px-4 py-2 rounded-full transition-colors duration-300 ease-in-out hover:text-[#002366]
+"
+            >
               <FontAwesomeIcon icon={faUser} />
               <span className="ml-2">Register</span>
             </button>
@@ -69,10 +91,9 @@ export default function Header() {
       {isSignUpVisible && (
         <div
           onClick={toggleSignUp}
-          className="modal-overlay flex items-center justify-center"
-        >
+          className="flex items-center justify-center fixed inset-0 w-full h-full bg-black bg-opacity-60 z-[999]">
           {/* Prevent click propagation inside modal content */}
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="w-[31%]" onClick={(e) => e.stopPropagation()}>
             <SignUpCard onClose={toggleSignUp} />
           </div>
         </div>
