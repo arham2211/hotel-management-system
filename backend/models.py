@@ -7,4 +7,14 @@ class User(Base):
     username = Column(String)
     email = Column(String)
     password = Column(String)
-    
+
+class Room(Base):
+    __tablename__ = "rooms"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+    description = Column(String)
+    price = Column(Integer)
+    beds = Column(Integer)
+    baths = Column(Integer)
+    image = Column(String)
+    rating = Column(Integer)
