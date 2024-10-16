@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import SignUpCard from "./SignUpCard";
-import "./Header.css";
 import { AuthContext } from '../context/UserContext';
 import { useContext, useEffect } from 'react';
 
