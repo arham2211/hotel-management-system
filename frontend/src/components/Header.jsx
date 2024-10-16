@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import SignUpCard from "./SignUpCard";
+import { AuthContext } from '../context/UserContext';
+import { useContext, useEffect } from 'react';
 
 export default function Header() {
   const [isSignUpVisible, setIsSignUpVisible] = useState(false);
@@ -11,6 +13,9 @@ export default function Header() {
     setIsSignUpVisible(!isSignUpVisible);
   };
 
+  const { token } = useContext(AuthContext);
+
+  console.log("Header file rendered here token accessed: ", token);
   return (
     <>
       <header className="sticky top-0 z-50 bg-[#002366] shadow-md">
