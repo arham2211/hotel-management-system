@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faStar,
-  faBed,
-  faBath,
-  faWifi,
-} from "@fortawesome/free-solid-svg-icons";
+import {faStar,faBed,faBath,faWifi} from "@fortawesome/free-solid-svg-icons";
 import api from "../Api";
 
 export default function Room() {
