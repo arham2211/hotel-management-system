@@ -1,7 +1,8 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import api from "../Api";
+import {AuthContext} from "../context/UserContext"
 
 const SignUp = () => {
   const initialValues = {
@@ -15,6 +16,10 @@ const SignUp = () => {
   const [isSubmit, setIsSubmit] = useState(false);
   const [showError, setShowError] = useState(false); // New state for error vibration
   const [passwordVisible, setPasswordVisible] = useState(false);
+
+  //TESTING TOKEN ACCESS IN SIGNUP 
+  const { token } = useContext(AuthContext);
+  console.log("SignUp page got this token from login: ", token);
 
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);

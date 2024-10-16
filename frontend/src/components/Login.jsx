@@ -1,10 +1,13 @@
 import React, { useState, useContext } from "react";
 import api from "../Api.jsx";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import {AuthContext} from "../context/UserContext"
 
 const Login = () => {
   const [showSignUp, setShowSignUp] = useState(false);
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  //const [token, setToken] = useState(localStorage.getItem("token"));
+  const { token, setToken } = useContext(AuthContext); // Use useContext to get token and setToken from AuthContext
+
   const [formValues, setFormValues] = useState({ username: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
   const [errors, setErrors] = useState({});
@@ -35,7 +38,7 @@ const Login = () => {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
         }
       );
-
+ 
       const data = await response.data;
 
       if (response.status === 200) {
