@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import models
 from database import engine
-from routers import users, authentication, rooms
+from routers import users, authentication, rooms, admin
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -20,4 +20,5 @@ app.add_middleware(
 
 app.include_router(authentication.router)
 app.include_router(users.router)
+app.include_router(admin.router)
 app.include_router(rooms.router)

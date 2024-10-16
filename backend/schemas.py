@@ -25,6 +25,11 @@ class TokenData(BaseModel):
     username: str | None = None
 
 
+class Admin(BaseModel):
+    email: str
+    password: str
+
+
 class Room(BaseModel):
     name: str
     description: str

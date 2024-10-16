@@ -15,21 +15,29 @@ get_db = database.get_db
 
 
 @router.post('/login')
-def login(logIn: OAuth2PasswordRequestForm = Depends(), db: Session= Depends(get_db)):
+def login(logIn: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    
     user = db.query(models.User).filter(
         (models.User.email == logIn.username) | (models.User.username == logIn.username)
     ).first()
 
+    
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Wrong Credentials")
+        admin = db.query(models.Admin).filter(models.Admin.username == logIn.username).first()
+        if not admin:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Wrong Credentials")
 
+    
+        access_token = JWTtoken.create_access_token(data={"sub": admin.username, "role": "admin"})
+        return schemas.Token(access_token=access_token, token_type="bearer")
 
+    
     if not Hash.verify(logIn.password, user.password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Password")
+
     
- 
     access_token = JWTtoken.create_access_token(
-        data={"sub": user.email}
+        data={"sub": user.email, "role": "user"}
     )
     return schemas.Token(access_token=access_token, token_type="bearer")
 
