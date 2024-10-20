@@ -76,7 +76,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flip-card__back">
+    <div className="flip-card__back flex justify-center">
       <form className="form" onSubmit={handleSubmit}>
         <div className="flex justify-between">
           <p className="title">Login </p>

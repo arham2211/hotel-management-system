@@ -156,7 +156,7 @@ const SignUp = () => {
 
   return (
     <>
-      <div className="flip-card__front">
+      <div className="flip-card__front flex justify-center">
         <form className="form" onSubmit={handleSubmit}>
           <div className="flex justify-between">
             <p className="title">Register </p>

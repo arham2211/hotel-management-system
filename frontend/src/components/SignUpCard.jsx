@@ -15,7 +15,7 @@ const Form = () => {
 
     return (
         <>
-            <div className="wrapper">
+            <div className="wrapper flex justify-center">
                 <div className="card-switch">
 
                     <label className="switch">
