@@ -15,7 +15,6 @@ router = APIRouter(
 get_db = database.get_db
 
 
-
 @router.get("/")
 def get_all_users(db: Session = Depends(get_db),current_user: schemas.User = Depends(oauth2.get_current_user)
 ):
