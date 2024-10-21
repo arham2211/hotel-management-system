@@ -22,11 +22,11 @@ def get_all_users(db: Session = Depends(get_db),current_user: schemas.User = Dep
     return users
 
 
-@router.post("/")
-def sign_up(request: schemas.User, db: Session= Depends(get_db)):  
-    newuser= user.signUp(request,db)
-    if newuser:
-        return newuser
+#@router.post("/")
+#def sign_up(request: schemas.User, db: Session= Depends(get_db)):  
+ #   newuser= user.signUp(request,db)
+  #  if newuser:
+   #     return newuser
 
 
 @router.get("/{id}",response_model=schemas.User)
