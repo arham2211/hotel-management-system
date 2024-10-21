@@ -1,5 +1,5 @@
 from database import Base
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, Date
 
 class User(Base):
     __tablename__ = "users"
@@ -42,3 +42,21 @@ class RoomCategory(Base):
     image = Column(String)
     rating = Column(Integer)
     description = Column(String)
+
+class Bookings(Base):
+    __tablename__ = "Bookings"
+    id = Column(Integer, primary_key=True, index=True) 
+    room_id = Column(Integer)
+    user_id = Column(Integer)
+    start_date = Column(Date)
+    end_date = Column(Date)
+    payment_id = Column(Integer)
+
+class Payment(Base):
+    __tablename__ = "Payment"
+    id = Column(Integer, primary_key=True, index=True) 
+    amount = Column(Integer)
+    type = Column(String)
+    bill_id = Column(Integer)
+
+
