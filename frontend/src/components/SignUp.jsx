@@ -18,7 +18,7 @@ const SignUp = ({ setIsSignUpVisible }) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   //TESTING TOKEN ACCESS IN SIGNUP
-  const { token, setToken } = useContext(AuthContext);
+  const { token, setToken,role,setRole } = useContext(AuthContext);
   // console.log("SignUp page got this token from login: ", token);
 
   const togglePasswordVisibility = () => {
@@ -46,13 +46,29 @@ const SignUp = ({ setIsSignUpVisible }) => {
     }
 
     try {
-      const response = await api.post("/users/", formValues);
-      // const data = await response.json;
-      // setToken(data.access_token);
+      const response = await api.post("/register/", formValues);
       console.log("Response:", response.data);
       setFormValues(initialValues);
-      setIsSignUpVisible(false);
 
+      const register = await api.post(
+        "/login/",
+        `grant_type=password&username=${response.data.username}&password=${formValues.password}&scope=&client_id=string&client_secret=string`,
+        {
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        }
+      );
+
+      const data = register.data;
+      
+      if (register.status === 200) {
+        
+        localStorage.setItem("token", data.access_token+"_"+data.role);
+        setToken(data.access_token);
+        
+      } else {
+        setShowError(data.detail);
+      }
+      setIsSignUpVisible(false);
     } catch (error) {
       if (error.response) {
         if (error.response.data.detail == "User Already Exists") {
@@ -161,7 +177,7 @@ const SignUp = ({ setIsSignUpVisible }) => {
       <div className="flip-card__front flex justify-center">
         <form className="form" onSubmit={handleSubmit}>
           <div className="flex justify-between">
-            <p className="title">Register </p>
+            <p className="title">Register</p>
           </div>
 
           <p className="message mb-5 mt-2">
