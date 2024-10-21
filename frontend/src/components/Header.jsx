@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUser,
+  faBars,
+  faTimes,
+  faSignOutAlt,
+} from "@fortawesome/free-solid-svg-icons"; // Import faSignOutAlt
 import SignUpCard from "./SignUpCard";
-import { AuthContext } from '../context/UserContext';
-import { useContext } from 'react';
+import { AuthContext } from "../context/UserContext";
 
 export default function Header() {
   const [isSignUpVisible, setIsSignUpVisible] = useState(false);
@@ -17,11 +21,27 @@ export default function Header() {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-  console.log(isSignUpVisible)
 
-  // const { token } = useContext(AuthContext);
+  const { token, setToken, role, setRole } = useContext(AuthContext); // Ensure setToken is available in AuthContext
 
-  // console.log("Header file rendered here token accessed: ", token);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token !== null) {
+      setToken(token); // Store token in your context or state
+      console.log(token);
+      const extractedRole = token.split("_").pop(); // Extract role from the token
+      setRole(extractedRole); // Update the role state
+    }
+  }); // Run the effect when the component mounts
+
+  console.log(role); // You can now log role, which will be updated when the token is processed
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setToken(null); // Clear token
+    window.location.href = "/"; // Redirect to home after logout
+  };
+
   return (
     <>
       <header className="sticky top-0 z-50 bg-[#002366] shadow-md">
@@ -91,15 +111,25 @@ export default function Header() {
             </ul>
           </nav>
 
-          {/* Register Button */}
+          {/* Register or Logout Button */}
           <div className="hidden md:block">
-            <button
-              onClick={toggleSignUp}
-              className="inline-flex items-center 2xl:text-[1.6rem] bg-[#ff8c00] text-[#ffffff] sm:px-4 sm:py-2 md:px-3 md:py-2 lg:px-4 lg:py-2 2xl:px-5 2xl:py-3 rounded-full transition-colors duration-300 ease-in-out hover:text-[#002366]"
-            >
-              <FontAwesomeIcon icon={faUser} />
-              <span className="ml-1 sm:ml-2">Register</span>
-            </button>
+            {token && role === "user" ? (
+              <button
+                onClick={handleLogout}
+                className="inline-flex items-center 2xl:text-[1.6rem] bg-[#ff8c00] text-[#ffffff] sm:px-4 sm:py-2 md:px-3 md:py-2 lg:px-6 lg:py-[0.7rem] 2xl:px-6 2xl:py-3 rounded-full transition-colors duration-300 ease-in-out hover:text-[#002366]"
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} />
+                <span className="ml-1 sm:ml-2">Log Out</span>
+              </button>
+            ) : (
+              <button
+                onClick={toggleSignUp}
+                className="inline-flex items-center 2xl:text-[1.6rem] bg-[#ff8c00] text-[#ffffff] sm:px-4 sm:py-2 md:px-3 md:py-2 lg:px-6 lg:py-[0.7rem] 2xl:px-6 2xl:py-3 rounded-full transition-colors duration-300 ease-in-out hover:text-[#002366]"
+              >
+                <FontAwesomeIcon icon={faUser} />
+                <span className="ml-1 sm:ml-2">Log In</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -177,8 +207,14 @@ export default function Header() {
           className="flex items-center justify-center fixed inset-0 w-full h-full bg-black bg-opacity-60 z-[999]"
         >
           {/* Prevent click propagation inside modal content */}
-          <div className="w-[85%] sm:w-[70%] md:w-[50%] lg:w-[40%] xl:w-[31%]" onClick={(e) => e.stopPropagation()}>
-            <SignUpCard onClose={toggleSignUp} setIsSignUpVisible={setIsSignUpVisible}/>
+          <div
+            className="w-[85%] sm:w-[70%] md:w-[50%] lg:w-[40%] xl:w-[31%]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <SignUpCard
+              onClose={toggleSignUp}
+              setIsSignUpVisible={setIsSignUpVisible}
+            />
           </div>
         </div>
       )}
