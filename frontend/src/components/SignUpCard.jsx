@@ -4,7 +4,7 @@ import SignUp from './SignUp';
 import Login from './Login';
 import './SignUpCard.css';
 
-const Form = () => {
+const Form = ({ setIsSignUpVisible }) => {
 
     const [showSignUp, setShowSignUp] = useState(true); 
 
@@ -38,7 +38,7 @@ const Form = () => {
 
 
 
-            {showSignUp ? <SignUp /> : <Login />}
+            {showSignUp ? <SignUp setIsSignUpVisible={setIsSignUpVisible}/> : <Login />}
 
 
         </>

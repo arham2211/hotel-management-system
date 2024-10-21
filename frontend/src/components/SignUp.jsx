@@ -2,9 +2,9 @@ import React from "react";
 import { useState, useEffect, useContext } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import api from "../Api";
-import {AuthContext} from "../context/UserContext"
+import { AuthContext } from "../context/UserContext";
 
-const SignUp = () => {
+const SignUp = ({ setIsSignUpVisible }) => {
   const initialValues = {
     username: "",
     email: "",
@@ -17,9 +17,9 @@ const SignUp = () => {
   const [showError, setShowError] = useState(false); // New state for error vibration
   const [passwordVisible, setPasswordVisible] = useState(false);
 
-  //TESTING TOKEN ACCESS IN SIGNUP 
-  const { token } = useContext(AuthContext);
-  console.log("SignUp page got this token from login: ", token);
+  //TESTING TOKEN ACCESS IN SIGNUP
+  const { token, setToken } = useContext(AuthContext);
+  // console.log("SignUp page got this token from login: ", token);
 
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
@@ -47,12 +47,14 @@ const SignUp = () => {
 
     try {
       const response = await api.post("/users/", formValues);
+      // const data = await response.json;
+      // setToken(data.access_token);
       console.log("Response:", response.data);
       setFormValues(initialValues);
+      setIsSignUpVisible(false);
+
     } catch (error) {
       if (error.response) {
-        console.error("Error status:", error.response.status);
-        console.error("Error data:", error.response.data);
         if (error.response.data.detail == "User Already Exists") {
           setFormValues((prevValues) => ({
             ...prevValues,

@@ -45,7 +45,7 @@ const Login = () => {
         // Store token in localStorage
         localStorage.setItem("token", data.access_token);
         setToken(data.access_token);
-        console.log(data.access_token);
+        // console.log(data.access_token);
       } else {
         setErrorMessage(data.detail);
       }

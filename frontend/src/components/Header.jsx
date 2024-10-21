@@ -17,10 +17,11 @@ export default function Header() {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+  console.log(isSignUpVisible)
 
-  const { token } = useContext(AuthContext);
+  // const { token } = useContext(AuthContext);
 
-  console.log("Header file rendered here token accessed: ", token);
+  // console.log("Header file rendered here token accessed: ", token);
   return (
     <>
       <header className="sticky top-0 z-50 bg-[#002366] shadow-md">
@@ -177,7 +178,7 @@ export default function Header() {
         >
           {/* Prevent click propagation inside modal content */}
           <div className="w-[85%] sm:w-[70%] md:w-[50%] lg:w-[40%] xl:w-[31%]" onClick={(e) => e.stopPropagation()}>
-            <SignUpCard onClose={toggleSignUp} />
+            <SignUpCard onClose={toggleSignUp} setIsSignUpVisible={setIsSignUpVisible}/>
           </div>
         </div>
       )}
