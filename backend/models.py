@@ -1,5 +1,5 @@
 from database import Base
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Boolean
 
 class User(Base):
     __tablename__ = "users"
@@ -24,16 +24,21 @@ class Staff(Base):
     email = Column(String)
     password = Column(String) 
     type = Column(String)
+    
 
 class Room(Base):
     __tablename__ = "rooms"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
+    category_id = Column(Integer)
+    booked_status = Column (Boolean)
+
+class RoomCategory(Base):
+    __tablename__="RoomCategory"
+    id = Column(Integer, primary_key=True, index=True) 
+    type = Column(String)
     price = Column(Integer)
     beds = Column(Integer)
     baths = Column(Integer)
     image = Column(String)
     rating = Column(Integer)
     description = Column(String)
-
-    

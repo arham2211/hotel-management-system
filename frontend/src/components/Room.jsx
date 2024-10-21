@@ -64,7 +64,7 @@ export default function Room() {
                 <img
                   className="w-full object-cover rounded-[2px]"
                   src={imageSources[room.image] || "/path/to/default/image.jpg"}
-                  alt={room.name}
+                  alt={room.type}
                 />
                 <small className="absolute left-4 bottom-[-14px] bg-[#ff8c00] text-[15px] text-white py-1 px-3 rounded-[2px]">
                   ${room.price}/Night
@@ -73,7 +73,7 @@ export default function Room() {
 
               <div className="p-4 py-7 mt-2">
                 <div className="flex items-center justify-between mb-3">
-                  <h5 className="text-2xl font-semibold">{room.name}</h5>
+                  <h5 className="text-2xl font-semibold">{room.type}</h5>
 
                   <div className="space-x-1 text-[#ff8c00]">
                     {[...Array(room.rating)].map((_, i) => (

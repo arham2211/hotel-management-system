@@ -30,8 +30,8 @@ class Admin(BaseModel):
     password: str
 
 
-class Room(BaseModel):
-    name: str
+class RoomCategory(BaseModel):
+    type: str
     description: str
     price: int
     beds: int
@@ -39,8 +39,8 @@ class Room(BaseModel):
     image: str
     rating: int = Field(..., ge=1, le=5) 
 
-class ShowRoom(Room):
-    name: str
+class ShowRoom(RoomCategory):
+    type: str
     description: str
     price: int
     beds: int
