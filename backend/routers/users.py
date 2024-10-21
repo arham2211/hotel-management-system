@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from hashing import Hash
 import database, models, schemas
@@ -25,8 +25,9 @@ def get_all_users(db: Session = Depends(get_db),current_user: schemas.User = Dep
 
 @router.post("/")
 def sign_up(request: schemas.User, db: Session= Depends(get_db)):  
-    if user.signUp(request,db):
-        return "Success"
+    newuser= user.signUp(request,db)
+    if newuser:
+        return newuser
 
 
 @router.get("/{id}",response_model=schemas.User)

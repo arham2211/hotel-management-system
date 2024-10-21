@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from hashing import Hash
 import database, models, schemas
 from typing import List
-
+from repository import roomRepo
 
 router = APIRouter(
 
@@ -25,11 +24,5 @@ def get_three_rooms(limit: int = 3, db: Session = Depends(get_db)):
 
 @router.post("/")
 def create_room(create: schemas.Room, db: Session= Depends(get_db)):
-    
-   
-    new_room = models.Room(name = create.name, description = create.description, price = create.price, beds = create.beds, baths = create.baths, image = create.image, rating = create.rating)
-    db.add(new_room)
-    db.commit()
-    db.refresh(new_room)
-    return new_room
+    return roomRepo.createRoom(create,db)
 
