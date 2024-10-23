@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-
+from datetime import date
 
 class User(BaseModel):
     username: str
@@ -59,3 +59,14 @@ class Rooms(BaseModel):
 
 class ShowRooms(Rooms):
     category: ShowRoomCat
+
+class Booking(BaseModel):
+    id: int
+    room_id: int
+    user_id: int
+    start_date: date
+    end_date: date
+    payment_id: int
+
+    class Config:
+        orm_mode = True

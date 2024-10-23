@@ -9,6 +9,7 @@ class User(Base):
     email = Column(String)
     password = Column(String)
 
+    current_booking = relationship("Booking", back_populates='associated_user') 
 
 class Admin(Base):
     __tablename__ = "admin"
@@ -34,6 +35,7 @@ class Room(Base):
     booked_status = Column(Boolean, default=False, nullable=False)
 
     category = relationship("RoomCategory", back_populates='rooms')
+    current_booking = relationship("Booking", back_populates='associated_room')
 
 class RoomCategory(Base):
     __tablename__="RoomCategory"
@@ -50,14 +52,20 @@ class RoomCategory(Base):
 
 
 
-class Bookings(Base):
-    __tablename__ = "Bookings"
+class Booking(Base):
+    __tablename__ = "Booking"
     id = Column(Integer, primary_key=True, index=True) 
-    room_id = Column(Integer)
-    user_id = Column(Integer)
+    room_id = Column(Integer, ForeignKey('Rooms.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
     start_date = Column(Date)
     end_date = Column(Date)
-    payment_id = Column(Integer)
+    payment_id = Column(Integer,ForeignKey('Payment.id'))
+
+    associated_user = relationship("User", back_populates='current_booking') 
+    associated_room = relationship("Room", back_populates='current_booking')
+    associated_payment = relationship("Payment", back_populates="associated_booking")
+
+
 
 class Payment(Base):
     __tablename__ = "Payment"
@@ -65,5 +73,5 @@ class Payment(Base):
     amount = Column(Integer)
     type = Column(String)
     bill_id = Column(Integer)
-
+    associated_booking = relationship("Booking", back_populates="associated_payment")
 
