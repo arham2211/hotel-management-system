@@ -40,7 +40,7 @@ class RoomCategory(BaseModel):
     image: str
     rating: int = Field(..., ge=1, le=5) 
 
-class ShowRoom(RoomCategory):
+class ShowRoomCat(RoomCategory):
     type: str
     description: str
     price: int
@@ -51,3 +51,11 @@ class ShowRoom(RoomCategory):
 
     class Config:
         from_attributes = True
+
+class Rooms(BaseModel):
+    id: int
+    category_id: int
+    booked_status: bool
+
+class ShowRooms(Rooms):
+    category: ShowRoomCat

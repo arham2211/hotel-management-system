@@ -13,12 +13,12 @@ router = APIRouter(
 get_db = database.get_db
 
 @router.get("/")
-def get_all_room(db: Session = Depends(get_db)):
+def get_all_room_cat(db: Session = Depends(get_db)):
     rooms = db.query(models.RoomCategory).all()
     return rooms
 
-@router.get("/three/",response_model=List[schemas.ShowRoom])
-def get_three_rooms(limit: int = 3, db: Session = Depends(get_db)):
+@router.get("/three/",response_model=List[schemas.ShowRoomCat])
+def get_three_rooms_cat(limit: int = 3, db: Session = Depends(get_db)):
     rooms = db.query(models.RoomCategory).filter(models.RoomCategory.rating.in_([3, 4, 5])).limit(limit).all()
     if rooms:
         return rooms
@@ -26,6 +26,15 @@ def get_three_rooms(limit: int = 3, db: Session = Depends(get_db)):
         return "No rooms found."
 
 @router.post("/")
-def create_room(create: schemas.RoomCategory, db: Session= Depends(get_db)):
+def create_room_cat(create: schemas.RoomCategory, db: Session= Depends(get_db)):
     return roomRepo.createRoom(create,db)
 
+@router.get("/linked/", response_model=List[schemas.ShowRooms])
+def get_all_rooms(db:Session = Depends(get_db)):
+    rooms = db.query(models.Room).all()
+    return rooms
+
+@router.get("/available/{cat_id}", response_model=List[schemas.ShowRooms])
+def get_all_rooms_category(cat_id, db:Session = Depends(get_db)):
+    rooms=db.query(models.Room).filter(models.Room.category_id==cat_id)
+    return rooms

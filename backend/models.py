@@ -1,5 +1,6 @@
 from database import Base
-from sqlalchemy import Column, Integer, String, Boolean, Date
+from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey
+from sqlalchemy.orm import relationship
 
 class User(Base):
     __tablename__ = "users"
@@ -27,10 +28,12 @@ class Staff(Base):
     
 
 class Room(Base):
-    __tablename__ = "rooms"
+    __tablename__ = "Rooms"
     id = Column(Integer, primary_key=True, index=True)
-    category_id = Column(Integer)
-    booked_status = Column (Boolean)
+    category_id = Column(Integer,ForeignKey('RoomCategory.id'))
+    booked_status = Column(Boolean, default=False, nullable=False)
+
+    category = relationship("RoomCategory", back_populates='rooms')
 
 class RoomCategory(Base):
     __tablename__="RoomCategory"
@@ -42,6 +45,10 @@ class RoomCategory(Base):
     image = Column(String)
     rating = Column(Integer)
     description = Column(String)
+
+    rooms = relationship("Room", back_populates='category')
+
+
 
 class Bookings(Base):
     __tablename__ = "Bookings"
