@@ -3,21 +3,21 @@ from sqlalchemy.orm import Session
 from hashing import Hash
 import  models, schemas
 
-def signUp(request: schemas.User,db:Session):
-    verify_user = db.query(models.User).filter(models.User.username == request.username).first()
-    verify_email = db.query(models.User).filter(models.User.email == request.email).first()
+# def signUp(request: schemas.User,db:Session):
+#     verify_user = db.query(models.User).filter(models.User.username == request.username).first()
+#     verify_email = db.query(models.User).filter(models.User.email == request.email).first()
     
-    if verify_user:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail = "User Already Exists")
+#     if verify_user:
+#         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail = "User Already Exists")
     
-    if verify_email:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail = "Email Already Registered")
+#     if verify_email:
+#         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail = "Email Already Registered")
     
-    new_user = models.User(username = request.username, email = request.email, password = Hash.get_password_hash(request.password))
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user
+#     new_user = models.User(username = request.username, email = request.email, password = Hash.get_password_hash(request.password))
+#     db.add(new_user)
+#     db.commit()
+#     db.refresh(new_user)
+#     return new_user
 
 
 def getUserInfo(id:int, db:Session):

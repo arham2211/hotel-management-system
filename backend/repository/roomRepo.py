@@ -1,7 +1,6 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import  Depends
 from sqlalchemy.orm import Session
-from hashing import Hash
-import database, models, schemas
+import  models, schemas
 from typing import List
 
 def createRoom(create: schemas.RoomCategory, db: Session):
