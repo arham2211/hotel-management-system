@@ -11,6 +11,7 @@ class User(Base):
 
     associated_bill = relationship("Bill",back_populates="customer")
     current_booking = relationship("Booking", back_populates='associated_user') 
+    PartyReservation = relationship("PartyReservation", back_populates='associated_user')
 
 class Admin(Base):
     __tablename__ = "admin"
@@ -77,6 +78,7 @@ class Payment(Base):
     type = Column(String)
     bill_id = Column(Integer)
     associated_booking = relationship("Booking", back_populates="associated_payment")
+    PartyReservation = relationship("PartyReservation", back_populates="associated_payment")
 
 class Manager(Base):
     __tablename__ = "Manager"
@@ -103,22 +105,28 @@ class Bill(Base):
     total_amount = Column(Integer)
     date = Column(Date)
 
-    customer = relationship("User", back_populates='bill')
+    customer = relationship("Users", back_populates='associated_bill')
 
-# class PartyReservation(Base):
-#     __tablename__ = "PartyReservation"
-#     id = Column(Integer, primary_key=True, index=True)
-#     type= Column(String)
-#     hall_id = Column(Integer, ForeignKey())
-#     user_id = Column(Integer,ForeignKey(User.id))
-#     payment_id = Column(Integer, ForeignKey(Payment.id))
-#     #date= Column(Date)
-#     start_time = Column(TIMESTAMP)
-#     end_time = Column(TIMESTAMP)
+class PartyHalls(Base):
+    __tablename__ = "PartyHalls"
+    id = Column(Integer, primary_key=True, index=True)
+    capacity = Column(Integer)
+    price = Column(Integer)
+    available = Column(Boolean)
 
-# class PartyHalls(Base):
-#     __tablename__ = "PartyHalls"
-#     capacity = Column(Integer)
-#     price = Column(Integer)
-#     available = Column(Boolean)
+    PartyReservation = relationship("PartyReservation",back_populates="associated_hall")
+
+class PartyReservation(Base):
+    __tablename__ = "PartyReservation"
+    id = Column(Integer, primary_key=True, index=True)
+    type= Column(String)
+    hall_id = Column(Integer, ForeignKey(PartyHalls.id))
+    user_id = Column(Integer,ForeignKey(User.id))
+    payment_id = Column(Integer, ForeignKey(Payment.id))
+    #date= Column(Date)
+    start_time = Column(TIMESTAMP)
+    end_time = Column(TIMESTAMP)
     
+    associated_hall = relationship("PartyHalls",back_populates="PartyReservation")
+    associated_user = relationship("User", back_populates="PartyReservation")
+    associated_payment = relationship("Payment", back_populates="PartyReservation")
