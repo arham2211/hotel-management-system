@@ -4,7 +4,7 @@ from hashing import Hash
 import database, models, schemas, JWTtoken
 import oauth2
 from fastapi.security import OAuth2PasswordRequestForm
-from repository import user
+from repository import userRepo
 from repository import authenticationRepo
 
 router = APIRouter(

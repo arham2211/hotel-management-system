@@ -1,5 +1,5 @@
 from database import Base
-from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey, TIMESTAMP
 from sqlalchemy.orm import relationship
 
 class User(Base):
@@ -9,6 +9,7 @@ class User(Base):
     email = Column(String)
     password = Column(String)
 
+    associated_bill = relationship("Bill",back_populates="customer")
     current_booking = relationship("Booking", back_populates='associated_user') 
 
 class Admin(Base):
@@ -19,13 +20,15 @@ class Admin(Base):
 
     
 
-class Staff(Base):
-    __tablename__ = "Staff"
+class Receptionist(Base):
+    __tablename__ = "Receptionist"
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String)
     email = Column(String)
     password = Column(String) 
     type = Column(String)
+    Manager_id = Column(Integer,ForeignKey('Manager.id'))
+    Manager = relationship("Manager", back_populates="linked_receptionist")
     
 
 class Room(Base):
@@ -75,3 +78,47 @@ class Payment(Base):
     bill_id = Column(Integer)
     associated_booking = relationship("Booking", back_populates="associated_payment")
 
+class Manager(Base):
+    __tablename__ = "Manager"
+    id = Column(Integer, primary_key=True, index=True)
+    name= Column(String)
+    Salary = Column(Integer)
+    linked_staff= relationship("Staff",back_populates="Manager")
+    linked_receptionist = relationship("Receptionist", back_populates="Manager")
+
+class Staff(Base):
+    __tablename__ = "Staff"
+    id = Column(Integer, primary_key=True, index=True)
+    name= Column(String)
+    designation= Column(String)
+    Salary = Column(Integer)
+    Manager_id = Column(Integer,ForeignKey('Manager.id'))
+    Manager = relationship("Manager", back_populates="linked_staff")
+    
+
+class Bill(Base):
+    __tablename__ = "Bill"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey(User.id))
+    total_amount = Column(Integer)
+    date = Column(Date)
+
+    customer = relationship("User", back_populates='bill')
+
+# class PartyReservation(Base):
+#     __tablename__ = "PartyReservation"
+#     id = Column(Integer, primary_key=True, index=True)
+#     type= Column(String)
+#     hall_id = Column(Integer, ForeignKey())
+#     user_id = Column(Integer,ForeignKey(User.id))
+#     payment_id = Column(Integer, ForeignKey(Payment.id))
+#     #date= Column(Date)
+#     start_time = Column(TIMESTAMP)
+#     end_time = Column(TIMESTAMP)
+
+# class PartyHalls(Base):
+#     __tablename__ = "PartyHalls"
+#     capacity = Column(Integer)
+#     price = Column(Integer)
+#     available = Column(Boolean)
+    

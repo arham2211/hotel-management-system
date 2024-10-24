@@ -4,7 +4,7 @@ from hashing import Hash
 import database, models, schemas
 from typing import Annotated
 import oauth2
-from repository import user
+from repository import userRepo
 
 router = APIRouter(
 
@@ -31,12 +31,12 @@ def get_all_users(db: Session = Depends(get_db),current_user: schemas.User = Dep
 
 @router.get("/{id}",response_model=schemas.User)
 def get_user(id, db: Session= Depends(get_db)):
-    return user.getUserInfo(id,db)
+    return userRepo.getUserInfo(id,db)
 
 
 
 @router.delete("/{id}")
 def del_user(id, db: Session= Depends(get_db)):
-    return user.deleteUser(id,db)
+    return userRepo.deleteUser(id,db)
         
  
