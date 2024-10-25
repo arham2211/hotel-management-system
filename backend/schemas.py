@@ -1,10 +1,12 @@
 from pydantic import BaseModel, Field
 from datetime import date,datetime
+from typing import List
 
 class User(BaseModel):
     username: str
     email: str
     password: str
+
 
 class Staff(BaseModel):
     username: str
@@ -69,6 +71,12 @@ class Payment(BaseModel):
     type: str
     bill_id: int
 
+class ShowPayment(Payment):
+    class Config:
+        from_attributes = True
+
+
+
 class Manager(BaseModel):
     id:int
     name:str
@@ -85,8 +93,29 @@ class Bill(BaseModel):
     id:int
     user_id:int
     total_amount:int
-    date:date
+    start_date:date
+    end_date:date
 
+class addBill(BaseModel):
+    user_id:int
+    start_date:date
+    end_date:date
+
+class ShowBill(Bill):
+    class Config:
+        from_attributes = True
+
+
+class showUser(BaseModel):
+    id:int
+    username:str
+    email:str
+    class Config:
+        from_attributes = True
+
+class ShowBillDetails(ShowBill):
+    customer: showUser
+    all_payments : List[ShowPayment]=[]
 
 class PartyHalls(BaseModel):
     id : int
@@ -116,4 +145,4 @@ class TourReservation(BaseModel):
     payment_id: int 
     user_id: int
     tour_id: int
-            
+

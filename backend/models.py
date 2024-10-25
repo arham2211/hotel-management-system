@@ -70,15 +70,24 @@ class Booking(Base):
     associated_room = relationship("Room", back_populates='current_booking')
     associated_payment = relationship("Payment", back_populates="associated_booking")
 
-
+class Bill(Base):
+    __tablename__ = "Bill"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey(User.id))
+    total_amount = Column(Integer)
+    start_date = Column(Date)
+    end_date = Column(Date)
+    customer = relationship("User", back_populates='associated_bill')
+    all_payments=relationship("Payment", back_populates='associated_bill')
 
 class Payment(Base):
     __tablename__ = "Payment"
     id = Column(Integer, primary_key=True, index=True) 
     amount = Column(Integer)
     type = Column(String)
-    bill_id = Column(Integer)
+    bill_id = Column(Integer,ForeignKey(Bill.id))
 
+    associated_bill = relationship("Bill", back_populates="all_payments")
     associated_booking = relationship("Booking", back_populates="associated_payment")
     PartyReservation = relationship("PartyReservation", back_populates="associated_payment")
     TourReservation = relationship("TourReservation", back_populates='associated_payment')
@@ -101,14 +110,7 @@ class Staff(Base):
     Manager = relationship("Manager", back_populates="linked_staff")
     
 
-class Bill(Base):
-    __tablename__ = "Bill"
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey(User.id))
-    total_amount = Column(Integer)
-    date = Column(Date)
 
-    customer = relationship("User", back_populates='associated_bill')
 
 class PartyHalls(Base):
     __tablename__ = "PartyHalls"
