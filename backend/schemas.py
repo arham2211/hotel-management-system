@@ -83,7 +83,10 @@ class addBill(BaseModel):
 class makeBooking(BaseModel):
     room_cat_id: int
    # user_id:int
-    billInfo:addBill
+   # billInfo:addBill
+    user_id:int
+    start_date:date
+    end_date:date
     totalCost: int
     num_people: int
     first_name: str
