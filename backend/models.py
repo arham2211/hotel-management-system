@@ -120,7 +120,6 @@ class Staff(Base):
     
 
 
-
 class PartyHalls(Base):
     __tablename__ = "PartyHalls"
     id = Column(Integer, primary_key=True, index=True)

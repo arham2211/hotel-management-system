@@ -1,14 +1,12 @@
 import React, { useState, useContext } from "react";
 import api from "../Api.jsx";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import {AuthContext} from "../context/UserContext"
+import { AuthContext } from "../context/UserContext";
 
-const Login = () => {
-  const [showSignUp, setShowSignUp] = useState(false);
-  //const [token, setToken] = useState(localStorage.getItem("token"));
-  const { token, setToken } = useContext(AuthContext); // Use useContext to get token and setToken from AuthContext
-
+const Login = ({ setIsSignUpVisible }) => {
   const [formValues, setFormValues] = useState({ username: "", password: "" });
+  const [showSignUp, setShowSignUp] = useState(false);
+  const { setToken, setRole } = useContext(AuthContext); // Removed unused 'token' and 'role'
   const [errorMessage, setErrorMessage] = useState("");
   const [errors, setErrors] = useState({});
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -25,6 +23,12 @@ const Login = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
+    // Clear specific errors when input is modified
+    if (name === "username") {
+      setErrors((prevErrors) => ({ ...prevErrors, WrongCredentials: "" }));
+    } else if (name === "password") {
+      setErrors((prevErrors) => ({ ...prevErrors, WrongPassword: "" }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -38,41 +42,39 @@ const Login = () => {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
         }
       );
- 
-      const data = await response.data;
+
+      const data = response.data;
 
       if (response.status === 200) {
         // Store token in localStorage
-        localStorage.setItem("token", data.access_token);
+        localStorage.setItem("token", data.access_token + "_" + data.role);
         setToken(data.access_token);
-        // console.log(data.access_token);
       } else {
         setErrorMessage(data.detail);
       }
+      setIsSignUpVisible(false);
     } catch (error) {
-      console.error(error);
-      setErrorMessage("Fill in the required fields");
-
-      //PASTED HERE
+      // Error handling
       if (error.response) {
         console.error("Error status:", error.response.status);
         console.error("Error data:", error.response.data);
-        if (error.response.data.detail == "Wrong Credentials") {
-          setErrors({
-            ...errors,
-            WrongCredentials: error.response.data.detail || "An error occurred",
-          });
+        const errorDetail = error.response.data.detail;
+
+        if (errorDetail === "Wrong Credentials") {
+          setFormValues((prevValues) => ({
+            ...prevValues,
+            username: "",
+          }));
+          setErrors({ ...errors, WrongCredentials: errorDetail });
+        } else if (errorDetail === "Invalid Password") {
+          setFormValues((prevValues) => ({
+            ...prevValues,
+            password: "",
+          }));
+          setErrors({ ...errors, WrongPassword: errorDetail });
         }
       }
-      if (error.response.data.detail == "Invalid Password") {
-        setErrors({
-          ...errors,
-          WrongPassword: error.response.data.detail || "An error occurred",
-        });
-      }
     }
-
-    //TILL HERE
   };
 
   return (
@@ -90,6 +92,7 @@ const Login = () => {
             type="text"
             value={formValues.username}
             onChange={handleInputChange}
+            autoComplete="off"
           />
           <span>Email/Username</span>
         </label>
@@ -130,4 +133,5 @@ const Login = () => {
     </div>
   );
 };
+
 export default Login;
