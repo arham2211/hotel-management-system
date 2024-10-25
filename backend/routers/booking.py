@@ -34,7 +34,13 @@ def get_all_bookings(db: Session = Depends(get_db),
     bookings = bookingRepo.get_all_bookings(db,user_id,room_id)
     return bookings
     
+
+@router.post("/")
+def add_new_booking(request:schemas.makeBooking, db:Session=Depends(get_db)):
+    return bookingRepo.add_new_booking(request,db)    
     
+
+
 #@router.post("/")
 #def add_new_booking(request:schemas.Booking,db: Session = Depends(get_db)):
     

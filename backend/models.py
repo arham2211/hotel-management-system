@@ -4,15 +4,23 @@ from sqlalchemy.orm import relationship
 
 class User(Base):
     __tablename__ = "users"
+    
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String)
-    email = Column(String)
-    password = Column(String)
+    username = Column(String, nullable=False)  # non-nullable
+    email = Column(String, nullable=False)     # non-nullable
+    password = Column(String, nullable=False)  # non-nullable
+    
+    # New nullable fields
+    first_name = Column(String, nullable=True)
+    last_name = Column(String, nullable=True)
+    phone_number = Column(String, nullable=True)
+    
+    # Relationships
+    associated_bill = relationship("Bill", back_populates="customer")
+    current_booking = relationship("Booking", back_populates="associated_user")
+    PartyReservation = relationship("PartyReservation", back_populates="associated_user")
+    TourReservation = relationship("TourReservation", back_populates="associated_user")
 
-    associated_bill = relationship("Bill",back_populates="customer")
-    current_booking = relationship("Booking", back_populates='associated_user') 
-    PartyReservation = relationship("PartyReservation", back_populates='associated_user')
-    TourReservation = relationship("TourReservation", back_populates='associated_user')
 
 class Admin(Base):
     __tablename__ = "admin"
@@ -65,6 +73,7 @@ class Booking(Base):
     start_date = Column(Date)
     end_date = Column(Date)
     payment_id = Column(Integer,ForeignKey('Payment.id'))
+    num_people = Column(Integer)
 
     associated_user = relationship("User", back_populates='current_booking') 
     associated_room = relationship("Room", back_populates='current_booking')

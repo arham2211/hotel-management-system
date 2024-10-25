@@ -38,3 +38,9 @@ def get_all_rooms(db:Session = Depends(get_db)):
 def get_all_rooms_category(cat_id, db:Session = Depends(get_db)):
     rooms=db.query(models.Room).filter(models.Room.category_id==cat_id)
     return rooms
+
+@router.get("/catprice/",response_model=List[schemas.roomCatPrice])
+def get_category_with_price(db:Session=Depends(get_db)):
+    all_info = db.query(models.RoomCategory.type, models.RoomCategory.price).all()
+    return all_info
+

@@ -1,11 +1,14 @@
 from pydantic import BaseModel, Field
 from datetime import date,datetime
-from typing import List
+from typing import List, Optional
 
 class User(BaseModel):
     username: str
-    email: str
+    email: str 
     password: str
+    first_name: Optional[str] = Field(None, example="John")  # Optional fields
+    last_name: Optional[str] = Field(None, example="Doe")
+    phone_number: Optional[str] = Field(None, example="123-456-7890")
 
 
 class Staff(BaseModel):
@@ -54,19 +57,43 @@ class Rooms(BaseModel):
 class ShowRooms(Rooms):
     category: ShowRoomCat
 
+
+class roomCatPrice(BaseModel):
+    type:str
+    price:int
+    class Config:  
+        from_attributes = True    
+
 class Booking(BaseModel):
-    id: int
     room_id: int
     user_id: int
     start_date: date
     end_date: date
-    payment_id: int
+    totalCost: int
+    num_people: int
 
     class Config:
         from_attributes = True
 
+class addBill(BaseModel):
+    user_id:int
+    start_date:date
+    end_date:date
+
+class makeBooking(BaseModel):
+    room_cat_id: int
+   # user_id:int
+    billInfo:addBill
+    totalCost: int
+    num_people: int
+    first_name: str
+    last_name: str
+    phone_number: str
+    class Config:
+            from_attributes = True
+
+
 class Payment(BaseModel):
-    id: int
     amount:int
     type: str
     bill_id: int
@@ -96,10 +123,6 @@ class Bill(BaseModel):
     start_date:date
     end_date:date
 
-class addBill(BaseModel):
-    user_id:int
-    start_date:date
-    end_date:date
 
 class ShowBill(Bill):
     class Config:
@@ -107,9 +130,11 @@ class ShowBill(Bill):
 
 
 class showUser(BaseModel):
-    id:int
     username:str
     email:str
+    first_name:Optional[str]
+    last_name: Optional[str]
+    phone_number: Optional[str]
     class Config:
         from_attributes = True
 
