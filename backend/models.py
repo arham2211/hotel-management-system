@@ -105,7 +105,7 @@ class Bill(Base):
     total_amount = Column(Integer)
     date = Column(Date)
 
-    customer = relationship("Users", back_populates='associated_bill')
+    customer = relationship("User", back_populates='associated_bill')
 
 class PartyHalls(Base):
     __tablename__ = "PartyHalls"

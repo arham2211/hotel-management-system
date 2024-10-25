@@ -38,7 +38,7 @@ const Form = ({ setIsSignUpVisible }) => {
 
 
 
-            {showSignUp ? <SignUp setIsSignUpVisible={setIsSignUpVisible}/> : <Login />}
+            {showSignUp ? <SignUp setIsSignUpVisible={setIsSignUpVisible}/> : <Login setIsSignUpVisible={setIsSignUpVisible}/>}
 
 
         </>
