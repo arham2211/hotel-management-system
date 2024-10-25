@@ -12,6 +12,7 @@ class User(Base):
     associated_bill = relationship("Bill",back_populates="customer")
     current_booking = relationship("Booking", back_populates='associated_user') 
     PartyReservation = relationship("PartyReservation", back_populates='associated_user')
+    TourReservation = relationship("TourReservation", back_populates='associated_user')
 
 class Admin(Base):
     __tablename__ = "admin"
@@ -77,8 +78,10 @@ class Payment(Base):
     amount = Column(Integer)
     type = Column(String)
     bill_id = Column(Integer)
+
     associated_booking = relationship("Booking", back_populates="associated_payment")
     PartyReservation = relationship("PartyReservation", back_populates="associated_payment")
+    TourReservation = relationship("TourReservation", back_populates='associated_payment')
 
 class Manager(Base):
     __tablename__ = "Manager"
@@ -105,7 +108,7 @@ class Bill(Base):
     total_amount = Column(Integer)
     date = Column(Date)
 
-    customer = relationship("Users", back_populates='associated_bill')
+    customer = relationship("User", back_populates='associated_bill')
 
 class PartyHalls(Base):
     __tablename__ = "PartyHalls"
@@ -130,3 +133,25 @@ class PartyReservation(Base):
     associated_hall = relationship("PartyHalls",back_populates="PartyReservation")
     associated_user = relationship("User", back_populates="PartyReservation")
     associated_payment = relationship("Payment", back_populates="PartyReservation")
+
+class Tour(Base):
+    __tablename__ = "Tour"
+    id = Column(Integer, primary_key=True, index=True)           
+    price = Column(Integer)
+    location = Column(String)
+    tour_guide_id= Column(Integer,ForeignKey(Staff.id))
+
+    Reservation = relationship("TourReservation", back_populates='associated_tour')
+
+class TourReservation(Base):
+    __tablename__ = "TourReservation"
+    id = Column(Integer, primary_key=True, index=True)
+    time = Column(TIMESTAMP)
+    payment_id = Column(Integer,ForeignKey(Payment.id))
+    user_id = Column(Integer,ForeignKey(User.id))
+    tour_id = Column(Integer,ForeignKey(Tour.id))
+
+    associated_tour=relationship("Tour", back_populates="Reservation")
+    associated_payment=relationship("Payment", back_populates='TourReservation')
+    associated_user=relationship("User", back_populates="TourReservation")
+

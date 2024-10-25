@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from datetime import date
+from datetime import date,datetime
 
 class User(BaseModel):
     username: str
@@ -41,14 +41,6 @@ class RoomCategory(BaseModel):
     rating: int = Field(..., ge=1, le=5) 
 
 class ShowRoomCat(RoomCategory):
-    type: str
-    description: str
-    price: int
-    beds: int
-    baths: int
-    image: str
-    rating: int = Field(..., ge=1, le=5) 
-
     class Config:
         from_attributes = True
 
@@ -69,4 +61,59 @@ class Booking(BaseModel):
     payment_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
+
+class Payment(BaseModel):
+    id: int
+    amount:int
+    type: str
+    bill_id: int
+
+class Manager(BaseModel):
+    id:int
+    name:str
+    salary: int
+
+class Staff(BaseModel):
+    id:int
+    name:str
+    designation:str
+    salary:int
+    manager_id:int
+
+class Bill(BaseModel):
+    id:int
+    user_id:int
+    total_amount:int
+    date:date
+
+
+class PartyHalls(BaseModel):
+    id : int
+    capacity : int
+    price : int
+    available : bool
+
+
+class PartyReservation(BaseModel):
+    id:int
+    type :str 
+    hall_id :int
+    user_id :int
+    payment_id :int 
+    start_time:datetime
+    end_time :datetime
+
+class Tour(BaseModel):
+    id:int
+    price:int
+    location:str
+    tour_guide_id:int
+
+class TourReservation(BaseModel):
+    id:int
+    time:datetime
+    payment_id: int 
+    user_id: int
+    tour_id: int
+            
