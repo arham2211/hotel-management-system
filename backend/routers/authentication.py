@@ -16,7 +16,7 @@ get_db = database.get_db
 
 
 @router.post('/register')  
-def sign_up(request: schemas.User, db: Session = Depends(get_db)):  
+def sign_up(request: schemas.UserSignUp, db: Session = Depends(get_db)):  
     return authenticationRepo.signUpFunc(request,db)
     
 

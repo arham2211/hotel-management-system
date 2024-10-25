@@ -30,7 +30,7 @@ def loginFunc(logIn: OAuth2PasswordRequestForm, db: Session):
     return schemas.Token(access_token=access_token, token_type="bearer", role=role)
 
 
-def signUpFunc(request: schemas.User, db: Session):  
+def signUpFunc(request: schemas.UserSignUp, db: Session):  
     verify_user = db.query(models.User).filter(models.User.username == request.username).first()
     verify_email = db.query(models.User).filter(models.User.email == request.email).first()
     

@@ -2,13 +2,20 @@ from pydantic import BaseModel, Field
 from datetime import date,datetime
 from typing import List, Optional
 
+class UserSignUp(BaseModel):
+    username: str
+    email: str 
+    password: str
+
 class User(BaseModel):
     username: str
     email: str 
     password: str
-    first_name: Optional[str] = Field(None, example="John")  # Optional fields
-    last_name: Optional[str] = Field(None, example="Doe")
-    phone_number: Optional[str] = Field(None, example="123-456-7890")
+    first_name: Optional[str] = Field(None)  # Optional fields
+    last_name: Optional[str] = Field(None)
+    phone_number: Optional[str] = Field(None)
+    class Config:
+        from_attributes = True
 
 
 class Staff(BaseModel):
