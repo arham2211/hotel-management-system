@@ -66,6 +66,7 @@ class ShowRooms(Rooms):
 
 
 class roomCatPrice(BaseModel):
+    id:int
     type:str
     price:int
     class Config:  
@@ -76,7 +77,7 @@ class Booking(BaseModel):
     user_id: int
     start_date: date
     end_date: date
-    totalCost: int
+    total_cost: int
     num_people: int
 
     class Config:
@@ -88,13 +89,13 @@ class addBill(BaseModel):
     end_date:date
 
 class makeBooking(BaseModel):
-    room_cat_id: int
    # user_id:int
    # billInfo:addBill
+    room_cat_id: int
     user_id:int
     start_date:date
     end_date:date
-    totalCost: int
+    total_cost: int
     num_people: int
     first_name: str
     last_name: str

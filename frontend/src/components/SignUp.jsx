@@ -18,7 +18,7 @@ const SignUp = ({ setIsSignUpVisible }) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   //TESTING TOKEN ACCESS IN SIGNUP
-  const { token, setToken,role,setRole } = useContext(AuthContext);
+  const { token, setToken, setUserId } = useContext(AuthContext);
   // console.log("SignUp page got this token from login: ", token);
 
   const togglePasswordVisibility = () => {
@@ -47,7 +47,7 @@ const SignUp = ({ setIsSignUpVisible }) => {
 
     try {
       const response = await api.post("/register/", formValues);
-      console.log("Response:", response.data);
+      // console.log("Response:", response.data);
       setFormValues(initialValues);
 
       const register = await api.post(
@@ -64,6 +64,11 @@ const SignUp = ({ setIsSignUpVisible }) => {
         
         localStorage.setItem("token", data.access_token+"_"+data.role);
         setToken(data.access_token);
+        const user_id = await api.get(`/users/${response.data.username}/`);
+
+        
+        localStorage.setItem("user_id", user_id.data);
+        setUserId(user_id.data);
         
       } else {
         setShowError(data.detail);

@@ -5,11 +5,12 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [role, setRole] = useState(null);
-  // const [token, setToken] = useState(null);
+  const [userId, setUserId] = useState(localStorage.getItem("user_id") || null);
+
 
 
   return (
-    <AuthContext.Provider value={{ token, setToken, role, setRole}}>
+    <AuthContext.Provider value={{ token, setToken, role, setRole,userId,setUserId}}>
       {children}
     </AuthContext.Provider>
   );

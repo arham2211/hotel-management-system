@@ -15,11 +15,13 @@ def get_all_bookings(db: Session, user_id: Optional[int] = Query(None), room_id:
     return bookings.all()
 
 def add_new_booking(request:schemas.makeBooking, db:Session):
-    found_room_id = db.query(models.Room).filter(models.Room.category_id==request.room_cat_id).first()
+    
+    found_room_id = db.query(models.Room).filter(models.Room.category_id==request.room_cat_id)
+    found_room_id = found_room_id.filter(models.Room.booked_status==0).first()
     new_bill = billRepo.add_new_bill(schemas.addBill(user_id=request.user_id,start_date=request.start_date
                                                      ,end_date=request.end_date) ,db)
 
-    new_payment=paymentRepo.make_payment(schemas.Payment(amount=request.totalCost,type="Booking",
+    new_payment=paymentRepo.make_payment(schemas.Payment(amount=request.total_cost,type="Booking",
                                                          bill_id=new_bill.id),db)
 
 

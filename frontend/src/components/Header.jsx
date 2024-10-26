@@ -22,7 +22,7 @@ export default function Header() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const { token, setToken, role, setRole } = useContext(AuthContext); // Ensure setToken is available in AuthContext
+  const { token, setToken, role, setRole, setUserId } = useContext(AuthContext); // Ensure setToken is available in AuthContext
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -34,10 +34,12 @@ export default function Header() {
     }
   }); // Run the effect when the component mounts
 
-  console.log(role); // You can now log role, which will be updated when the token is processed
+  // console.log(role); // You can now log role, which will be updated when the token is processed
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user_id");
+    setUserId(null);
     setToken(null); // Clear token
     window.location.href = "/"; // Redirect to home after logout
   };

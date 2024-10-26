@@ -36,11 +36,14 @@ def get_all_rooms(db:Session = Depends(get_db)):
 
 @router.get("/available/{cat_id}", response_model=List[schemas.ShowRooms])
 def get_all_rooms_category(cat_id, db:Session = Depends(get_db)):
+    
     rooms=db.query(models.Room).filter(models.Room.category_id==cat_id)
     return rooms
+@router.get("/catprice/{type}", response_model=List[schemas.roomCatPrice])
+def get_category_with_price(type, db: Session = Depends(get_db)):
+    
+    all_info = (
+        db.query(models.RoomCategory).filter(models.RoomCategory.type == type)
 
-@router.get("/catprice/",response_model=List[schemas.roomCatPrice])
-def get_category_with_price(db:Session=Depends(get_db)):
-    all_info = db.query(models.RoomCategory.type, models.RoomCategory.price).all()
+    )
     return all_info
-
