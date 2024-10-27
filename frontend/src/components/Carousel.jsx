@@ -4,10 +4,12 @@ import {
   faChevronRight,
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 import img1 from "../assets/carousel-1.jpg";
 import img2 from "../assets/carousel-2.jpg";
 
 export default function Carousel() {
+  const navigate = useNavigate();
   const carouselData = useRef([
     {
       title: "Luxury Living",
@@ -28,7 +30,9 @@ export default function Carousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState("right");
   const [isTransitioning, setIsTransitioning] = useState(false);
-
+  const handleRegisterClick = () => {
+    navigate('/booking'); // Navigate to the registration page
+  };
   const goToNext = useCallback(() => {
     if (!isTransitioning) {
       setIsTransitioning(true);
@@ -98,7 +102,7 @@ export default function Carousel() {
 ">
             {carouselData.current[currentIndex].description2}
           </p>
-          <button className="text-[#ffffff] bg-[#ff8c00] font-[700] text-[19px] uppercase mt-7 px-8 py-4">
+          <button className="text-[#ffffff] bg-[#ff8c00] font-[700] text-[19px] uppercase mt-7 px-8 py-4" onClick={handleRegisterClick}>
             {carouselData.current[currentIndex].button}
           </button>
         </div>

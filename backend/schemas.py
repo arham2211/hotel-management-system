@@ -85,8 +85,7 @@ class Booking(BaseModel):
 
 class addBill(BaseModel):
     user_id:int
-    start_date:date
-    end_date:date
+    # total_amount:int
 
 class makeBooking(BaseModel):
    # user_id:int

@@ -20,6 +20,10 @@ const BookingForm = () => {
     kids: 0,
     room_cat_name: "",
   };
+  // const gstRate = 0.18; // GST of 18%
+  // const subtotal = costPerNight * stayDuration;
+  // const gstAmount = subtotal * gstRate;
+  // const total = subtotal + gstAmount;
 
   const [formData, setFormData] = useState(defaultFormData);
   const [extraInformation, setExtraInformation] = useState(
@@ -123,121 +127,180 @@ const BookingForm = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-md">
+    <div className="p-6 bg-white shadow-md rounded-md">
       <h2 className="text-xl font-bold mb-4">
         Please complete the form below.
       </h2>
+      <div className="flex items-center justify-center">
+        <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
+          <form action="" onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label className="block mb-1 text-gray-700">Full Name</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  name="first_name"
+                  placeholder="First Name"
+                  value={formData.first_name}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+                <input
+                  type="text"
+                  name="last_name"
+                  placeholder="Last Name"
+                  value={formData.last_name}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+            </div>
 
-      <form action="" onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block mb-1 text-gray-700">Full Name</label>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              name="first_name"
-              placeholder="First Name"
-              value={formData.first_name}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
-            <input
-              type="text"
-              name="last_name"
-              placeholder="Last Name"
-              value={formData.last_name}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
+            <div className="mb-4">
+              <label className="block mb-1 text-gray-700">Phone Number</label>
+              <input
+                type="tel"
+                name="phone_number"
+                placeholder="(000) 000-0000"
+                value={formData.phone_number}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block mb-1 text-gray-700">Room Category</label>
+              <select
+                name="room_cat_name"
+                value={extraInformation.room_cat_name}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              >
+                <option value="">Select a category</option>
+                <option value="Junior Suite">Junior Suite</option>
+                <option value="Executive Suite">Executive Suite</option>
+                <option value="Super Deluxe">Super Deluxe</option>
+                <option value="Deluxe">Deluxe</option>
+              </select>
+            </div>
+
+            <div className="mb-4">
+              <label className="block mb-1 text-gray-700">
+                Check In - Date
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="date"
+                  name="start_date"
+                  value={formData.start_date}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="block mb-1 text-gray-700">
+                Check Out - Date
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="date"
+                  name="end_date"
+                  value={formData.end_date}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="block mb-1 text-gray-700">
+                Number of Adults
+              </label>
+              <input
+                type="number"
+                name="adults"
+                placeholder="ex: 2"
+                value={extraInformation.adults}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="block mb-1 text-gray-700">
+                Number of Kids (If there are any)
+              </label>
+              <input
+                type="number"
+                name="kids"
+                placeholder="ex: 1"
+                value={extraInformation.kids}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors"
+            >
+              Submit
+            </button>
+          </form>
+        </div>
+        <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            Payment Slip
+          </h2>
+
+          <div className="space-y-2">
+            {/* Room Type */}
+            <div className="flex justify-between">
+              <span className="text-gray-600">Selected Type:</span>
+              <span className="font-medium">roomType</span>
+            </div>
+
+            {/* Cost per Night */}
+            <div className="flex justify-between">
+              <span className="text-gray-600">Cost per Night:</span>
+              <span className="font-medium">$costPerNight</span>
+            </div>
+
+            {/* Stay Duration */}
+            <div className="flex justify-between">
+              <span className="text-gray-600">Stay Duration:</span>
+              <span className="font-medium">stayDuration nights</span>
+            </div>
+
+            {/* Subtotal
+            <div className="flex justify-between">
+              <span className="text-gray-600">Subtotal:</span>
+              <span className="font-medium">₹{subtotal.toFixed(2)}</span>
+            </div>
+
+            
+            <div className="flex justify-between">
+              <span className="text-gray-600">GST (18%):</span>
+              <span className="font-medium">₹{gstAmount.toFixed(2)}</span>
+            </div> */}
+
+            {/* Total */}
+            <hr className="my-3" />
+            <div className="flex justify-between text-xl font-semibold">
+              <span className="text-gray-800">Total:</span>
+              <span className="text-gray-800">1000</span>
+              {/* <span className="text-gray-800">₹{total.toFixed(2)}</span> */}
+            </div>
           </div>
-        </div>
 
-        <div className="mb-4">
-          <label className="block mb-1 text-gray-700">Phone Number</label>
-          <input
-            type="tel"
-            name="phone_number"
-            placeholder="(000) 000-0000"
-            value={formData.phone_number}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-          />
+          {/* Payment Button */}
+          <button className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow">
+            Proceed to Payment
+          </button>
         </div>
-
-        <div className="mb-4">
-          <label className="block mb-1 text-gray-700">Room Category</label>
-          <select
-            name="room_cat_name"
-            value={extraInformation.room_cat_name}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-          >
-            <option value="">Select a category</option>
-            <option value="Junior Suite">Junior Suite</option>
-            <option value="Executive Suite">Executive Suite</option>
-            <option value="Super Deluxe">Super Deluxe</option>
-            <option value="Deluxe">Deluxe</option>
-          </select>
-        </div>
-
-        <div className="mb-4">
-          <label className="block mb-1 text-gray-700">Check In - Date</label>
-          <div className="flex gap-2">
-            <input
-              type="date"
-              name="start_date"
-              value={formData.start_date}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <label className="block mb-1 text-gray-700">Check Out - Date</label>
-          <div className="flex gap-2">
-            <input
-              type="date"
-              name="end_date"
-              value={formData.end_date}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <label className="block mb-1 text-gray-700">Number of Adults</label>
-          <input
-            type="number"
-            name="adults"
-            placeholder="ex: 2"
-            value={extraInformation.adults}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block mb-1 text-gray-700">
-            Number of Kids (If there are any)
-          </label>
-          <input
-            type="number"
-            name="kids"
-            placeholder="ex: 1"
-            value={extraInformation.kids}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors"
-        >
-          Submit
-        </button>
-      </form>
+      </div>
     </div>
   );
 };

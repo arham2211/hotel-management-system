@@ -20,6 +20,7 @@ class User(Base):
     current_booking = relationship("Booking", back_populates="associated_user")
     PartyReservation = relationship("PartyReservation", back_populates="associated_user")
     TourReservation = relationship("TourReservation", back_populates="associated_user")
+    associated_bill_user_booking = relationship("Associated_Bill_User_Booking", back_populates="user")
 
 
 class Admin(Base):
@@ -36,7 +37,7 @@ class Receptionist(Base):
     username = Column(String)
     email = Column(String)
     password = Column(String) 
-    type = Column(String)
+    salary = Column(Integer)
     Manager_id = Column(Integer,ForeignKey('Manager.id'))
     Manager = relationship("Manager", back_populates="linked_receptionist")
     
@@ -78,16 +79,29 @@ class Booking(Base):
     associated_user = relationship("User", back_populates='current_booking') 
     associated_room = relationship("Room", back_populates='current_booking')
     associated_payment = relationship("Payment", back_populates="associated_booking")
+    associated_bill_user_booking = relationship("Associated_Bill_User_Booking", back_populates="booking")
 
 class Bill(Base):
     __tablename__ = "Bill"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey(User.id))
     total_amount = Column(Integer)
-    start_date = Column(Date)
-    end_date = Column(Date)
+
     customer = relationship("User", back_populates='associated_bill')
     all_payments=relationship("Payment", back_populates='associated_bill')
+    associated_bill_user_booking = relationship("Associated_Bill_User_Booking", back_populates="bill")
+
+class Associated_Bill_User_Booking(Base):
+    __tablename__ = "Associated_Bill_User_Booking"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey(User.id))
+    bill_id = Column(Integer, ForeignKey(Bill.id))
+    booking_id = Column(Integer, ForeignKey(Booking.id))    
+    # Relationships
+    user = relationship("User", back_populates="associated_bill_user_booking")
+    bill = relationship("Bill", back_populates="associated_bill_user_booking")
+    booking = relationship("Booking", back_populates="associated_bill_user_booking")
+    
 
 class Payment(Base):
     __tablename__ = "Payment"
