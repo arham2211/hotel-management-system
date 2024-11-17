@@ -1,12 +1,14 @@
 import React from "react";
+import PageHeader from "../components/PageHeader";
+import AboutUs from "../components/About";
+import Staff from "../components/Staff";
 
-function About() {
-  return (
-    <div>
-      <h1>About Page</h1>
-      <p>This is the about page of the application.</p>
-    </div>
-  );
+export default function About() {
+    return (
+        <>
+            <PageHeader title={"About Us"}/>
+            <AboutUs />
+            <Staff />
+        </>
+    );
 }
-
-export default About;

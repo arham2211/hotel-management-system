@@ -1,10 +1,12 @@
 import React from "react";
 import BookingForm from "../components/BookingForm";
+import PageHeader from "../components/PageHeader";
 
-const Booking = () => {
+export default function Booking() {
   return (
-    <BookingForm />
+    <>
+      <PageHeader title={"Booking"} />
+      <BookingForm />
+    </>
   );
-};
-
-export default Booking;
+}
