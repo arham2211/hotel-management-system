@@ -113,13 +113,13 @@ export default function Room() {
                 <div className="flex justify-between">
                   <a
                     className="bg-[#ff8c00] text-white rounded-[2px] py-2 px-5 text-md uppercase mt-2"
-                    href="#"
+                    href="/roomdetails"
                   >
                     View Detail
                   </a>
                   <a
                     className="bg-[#002366] text-white rounded-[2px] py-2 px-5 text-md uppercase mt-2"
-                    href="#"
+                    href="/booking"
                   >
                     Book Now
                   </a>

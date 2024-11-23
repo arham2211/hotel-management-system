@@ -7,15 +7,14 @@ import Testimonials from "../components/Testimonial";
 import Staff from "../components/Staff";
 
 export default function Home() {
-    return (
-        <>
-            <Carousel />
-            <AboutUs />
-            <Room />
-            <Services />
-            <Testimonials />
-            <Staff />
-            
-        </>
-    );
+  return (
+    <>
+      <Carousel />
+      <AboutUs />
+      <Room />
+      <Services />
+      <Testimonials />
+      <Staff />
+    </>
+  );
 }
