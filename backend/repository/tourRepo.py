@@ -5,29 +5,54 @@ import models, schemas
 from typing import List, Optional
 from repository import paymentRepo
 
-def add_new_tour(request:schemas.makeTourReservation,db:Session):
-    bill = db.query(models.Bill).filter(models.Bill.user_id == request.user_id).order_by(models.Bill.id.desc()).first()
+from fastapi import APIRouter, Depends, Query, HTTPException
+from sqlalchemy.orm import Session
+from typing import List, Optional
+import models, schemas
+from repository import paymentRepo
 
-    if not bill:
-        raise HTTPException(status_code=404, detail="Bill not found. You havent booked a room yet. First book a room and then try to book a tour.")
+def add_new_tour(request: schemas.makeTourReservation, db: Session):
+    try:
+        # Start a transaction
+        # Query to get the last bill for the user
+        bill = db.query(models.Bill).filter(models.Bill.user_id == request.user_id).order_by(models.Bill.id.desc()).first()
 
-    tour = db.query(models.Tour).filter(models.Tour.id==request.tour_id).first()
-    cost = tour.price
-    # Create a new payment
-    new_payment = paymentRepo.make_payment(schemas.Payment(amount=cost, type="Tour", bill_id=bill.id), db)
+        if not bill:
+            raise HTTPException(status_code=404, detail="Bill not found. You haven't booked a room yet. First book a room and then try to book a tour.")
 
-    new_reservation = models.TourReservation(
-        tour_id=request.tour_id,
-        user_id=request.user_id,
-        payment_id=new_payment.id,
-        time=request.time,
-    )
+        # Query to get the tour price
+        tour = db.query(models.Tour).filter(models.Tour.id == request.tour_id).first()
+        if not tour:
+            raise HTTPException(status_code=404, detail="Tour not found.")
+        
+        cost = tour.price
 
+        # Create a new payment
+        new_payment = paymentRepo.make_payment(schemas.Payment(amount=cost, type="Tour", bill_id=bill.id), db)
 
-    db.add(new_reservation)
-    db.commit()
-    db.refresh(new_reservation)
-    return new_reservation
+        # Create a new tour reservation
+        new_reservation = models.TourReservation(
+            tour_id=request.tour_id,
+            user_id=request.user_id,
+            payment_id=new_payment.id,
+            time=request.time,
+        )
+
+        # Add and commit the new reservation
+        db.add(new_reservation)
+        db.commit()
+        db.refresh(new_reservation)
+        
+        return new_reservation
+    
+    except Exception as e:
+        # Rollback the transaction in case of any failure
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        # Close the database session
+        db.close()
+
 
 
 def get_all_tour_reservation(db: Session,
