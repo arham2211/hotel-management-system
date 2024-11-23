@@ -130,6 +130,8 @@ class Staff(Base):
     designation= Column(String)
     Salary = Column(Integer)
     Manager_id = Column(Integer,ForeignKey('Manager.id'))
+
+    linked_tour = relationship("Tour", back_populates="linked_staff")
     Manager = relationship("Manager", back_populates="linked_staff")
     
 
@@ -165,6 +167,7 @@ class Tour(Base):
     location = Column(String)
     tour_guide_id= Column(Integer,ForeignKey(Staff.id))
 
+    linked_staff = relationship("Staff", back_populates="linked_tour")
     Reservation = relationship("TourReservation", back_populates='associated_tour')
 
 class TourReservation(Base):

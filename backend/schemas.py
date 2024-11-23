@@ -77,7 +77,7 @@ class Booking(BaseModel):
     user_id: int
     start_date: date
     end_date: date
-    total_cost: int
+  #  total_cost: int
     num_people: int
 
     class Config:
@@ -180,4 +180,20 @@ class TourReservation(BaseModel):
     payment_id: int 
     user_id: int
     tour_id: int
+
+
+class makePartyReservation(BaseModel):
+        type:str
+        hall_id:int
+        user_id:int
+        start_time:datetime
+        end_time:datetime
+
+
+class makeTourReservation(BaseModel):
+        tour_id:int
+        user_id:int
+        time:datetime    
+#class addPartyReservation(BaseException):
+
 
