@@ -60,12 +60,12 @@ const Testimonials = () => {
 
   return (
     <div
-    className="h-[350px] bg-cover bg-fixed bg-center flex items-center justify-center relative px-4"
+    className="h-[350px] bg-cover bg-fixed bg-center flex items-center justify-center relative px-4 mt-12 mb-20"
     style={{
       backgroundImage: `url(${backgroundImage})`,
     }}
   >
-      <div className="absolute inset-0 bg-[#24272e] opacity-50 z-0"></div>
+      <div className="absolute inset-0 bg-[#24272e] opacity-50 z-0 "></div>
       <div className="max-w-7xl w-full flex items-center justify-between gap-4 relative z-10">
         {/* Left Arrow */}
         <button
@@ -76,11 +76,11 @@ const Testimonials = () => {
         </button>
 
         {/* Testimonials */}
-        <div className="flex justify-center gap-8 flex-1">
+        <div className="flex justify-center gap-8 flex-1 transition-all ease-in-out-300">
           {getVisibleTestimonials().map((testimonial, index) => (
             <div
               key={index}
-              className="bg-white rounded-xl shadow-lg p-6 max-w-md w-full transform transition-all duration-300"
+              className="bg-white rounded-xl shadow-lg p-6 max-w-md w-full transform transition-all ease-in-out-300"
             >
               <div className="relative">
                 <FontAwesomeIcon

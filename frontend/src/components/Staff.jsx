@@ -57,7 +57,7 @@ const TeamMemberCard = ({ image, name, designation }) => (
 
 const Staff = () => {
   return (
-    <div className="container px-10 mx-auto py-10">
+    <div className="container px-10 mx-auto">
       <div className="text-center mb-14">
         <div className="flex items-center justify-center">
           <div className="bg-[#ff8c00] w-[45px] h-[2px]"></div>
