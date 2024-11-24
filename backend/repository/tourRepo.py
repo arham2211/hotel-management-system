@@ -66,3 +66,9 @@ def get_all_tour_reservation(db: Session,
         tour = tour.filter(models.TourReservation.tour_id==tour_id)
     
     return tour.all()
+
+
+def get_all_tours(db: Session):
+
+    tour=db.query(models.Tour)
+    return tour.all()

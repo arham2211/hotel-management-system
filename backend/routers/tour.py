@@ -17,7 +17,7 @@ get_db = database.get_db
 def add_new_tour(request:schemas.makeTourReservation,db:Session=Depends(get_db)):
     return tourRepo.add_new_tour(request,db)
 
-@router.get("/", response_model=List[schemas.TourReservation])
+@router.get("/tourReservation/", response_model=List[schemas.TourReservation])
 def get_all_tour_reservation(db: Session = Depends(get_db),
                     user_id: Optional[int] = Query(None),
                     tour_id: Optional[int] = Query(None)):
@@ -26,4 +26,7 @@ def get_all_tour_reservation(db: Session = Depends(get_db),
     tour = tourRepo.get_all_tour_reservation(db,user_id,tour_id)
     return tour
     
-
+@router.get("/", response_model=List[schemas.Tour])
+def get_all_tours(db: Session = Depends(get_db)):
+    tour = tourRepo.get_all_tours(db)
+    return tour

@@ -178,9 +178,9 @@ const BookingForm = () => {
   }, [cardHolder, cardNumber, expiry]);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-      <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center">
           <div className="bg-[#ff8c00] w-[45px] h-[2px]"></div>
           <h2 className="text-[1.2rem] text-[#ff8c00] font-bold uppercase py-3 px-1">
             Booking
@@ -250,7 +250,7 @@ const BookingForm = () => {
                     <option value="">Select a category</option>
                     <option value="Junior Suite">Junior Suite</option>
                     <option value="Executive Suite">Executive Suite</option>
-                    <option value="Super Deluxe">Super Deluxe</option>
+                    <option value="Super Deluxe">Bed Deluxe</option>
                     <option value="Deluxe">Deluxe</option>
                   </select>
                 </div>

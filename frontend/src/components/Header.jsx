@@ -26,20 +26,20 @@ export default function Header() {
   const { token, setToken, role, setRole, setUserId } = useContext(AuthContext);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token !== null) {
-      setToken(token);
-      const extractedRole = token.split("_").pop();
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+      const extractedRole = storedToken.split("_").pop();
       setRole(extractedRole);
     }
-  }, [setToken, setRole]);
+  }, [setToken, setRole, token]); // Include `token` as a dependency
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user_id");
     setUserId(null);
     setToken(null);
-    window.location.href = "/";
+    window.location.reload(); 
   };
 
   const navItems = [
