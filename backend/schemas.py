@@ -11,9 +11,6 @@ class User(BaseModel):
     username: str
     email: str 
     password: str
-    first_name: Optional[str] = Field(None)  # Optional fields
-    last_name: Optional[str] = Field(None)
-    phone_number: Optional[str] = Field(None)
     class Config:
         from_attributes = True
 
