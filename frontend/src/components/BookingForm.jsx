@@ -132,6 +132,7 @@ const BookingForm = () => {
   const [showPayment, setShowPayment] = useState(false);
   const [isBookingComplete, setIsBookingComplete] = useState(false);
   const [isCardDetailsComplete, setIsCardDetailsComplete] = useState(false);
+  const [rooms, setRooms] = useState([]);
 
   const isBookingFormComplete = () => {
     return (
@@ -176,6 +177,20 @@ const BookingForm = () => {
 
     setIsCardDetailsComplete(validateCardDetails());
   }, [cardHolder, cardNumber, expiry]);
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const response = await api.get("/rooms/");
+        setRooms(response.data);
+        console.log(response.data);
+      } catch (err) {
+        setError("Failed to fetch locations");
+        console.error("Error fetching locations:", err);
+      }
+    };
+    fetchCategory();
+  }, []);
 
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
@@ -248,10 +263,11 @@ const BookingForm = () => {
                     className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent px-4 py-3"
                   >
                     <option value="">Select a category</option>
-                    <option value="Junior Suite">Junior Suite</option>
-                    <option value="Executive Suite">Executive Suite</option>
-                    <option value="Super Deluxe">Bed Deluxe</option>
-                    <option value="Deluxe">Deluxe</option>
+                    {rooms.map((cat) => (
+                      <option key={cat.id} value={cat.type}>
+                        {cat.type}
+                      </option>
+                    ))}
                   </select>
                 </div>
 

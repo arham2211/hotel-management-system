@@ -64,7 +64,7 @@ const SignUp = ({ setIsSignUpVisible }) => {
         
         localStorage.setItem("token", data.access_token+"_"+data.role);
         setToken(data.access_token);
-        const user_id = await api.get(`/users/${response.data.username}/`);
+        const user_id = await api.get(`/users/info/${response.data.username}/`);
 
         
         localStorage.setItem("user_id", user_id.data);

@@ -61,12 +61,5 @@ def get_all_party_reservation(db: Session,
     
     return party.all()
 
-    # type :str 
-    # hall_id :int
-    # user_id :int
-    # payment_id :int 
-    # start_time:datetime
-    # end_time :datetime
-
 def get_all_party_halls(db: Session):
     return db.query(models.PartyHalls).all()

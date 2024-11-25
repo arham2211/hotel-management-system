@@ -6,24 +6,30 @@ import {
   faTimes,
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { useLocation } from "react-router-dom"; // Import useLocation
+import { useLocation, useNavigate } from "react-router-dom"; // Added useNavigate
 import SignUpCard from "./SignUpCard";
 import { AuthContext } from "../context/UserContext";
+import api from "../Api";
 
 export default function Header() {
   const [isSignUpVisible, setIsSignUpVisible] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { pathname } = useLocation(); // Get current path
+  const [username, setUsername] = useState(null);
+  const { pathname } = useLocation();
+  const navigate = useNavigate(); // Add navigation hook
 
   const toggleSignUp = () => {
     setIsSignUpVisible(!isSignUpVisible);
   };
 
   const toggleMenu = () => {
+  
     setIsMenuOpen(!isMenuOpen);
+
   };
 
-  const { token, setToken, role, setRole, setUserId } = useContext(AuthContext);
+  const { token, setToken, role, setRole, userId, setUserId } =
+    useContext(AuthContext);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -32,14 +38,31 @@ export default function Header() {
       const extractedRole = storedToken.split("_").pop();
       setRole(extractedRole);
     }
-  }, [setToken, setRole, token]); // Include `token` as a dependency
+    const fetchUsername = async () => {
+      try {
+        const response = await api.get(`/users/${userId}/`);
+        setUsername(response.data.username);
+        console.log(response.data);
+      } catch (err) {
+        console.error("Error fetching username:", err);
+      }
+    };
+
+    if (userId) {
+      fetchUsername();
+    }
+  }, [setToken, setRole, userId]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user_id");
     setUserId(null);
     setToken(null);
-    window.location.reload(); 
+    window.location.reload();
+  };
+
+  const handleUserClick = () => {
+    navigate("/profile"); // Navigate to profile page when username is clicked
   };
 
   const navItems = [
@@ -89,13 +112,22 @@ export default function Header() {
           {/* Register or Logout Button */}
           <div className="hidden md:block">
             {token && role === "user" ? (
-              <button
-                onClick={handleLogout}
-                className="inline-flex items-center 2xl:text-[1.6rem] bg-[#ff8c00] text-[#ffffff] sm:px-4 sm:py-2 md:px-3 md:py-2 lg:px-6 lg:py-[0.7rem] 2xl:px-6 2xl:py-3 rounded-full transition-colors duration-300 ease-in-out hover:text-[#002366]"
-              >
-                <FontAwesomeIcon icon={faSignOutAlt} />
-                <span className="ml-1 sm:ml-2">Log Out</span>
-              </button>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={handleUserClick}
+                  className="inline-flex items-center 2xl:text-[1.6rem] bg-[#ff8c00] text-[#ffffff] sm:px-4 sm:py-2 md:px-3 md:py-2 lg:px-6 lg:py-[0.7rem] 2xl:px-6 2xl:py-3 rounded-full transition-colors duration-300 ease-in-out hover:text-[#002366]"
+                >
+                  <FontAwesomeIcon icon={faUser} />
+                  <span className="ml-1 sm:ml-2">{username || "User"}</span>
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="inline-flex items-center 2xl:text-[1.6rem] bg-[#ff8c00] text-[#ffffff] sm:px-4 sm:py-2 md:px-3 md:py-2 lg:px-6 lg:py-[0.7rem] 2xl:px-6 2xl:py-3 rounded-full transition-colors duration-300 ease-in-out hover:text-[#002366]"
+                >
+                  <FontAwesomeIcon icon={faSignOutAlt} />
+                  <span className="ml-1 sm:ml-2">Logout</span>
+                </button>
+              </div>
             ) : (
               <button
                 onClick={toggleSignUp}

@@ -52,7 +52,7 @@ function EventBooking() {
       const isComplete = Object.values(requiredFields).every(
         (field) => field !== ""
       );
-     
+      //   console.log(isFormComplete);
       setIsFormComplete(isComplete);
     };
 
@@ -128,6 +128,7 @@ function EventBooking() {
     const fetchHalls = async () => {
       try {
         const response = await api.get("/party/halls/");
+        console.log(response.data);
         setHalls(response.data);
       } catch (err) {
         setError("Failed to fetch halls");

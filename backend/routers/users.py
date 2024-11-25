@@ -25,6 +25,12 @@ def get_all_users(db: Session = Depends(get_db),current_user: schemas.User = Dep
 def get_user(id, db: Session= Depends(get_db)):
     return userRepo.getUserInfo(id,db)
 
+
+@router.get("/info/{username}")
+def get_user_id(username,db: Session = Depends(get_db)):
+    return userRepo.getUserId(username,db)
+    
+
 @router.delete("/{id}")
 def del_user(id, db: Session= Depends(get_db)):
     return userRepo.deleteUser(id,db)

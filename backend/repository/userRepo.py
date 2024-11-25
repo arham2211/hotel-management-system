@@ -20,6 +20,13 @@ import  models, schemas
 #     return new_user
 
 
+def getUserId(username: str, db: Session):
+    user_id = db.query(models.User).filter(models.User.username==username).first()
+    if not user_id:
+        user_id = db.query(models.User).filter(models.User.email==username).first()
+
+    return user_id.id
+
 def getUserInfo(id:int, db:Session):
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:
