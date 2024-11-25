@@ -140,8 +140,9 @@ class Bill(BaseModel):
     id:int
     user_id:int
     total_amount:int
-    start_date:date
-    end_date:date
+    first_name : str
+    last_name :str
+    phone_number :str
 
 
 class ShowBill(Bill):
@@ -152,15 +153,17 @@ class ShowBill(Bill):
 class showUser(BaseModel):
     username:str
     email:str
-    first_name:Optional[str]
-    last_name: Optional[str]
-    phone_number: Optional[str]
+   # first_name:Optional[str]
+   # last_name: Optional[str]
+   # phone_number: Optional[str]
     class Config:
         from_attributes = True
 
 class ShowBillDetails(ShowBill):
     customer: showUser
     all_payments : List[ShowPayment]=[]
+    booking: List[Booking]=[]
+    start_date: date
 
 class PartyHalls(BaseModel):
     id : int

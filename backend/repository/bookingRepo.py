@@ -34,7 +34,8 @@ def add_new_booking(request:schemas.makeBooking, db:Session):
                                  start_date=request.start_date,
                                  end_date=request.end_date,
                                  payment_id=new_payment.id,
-                                 num_people=request.num_people) 
+                                 num_people=request.num_people,
+                                 bill_id=new_bill.id) 
     db.add(new_booking)
     db.commit()
     db.refresh(new_booking)

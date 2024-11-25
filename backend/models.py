@@ -78,10 +78,12 @@ class Booking(Base):
     end_date = Column(Date)
     payment_id = Column(Integer,ForeignKey('Payment.id'))
     num_people = Column(Integer)
+    bill_id = Column(Integer, ForeignKey('Bill.id'))
 
     associated_user = relationship("User", back_populates='current_booking') 
     associated_room = relationship("Room", back_populates='current_booking')
     associated_payment = relationship("Payment", back_populates="associated_booking")
+    associated_bill = relationship("Bill", back_populates = "associated_booking")
     associated_bill_user_booking = relationship("Associated_Bill_User_Booking", back_populates="booking")
 
 class Bill(Base):
@@ -93,7 +95,7 @@ class Bill(Base):
     last_name = Column(String)
     phone_number = Column(String)
 
-
+    associated_booking = relationship("Booking", back_populates = "associated_bill")
     customer = relationship("User", back_populates='associated_bill')
     all_payments=relationship("Payment", back_populates='associated_bill')
     associated_bill_user_booking = relationship("Associated_Bill_User_Booking", back_populates="bill")
