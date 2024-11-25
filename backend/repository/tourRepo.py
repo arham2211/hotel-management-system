@@ -72,3 +72,11 @@ def get_all_tours(db: Session):
 
     tour=db.query(models.Tour)
     return tour.all()
+
+def get_info_for_user(id,db):
+    tour=db.query(models.TourReservation).join(models.Tour, models.TourReservation.tour_id==models.Tour.id ).join(
+        models.Payment, models.TourReservation.payment_id==models.Payment.id
+    )
+    tour=tour.filter(models.TourReservation.user_id==id)
+    return tour.all()
+

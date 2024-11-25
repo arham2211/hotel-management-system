@@ -30,3 +30,8 @@ def get_all_tour_reservation(db: Session = Depends(get_db),
 def get_all_tours(db: Session = Depends(get_db)):
     tour = tourRepo.get_all_tours(db)
     return tour
+
+@router.get("/{id}", response_model=List[schemas.showUserTourInfoAll])
+def get_info_for_user(id,db: Session = Depends(get_db)):
+    info = tourRepo.get_info_for_user(id,db)
+    return info

@@ -169,28 +169,11 @@ class PartyHalls(BaseModel):
     available : bool
 
 
-class PartyReservation(BaseModel):
-    id:int
-    type :str 
-    hall_id :int
-    user_id :int
-    payment_id :int 
-    start_time:datetime
-    end_time :datetime
-
 class Tour(BaseModel):
     id:int
     price:int
     location:str
     tour_guide_id:int
-
-class TourReservation(BaseModel):
-    id:int
-    time:datetime
-    payment_id: int 
-    user_id: int
-    tour_id: int
-
 
 class makePartyReservation(BaseModel):
         type:str
@@ -207,4 +190,31 @@ class makeTourReservation(BaseModel):
         time:datetime    
 #class addPartyReservation(BaseException):
 
+class TourReservation(BaseModel):
+    id:int
+    time:datetime
+    payment_id: int 
+    user_id: int
+    tour_id: int
+    class Config:
+        from_attributes = True
 
+class showUserTourInfoAll(TourReservation):
+    associated_payment: ShowPayment
+    associated_tour: Tour
+
+
+class PartyReservation(BaseModel):
+    id:int
+    type :str 
+    hall_id :int
+    user_id :int
+    payment_id :int 
+    start_time:datetime
+    end_time :datetime
+    class Config:
+        from_attributes=True
+
+class showUserPartyInfoAll(PartyReservation):
+    associated_payment: ShowPayment
+    associated_hall: PartyHalls

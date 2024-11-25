@@ -63,3 +63,11 @@ def get_all_party_reservation(db: Session,
 
 def get_all_party_halls(db: Session):
     return db.query(models.PartyHalls).all()
+
+
+def get_info_for_user(id,db):
+    party=db.query(models.PartyReservation).join(models.PartyHalls, models.PartyReservation.hall_id==models.PartyHalls.id ).join(
+        models.Payment, models.PartyReservation.payment_id==models.Payment.id
+    )
+    party=party.filter(models.PartyReservation.user_id==id)
+    return party.all()

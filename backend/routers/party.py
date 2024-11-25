@@ -28,3 +28,9 @@ def get_all_party_reservation(db: Session = Depends(get_db),
 @router.get("/halls/", response_model=List[schemas.PartyHalls])
 def get_all_party_halls(db: Session = Depends(get_db)):
     return partyRepo.get_all_party_halls(db)
+
+
+@router.get("/{id}", response_model=List[schemas.showUserPartyInfoAll])
+def get_info_for_user(id,db: Session = Depends(get_db)):
+    info = partyRepo.get_info_for_user(id,db)
+    return info
