@@ -15,11 +15,11 @@ const Newsletter = () => {
   };
 
   return (
-    <div className="max-w-6xl border-2 border-[#002366] mx-auto p-2 mb-20 transform transition-transform 
-                   duration-300 hover:-translate-y-1">
+    <div className="max-w-[76rem] border-2 border-[#002366] mx-auto p-2 mb-20 transform transition-transform 
+                   duration-300 hover:-translate-y-1 rounded-xl">
       <div 
         className="bg-gradient-to-br from-white to-gray-50 
-                   border-2 border-[#002366] p-10 
+                   border-2 border-[#002366] p-10 rounded-md
                    "
       >
         <h2 className="text-center mb-8 text-3xl font-semibold text-[#002366]">

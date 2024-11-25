@@ -66,7 +66,7 @@ const Staff = () => {
           </h2>
           <div className="bg-[#ff8c00] w-[45px] h-[2px]"></div>
         </div>
-        <h1 className="text-5xl font-bold mb-16">
+        <h1 className="text-5xl font-bold mb-6">
           Explore Our <span className="uppercase text-[#ff8c00]">Staffs</span>
         </h1>
 

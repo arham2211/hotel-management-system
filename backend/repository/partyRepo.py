@@ -19,10 +19,10 @@ def add_new_party(request: schemas.makePartyReservation, db: Session):
         if not hall:
             raise HTTPException(status_code=404, detail="Party hall not found.")
         
-        cost = hall.price
+        # cost = hall.price
 
         # Create a new payment
-        new_payment = paymentRepo.make_payment(schemas.Payment(amount=cost, type="Party", bill_id=bill.id), db)
+        new_payment = paymentRepo.make_payment(schemas.Payment(amount=request.total_amount, type="Party", bill_id=bill.id), db)
 
         # Create a new party reservation
         new_reservation = models.PartyReservation(
@@ -67,3 +67,6 @@ def get_all_party_reservation(db: Session,
     # payment_id :int 
     # start_time:datetime
     # end_time :datetime
+
+def get_all_party_halls(db: Session):
+    return db.query(models.PartyHalls).all()

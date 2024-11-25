@@ -2,10 +2,11 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHotel,
-  faSpa,
+  faRoute,
   faGlassCheers,
   faDumbbell,
 } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom"; // Import Link for internal navigation
 
 const serviceData = [
   {
@@ -13,24 +14,32 @@ const serviceData = [
     title: "Rooms & Apartments",
     description:
       "Enjoy luxurious rooms and apartments with world-class amenities, designed for your ultimate comfort.",
+    link: "/rooms", // Internal link
+    isExternal: false, // Indicate internal or external link
   },
   {
-    icon: faSpa,
-    title: "Spa & Fitness",
+    icon: faRoute,
+    title: "Tours & Adventures",
     description:
-      "Relax and rejuvenate with our spa and fitness facilities, tailored to your wellness needs.",
+      "Embark on unforgettable journeys with our curated tours, designed for every explorer.",
+    link: "/tours", // Internal link
+    isExternal: false,
   },
   {
     icon: faGlassCheers,
     title: "Events & Parties",
     description:
       "Host unforgettable events and parties in our elegant venues with premium services.",
+    link: "/events", // Internal link
+    isExternal: false,
   },
   {
     icon: faDumbbell,
     title: "Gym & Yoga",
     description:
       "Stay active and refreshed with our fully equipped gym and serene yoga sessions.",
+    link: "https://arham2211.github.io/Gym-Website/", // External link
+    isExternal: true,
   },
 ];
 
@@ -46,7 +55,7 @@ const Services = () => {
             </h2>
             <div className="bg-[#ff8c00] w-[45px] h-[2px]"></div>
           </div>
-          <h1 className="text-5xl md:text-5xl font-extrabold text-gray-800">
+          <h1 className="text-5xl md:text-5xl font-extrabold text-black">
             Explore Our <span className="text-[#ff8c00]">Services</span>
           </h1>
         </div>
@@ -68,6 +77,25 @@ const Services = () => {
                 {service.title}
               </h3>
               <p className="text-gray-600 text-center">{service.description}</p>
+              <div className="text-center mt-6">
+                {service.isExternal ? (
+                  <a
+                    href={service.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block bg-[#ff8c00] text-white py-2 px-4 rounded-full transition duration-300 hover:bg-orange-600"
+                  >
+                    Learn More
+                  </a>
+                ) : (
+                  <Link
+                    to={service.link}
+                    className="inline-block bg-[#ff8c00] text-white py-2 px-4 rounded-full transition duration-300 hover:bg-orange-600"
+                  >
+                    Learn More
+                  </Link>
+                )}
+              </div>
             </div>
           ))}
         </div>

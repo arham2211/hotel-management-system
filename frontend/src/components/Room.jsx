@@ -113,7 +113,7 @@ export default function Room() {
                 <div className="flex justify-between">
                   <a
                     className="bg-[#ff8c00] text-white rounded-[2px] py-2 px-5 text-md uppercase mt-2"
-                    href="/roomdetails"
+                    href={`/roomdetails/${room.type.toLowerCase().replace(/\s+/g, '-')}`}
                   >
                     View Detail
                   </a>

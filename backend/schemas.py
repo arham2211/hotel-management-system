@@ -154,6 +154,7 @@ class ShowBillDetails(ShowBill):
 
 class PartyHalls(BaseModel):
     id : int
+    name : str
     capacity : int
     price : int
     available : bool
@@ -186,6 +187,7 @@ class makePartyReservation(BaseModel):
         type:str
         hall_id:int
         user_id:int
+        total_amount :int
         start_time:datetime
         end_time:datetime
 

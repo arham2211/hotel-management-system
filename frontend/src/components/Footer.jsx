@@ -37,7 +37,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-[#002366] text-white py-10 relative">
+    <footer className="bg-[#002366] text-white pt-10 pb-5 relative">
       <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-6">
         {/* Branding Section */}
         <div>
@@ -146,7 +146,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="container mx-auto px-6">
-        <div className="text-center text-md-start mb-0 border-t mt-11 pt-11 text-[19px]">
+        <div className="text-center text-md-start mb-0 border-t mt-11 pt-7 text-[19px]">
           &copy; Your Site Name. All Right Reserved. Designed By
           <span className="text-[#FF8C00] font-semibold">{" Arham Affan "}</span>
         </div>
