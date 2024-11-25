@@ -44,6 +44,9 @@ def get_category_with_price(type, db: Session = Depends(get_db)):
     
     all_info = (
         db.query(models.RoomCategory).filter(models.RoomCategory.type == type)
-
     )
     return all_info
+
+@router.get("/category/{data}")
+def get_category_details(data,db: Session=Depends(get_db)):
+    return roomRepo.get_category_details(data,db)

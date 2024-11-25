@@ -11,9 +11,9 @@ class User(Base):
     password = Column(String, nullable=False)  # non-nullable
     
     # New nullable fields
-    first_name = Column(String, nullable=True)
-    last_name = Column(String, nullable=True)
-    phone_number = Column(String, nullable=True)
+    # first_name = Column(String, nullable=True)
+    # last_name = Column(String, nullable=True)
+    # phone_number = Column(String, nullable=True)
     
     # Relationships
     associated_bill = relationship("Bill", back_populates="customer")
@@ -61,7 +61,10 @@ class RoomCategory(Base):
     image = Column(String)
     rating = Column(Integer)
     description = Column(String)
-
+    size = Column(Integer)
+    bedtype=Column(String)
+    view = Column(String)
+    
     rooms = relationship("Room", back_populates='category')
 
 
@@ -86,6 +89,10 @@ class Bill(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey(User.id))
     total_amount = Column(Integer)
+    first_name = Column(String)
+    last_name = Column(String)
+    phone_number = Column(String)
+
 
     customer = relationship("User", back_populates='associated_bill')
     all_payments=relationship("Payment", back_populates='associated_bill')

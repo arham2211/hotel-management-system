@@ -9,3 +9,11 @@ def createRoom(create: schemas.RoomCategory, db: Session):
     db.commit()
     db.refresh(new_room)
     return new_room
+
+def get_category_details(data,db: Session):
+    details=db.query(models.RoomCategory)
+    result = " ".join(word.capitalize() for word in data.split("-"))
+    details=details.filter(models.RoomCategory.type==result).first()
+    return details
+    
+

@@ -18,8 +18,12 @@ def add_new_booking(request:schemas.makeBooking, db:Session):
     
     found_room_id = db.query(models.Room).filter(models.Room.category_id==request.room_cat_id)
     found_room_id = found_room_id.filter(models.Room.booked_status==0).first()
-    new_bill = billRepo.add_new_bill(schemas.addBill(user_id=request.user_id,start_date=request.start_date
-                                                     ,end_date=request.end_date) ,db)
+    # new_bill = billRepo.add_new_bill(schemas.addBill(user_id=request.user_id,start_date=request.start_date
+    #                                                  ,end_date=request.end_date) ,db)
+    new_bill = billRepo.add_new_bill(schemas.addBill(user_id=request.user_id,
+                                                     first_name=request.first_name,
+                                                     last_name=request.last_name,
+                                                     phone_number=request.phone_number) ,db)
 
     new_payment=paymentRepo.make_payment(schemas.Payment(amount=request.total_cost,type="Booking",
                                                          bill_id=new_bill.id),db)
@@ -35,10 +39,16 @@ def add_new_booking(request:schemas.makeBooking, db:Session):
     db.commit()
     db.refresh(new_booking)
 
-    curr_user=db.query(models.User).filter(models.User.id==new_bill.user_id).first()
-    curr_user.first_name = request.first_name
-    curr_user.last_name = request.last_name
-    curr_user.phone_number = request.phone_number
+    new_associated_bill_user_booking = models.Associated_Bill_User_Booking(user_id=request.user_id,
+                                                                   bill_id=new_bill.id,
+                                                                       booking_id=new_booking.id)
+    db.add(new_associated_bill_user_booking)
+    db.commit()
+    db.refresh(new_associated_bill_user_booking)
+    # curr_user=db.query(models.User).filter(models.User.id==new_bill.user_id).first()
+    # curr_user.first_name = request.first_name
+    # curr_user.last_name = request.last_name
+    # curr_user.phone_number = request.phone_number
 
     db.commit()
 

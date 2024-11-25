@@ -50,11 +50,18 @@ class RoomCategory(BaseModel):
     beds: int
     baths: int
     image: str
-    rating: int = Field(..., ge=1, le=5) 
+    size : int
+    bedtype: str
+    view :str
+    rating: int
 
 class ShowRoomCat(RoomCategory):
-    class Config:
-        from_attributes = True
+    type: str
+    description: str
+    price: int
+    beds: int
+    baths: int
+    image: str
 
 class Rooms(BaseModel):
     id: int
@@ -85,6 +92,9 @@ class Booking(BaseModel):
 
 class addBill(BaseModel):
     user_id:int
+    first_name:str
+    last_name:str
+    phone_number:str
     # total_amount:int
 
 class makeBooking(BaseModel):
