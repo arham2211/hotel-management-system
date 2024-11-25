@@ -83,7 +83,6 @@ class Booking(BaseModel):
     end_date: date
   #  total_cost: int
     num_people: int
-
     class Config:
         from_attributes = True
 
@@ -159,8 +158,8 @@ class showUser(BaseModel):
 class ShowBillDetails(ShowBill):
     customer: showUser
     all_payments : List[ShowPayment]=[]
-    booking: List[Booking]=[]
-    start_date: date
+    associated_booking: Booking
+    #start_date: date
 
 class PartyHalls(BaseModel):
     id : int
