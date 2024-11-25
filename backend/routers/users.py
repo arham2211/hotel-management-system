@@ -21,27 +21,9 @@ def get_all_users(db: Session = Depends(get_db),current_user: schemas.User = Dep
     users = db.query(models.User).all()
     return users
 
-# @router.get("/{username}")
-# def get_user_id(username,db: Session = Depends(get_db)):
-#     user_id = db.query(models.User).filter(models.User.username==username).first()
-#     if not user_id:
-#         user_id = db.query(models.User).filter(models.User.email==username).first()
-    
-#     return user_id.id
-
-
-#@router.post("/")
-#def sign_up(request: schemas.User, db: Session= Depends(get_db)):  
- #   newuser= user.signUp(request,db)
-  #  if newuser:
-   #     return newuser
-
-
 @router.get("/{id}",response_model=schemas.User)
 def get_user(id, db: Session= Depends(get_db)):
     return userRepo.getUserInfo(id,db)
-
-
 
 @router.delete("/{id}")
 def del_user(id, db: Session= Depends(get_db)):

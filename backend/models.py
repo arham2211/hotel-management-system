@@ -6,14 +6,9 @@ class User(Base):
     __tablename__ = "users"
     
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, nullable=False)  # non-nullable
-    email = Column(String, nullable=False)     # non-nullable
-    password = Column(String, nullable=False)  # non-nullable
-    
-    # New nullable fields
-    # first_name = Column(String, nullable=True)
-    # last_name = Column(String, nullable=True)
-    # phone_number = Column(String, nullable=True)
+    username = Column(String, nullable=False) 
+    email = Column(String, nullable=False)   
+    password = Column(String, nullable=False)
     
     # Relationships
     associated_bill = relationship("Bill", back_populates="customer")
