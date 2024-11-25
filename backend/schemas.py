@@ -158,8 +158,8 @@ class showUser(BaseModel):
 class ShowBillDetails(ShowBill):
     customer: showUser
     all_payments : List[ShowPayment]=[]
-    booking: List[Booking]=[]
-    start_date: date
+    associated_booking: Booking
+
 
 class PartyHalls(BaseModel):
     id : int
