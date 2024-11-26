@@ -10,6 +10,7 @@ import Service from "./routes/Services";
 import ViewRoom from "./routes/ViewRoom";
 import Event from "./routes/Event";
 import Tour from "./routes/Tour";
+import Profile from "./components/Profile";
 import ScrollToTop from "./context/ScrollToTop";
 import { AuthProvider } from "./context/UserContext";
 import "./App.css";
@@ -29,6 +30,7 @@ function App() {
           <Route path="/roomdetails/:roomType" element={<ViewRoom />} />
           <Route path="/events" element={<Event />} />
           <Route path="/tours" element={<Tour />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
         <Newsletter />
         <Footer />

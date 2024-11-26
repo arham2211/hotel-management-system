@@ -42,7 +42,7 @@ export default function Header() {
       try {
         const response = await api.get(`/users/${userId}/`);
         setUsername(response.data.username);
-        console.log(response.data);
+  
       } catch (err) {
         console.error("Error fetching username:", err);
       }
