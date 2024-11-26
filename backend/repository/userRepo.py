@@ -3,35 +3,31 @@ from sqlalchemy.orm import Session
 from hashing import Hash
 import  models, schemas
 
-# def signUp(request: schemas.User,db:Session):
-#     verify_user = db.query(models.User).filter(models.User.username == request.username).first()
-#     verify_email = db.query(models.User).filter(models.User.email == request.email).first()
-    
-#     if verify_user:
-#         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail = "User Already Exists")
-    
-#     if verify_email:
-#         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail = "Email Already Registered")
-    
-#     new_user = models.User(username = request.username, email = request.email, password = Hash.get_password_hash(request.password))
-#     db.add(new_user)
-#     db.commit()
-#     db.refresh(new_user)
-#     return new_user
-
 
 def getUserId(username: str, db: Session):
     user_id = db.query(models.User).filter(models.User.username==username).first()
     if not user_id:
         user_id = db.query(models.User).filter(models.User.email==username).first()
-
     return user_id.id
+
+#equivalent sql query:
+# SELECT id  FROM User
+# WHERE username = username
+# If no results are found in the first query, run the second query to check email:
+# SELECT id FROM User
+# WHERE email = username
+
+
 
 def getUserInfo(id:int, db:Session):
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return user
+
+# SELECT * FROM User 
+# WHERE id =id 
+
 
 def deleteUser(id:int, db:Session):
     user = db.query(models.User).filter(models.User.id == id).first()
@@ -41,4 +37,7 @@ def deleteUser(id:int, db:Session):
     db.delete(user)
     db.commit()
     return {"detail": "Deleted Successfully."}
+
+# DELETE FROM User WHERE id = id;
+# COMMIT;
 

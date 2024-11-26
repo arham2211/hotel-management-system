@@ -1,15 +1,9 @@
-from fastapi import APIRouter, Depends, Query
-from fastapi import HTTPException
+from fastapi import Query, HTTPException
 from sqlalchemy.orm import Session
 import models, schemas
 from typing import List, Optional
 from repository import paymentRepo
 
-from fastapi import APIRouter, Depends, Query, HTTPException
-from sqlalchemy.orm import Session
-from typing import List, Optional
-import models, schemas
-from repository import paymentRepo
 
 def add_new_tour(request: schemas.makeTourReservation, db: Session):
     try:
@@ -53,6 +47,39 @@ def add_new_tour(request: schemas.makeTourReservation, db: Session):
         # Close the database session
         db.close()
 
+'''
+# BEGIN
+#     DECLARE v_cost NUMBER;
+#     DECLARE v_bill_id NUMBER;
+#     DECLARE v_payment_id NUMBER;
+# BEGIN
+#     SELECT cost INTO v_cost 
+#     FROM Tour 
+#     WHERE id = tour_id;
+
+#     SELECT bill_id INTO v_bill_id
+#     FROM Bill 
+#     WHERE user_id = user_id 
+#     ORDER BY id DESC
+#     FETCH FIRST 1 ROWS ONLY;
+
+#     INSERT INTO Payment (amount, type, bill_id) 
+#     VALUES (v_cost, 'Tour', v_bill_id)
+#     RETURNING id INTO v_payment_id;
+
+#     INSERT INTO TourReservation (tour_id, user_id, payment_id, time) 
+#     VALUES (:tour_id, :user_id, v_payment_id, :time);
+
+#     COMMIT;
+# EXCEPTION
+#     WHEN OTHERS THEN
+#         -- Rollback in case of any error
+#         ROLLBACK;
+#         RAISE;
+# END;
+# /
+'''
+
 
 
 def get_all_tour_reservation(db: Session,
@@ -67,11 +94,22 @@ def get_all_tour_reservation(db: Session,
     
     return tour.all()
 
+'''
+SELECT * 
+FROM TourReservation 
+WHERE (user_id = user_id)
+  AND (tour_id =tour_id);
+'''
+
 
 def get_all_tours(db: Session):
-
     tour=db.query(models.Tour)
     return tour.all()
+
+# SELECT * FROM Tour
+
+
+
 
 def get_info_for_user(db: Session, bill_id: Optional[int] = None, user_id: Optional[int] = None):
     tour=db.query(models.TourReservation).join(models.Tour, models.TourReservation.tour_id==models.Tour.id ).join(
@@ -83,4 +121,13 @@ def get_info_for_user(db: Session, bill_id: Optional[int] = None, user_id: Optio
     if(user_id):
         tour=tour.filter(models.TourReservation.user_id==user_id)
     return tour.all()
+
+'''
+SELECT TR.*, T.*, P.* 
+FROM TourReservation TR
+JOIN Tour T ON TR.tour_id = T.id
+JOIN Payment P ON TR.payment_id = P.id
+WHERE (:bill_id IS NULL OR P.bill_id = :bill_id)
+  AND (:user_id IS NULL OR TR.user_id = :user_id);
+'''
 

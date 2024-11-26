@@ -15,7 +15,7 @@ class User(Base):
     current_booking = relationship("Booking", back_populates="associated_user")
     PartyReservation = relationship("PartyReservation", back_populates="associated_user")
     TourReservation = relationship("TourReservation", back_populates="associated_user")
-    associated_bill_user_booking = relationship("Associated_Bill_User_Booking", back_populates="user")
+    #associated_bill_user_booking = relationship("Associated_Bill_User_Booking", back_populates="user")
 
 
 class Admin(Base):
@@ -80,7 +80,7 @@ class Booking(Base):
     associated_room = relationship("Room", back_populates='current_booking')
     associated_payment = relationship("Payment", back_populates="associated_booking")
     associated_bill = relationship("Bill", back_populates = "associated_booking")
-    associated_bill_user_booking = relationship("Associated_Bill_User_Booking", back_populates="booking")
+    #associated_bill_user_booking = relationship("Associated_Bill_User_Booking", back_populates="booking")
 
 class Bill(Base):
     __tablename__ = "Bill"
@@ -95,8 +95,9 @@ class Bill(Base):
 
     customer = relationship("User", back_populates='associated_bill')
     all_payments=relationship("Payment", back_populates='associated_bill')
-    associated_bill_user_booking = relationship("Associated_Bill_User_Booking", back_populates="bill")
+    #associated_bill_user_booking = relationship("Associated_Bill_User_Booking", back_populates="bill")
 
+''''
 class Associated_Bill_User_Booking(Base):
     __tablename__ = "Associated_Bill_User_Booking"
     id = Column(Integer, primary_key=True, index=True)
@@ -107,7 +108,7 @@ class Associated_Bill_User_Booking(Base):
     user = relationship("User", back_populates="associated_bill_user_booking")
     bill = relationship("Bill", back_populates="associated_bill_user_booking")
     booking = relationship("Booking", back_populates="associated_bill_user_booking")
-    
+'''
 
 class Payment(Base):
     __tablename__ = "Payment"

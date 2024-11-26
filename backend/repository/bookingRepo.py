@@ -14,6 +14,16 @@ def get_all_bookings(db: Session, user_id: Optional[int] = Query(None), room_id:
     
     return bookings.all()
 
+'''''
+SELECT * 
+FROM Booking
+WHERE (user_id IS NULL OR user_id = user_id_param)
+  AND (room_id IS NULL OR room_id = room_id_param);
+'''
+
+
+
+
 def add_new_booking(request:schemas.makeBooking, db:Session):
     
     found_room_id = db.query(models.Room).filter(models.Room.category_id==request.room_cat_id)
@@ -34,18 +44,63 @@ def add_new_booking(request:schemas.makeBooking, db:Session):
                                  payment_id=new_payment.id,
                                  num_people=request.num_people,
                                  bill_id=new_bill.id) 
+    
     db.add(new_booking)
     db.commit()
     db.refresh(new_booking)
 
-    new_associated_bill_user_booking = models.Associated_Bill_User_Booking(user_id=request.user_id,
-                                                                   bill_id=new_bill.id,
-                                                                       booking_id=new_booking.id)
-    db.add(new_associated_bill_user_booking)
-    db.commit()
-    db.refresh(new_associated_bill_user_booking)
 
     db.commit()
 
     db.refresh(new_booking)
     return new_booking
+
+'''
+DECLARE
+    v_room_id NUMBER;
+    v_new_bill_id NUMBER;
+    v_payment_id NUMBER;
+    v_new_booking_id NUMBER;
+BEGIN
+    -- Step 1: Find the available room
+    SELECT id
+    INTO v_room_id
+    FROM Room
+    WHERE category_id = room_cat_id_param
+    AND booked_status = 0
+    FETCH FIRST 1 ROWS ONLY;
+
+    IF v_room_id IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20001, 'No available room found.');
+    END IF;
+
+    -- Step 2: Create the new bill
+    INSERT INTO Bill (user_id, first_name, last_name, phone_number)
+    VALUES (user_id_param, first_name_param, last_name_param, phone_number_param)
+    RETURNING id INTO v_new_bill_id;
+
+    -- Step 3: Create the payment for the new booking
+    INSERT INTO Payment (amount, type, bill_id)
+    VALUES (total_cost_param, 'Booking', v_new_bill_id)
+    RETURNING id INTO v_payment_id;
+
+    -- Step 4: Create the new booking
+    INSERT INTO Booking (room_id, user_id, start_date, end_date, payment_id, num_people, bill_id)
+    VALUES (v_room_id, user_id_param, start_date_param, end_date_param, v_payment_id, num_people_param, v_new_bill_id)
+    RETURNING id INTO v_new_booking_id;
+
+    -- Step 5: Commit the transaction
+    COMMIT;
+    
+    -- Return the new booking details
+    SELECT * INTO new_booking_details FROM Booking WHERE id = v_new_booking_id;
+    
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Rollback in case of an error
+        ROLLBACK;
+        RAISE;
+END;
+/
+'''
+
