@@ -31,7 +31,9 @@ def get_all_tours(db: Session = Depends(get_db)):
     tour = tourRepo.get_all_tours(db)
     return tour
 
-@router.get("/{id}", response_model=List[schemas.showUserTourInfoAll])
-def get_info_for_user(id,db: Session = Depends(get_db)):
-    info = tourRepo.get_info_for_user(id,db)
+@router.get("/details/", response_model=List[schemas.showUserTourInfoAll])
+def get_info_for_user(bill_id: Optional[int]=None,
+                         user_id:Optional[int]=None,
+                        db:Session=Depends(get_db)):
+    info = tourRepo.get_info_for_user(db,bill_id,user_id)
     return info
