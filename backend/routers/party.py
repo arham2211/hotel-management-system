@@ -30,7 +30,9 @@ def get_all_party_halls(db: Session = Depends(get_db)):
     return partyRepo.get_all_party_halls(db)
 
 
-@router.get("/{id}", response_model=List[schemas.showUserPartyInfoAll])
-def get_info_for_user(id,db: Session = Depends(get_db)):
-    info = partyRepo.get_info_for_user(id,db)
+@router.get("/details/", response_model=List[schemas.showUserPartyInfoAll])
+def get_info_for_user(bill_id: Optional[int]=None,
+                         user_id:Optional[int]=None,
+                        db:Session=Depends(get_db)):
+    info = partyRepo.get_info_for_user(db,bill_id,user_id)
     return info
