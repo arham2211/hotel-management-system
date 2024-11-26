@@ -23,9 +23,7 @@ export default function Header() {
   };
 
   const toggleMenu = () => {
-  
     setIsMenuOpen(!isMenuOpen);
-
   };
 
   const { token, setToken, role, setRole, userId, setUserId } =
@@ -42,7 +40,6 @@ export default function Header() {
       try {
         const response = await api.get(`/users/${userId}/`);
         setUsername(response.data.username);
-  
       } catch (err) {
         console.error("Error fetching username:", err);
       }
@@ -53,16 +50,8 @@ export default function Header() {
     }
   }, [setToken, setRole, userId]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user_id");
-    setUserId(null);
-    setToken(null);
-    window.location.reload();
-  };
-
   const handleUserClick = () => {
-    navigate("/profile"); // Navigate to profile page when username is clicked
+    navigate(`/profile/${username}`); // Navigate to profile page when username is clicked
   };
 
   const navItems = [
@@ -119,13 +108,6 @@ export default function Header() {
                 >
                   <FontAwesomeIcon icon={faUser} />
                   <span className="ml-1 sm:ml-2">{username || "User"}</span>
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="inline-flex items-center 2xl:text-[1.6rem] bg-[#ff8c00] text-[#ffffff] sm:px-4 sm:py-2 md:px-3 md:py-2 lg:px-6 lg:py-[0.7rem] 2xl:px-6 2xl:py-3 rounded-full transition-colors duration-300 ease-in-out hover:text-[#002366]"
-                >
-                  <FontAwesomeIcon icon={faSignOutAlt} />
-                  <span className="ml-1 sm:ml-2">Logout</span>
                 </button>
               </div>
             ) : (
