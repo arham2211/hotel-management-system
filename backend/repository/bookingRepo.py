@@ -28,30 +28,33 @@ def add_new_booking(request:schemas.makeBooking, db:Session):
     
     found_room_id = db.query(models.Room).filter(models.Room.category_id==request.room_cat_id)
     found_room_id = found_room_id.filter(models.Room.booked_status==0).first()
+    #print("YOYOYOYOYOYOYOYOYOYOYOYOYOYOYOOYOYOYOYOYOY" ,found_room_id.id)
+    rid=found_room_id.id
     new_bill = billRepo.add_new_bill(schemas.addBill(user_id=request.user_id,
                                                      first_name=request.first_name,
                                                      last_name=request.last_name,
                                                      phone_number=request.phone_number) ,db)
+    bid=new_bill.id
 
     new_payment=paymentRepo.make_payment(schemas.Payment(amount=request.total_cost,type="Booking",
                                                          bill_id=new_bill.id),db)
+    pid=new_payment.id
+
+   # found_room = db.query(models.Room).filter(models.Room.category_id==request.room_cat_id).first()
 
 
-    new_booking = models.Booking(room_id=found_room_id.id, 
+   # print("hihihihi")
+    new_booking = models.Booking(room_id=rid, 
                                  user_id=request.user_id,
                                  start_date=request.start_date,
                                  end_date=request.end_date,
-                                 payment_id=new_payment.id,
+                                 payment_id=pid,
                                  num_people=request.num_people,
-                                 bill_id=new_bill.id) 
-    
+                                 bill_id=bid) 
+    print("ASIMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM", new_booking.id)
+
     db.add(new_booking)
     db.commit()
-    db.refresh(new_booking)
-
-
-    db.commit()
-
     db.refresh(new_booking)
     return new_booking
 

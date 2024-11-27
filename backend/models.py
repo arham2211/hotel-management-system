@@ -73,7 +73,7 @@ class Booking(Base):
     end_date = Column(Date)
     payment_id = Column(Integer,ForeignKey('Payment.id'))
     num_people = Column(Integer)
-    bill_id = Column(Integer, ForeignKey('Bill.id'), unique=True)  # Ensure one-to-one
+    bill_id = Column(Integer, ForeignKey('Bill.id'))  # Ensure one-to-one
 
 
     associated_user = relationship("User", back_populates='current_booking') 
@@ -95,20 +95,20 @@ class Bill(Base):
 
     customer = relationship("User", back_populates='associated_bill')
     all_payments=relationship("Payment", back_populates='associated_bill')
-    #associated_bill_user_booking = relationship("Associated_Bill_User_Booking", back_populates="bill")
+ #   associated_bill_user_booking = relationship("Associated_Bill_User_Booking", back_populates="bill")
 
-''''
-class Associated_Bill_User_Booking(Base):
-    __tablename__ = "Associated_Bill_User_Booking"
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey(User.id))
-    bill_id = Column(Integer, ForeignKey(Bill.id))
-    booking_id = Column(Integer, ForeignKey(Booking.id))    
-    # Relationships
-    user = relationship("User", back_populates="associated_bill_user_booking")
-    bill = relationship("Bill", back_populates="associated_bill_user_booking")
-    booking = relationship("Booking", back_populates="associated_bill_user_booking")
-'''
+
+# class Associated_Bill_User_Booking(Base):
+#     __tablename__ = "Associated_Bill_User_Booking"
+#     id = Column(Integer, primary_key=True, index=True)
+#     user_id = Column(Integer, ForeignKey(User.id))
+#     bill_id = Column(Integer, ForeignKey(Bill.id))
+#     booking_id = Column(Integer, ForeignKey(Booking.id))    
+#     # Relationships
+#     user = relationship("User", back_populates="associated_bill_user_booking")
+#     bill = relationship("Bill", back_populates="associated_bill_user_booking")
+#    # booking = relationship("Booking", back_populates="associated_bill_user_booking")
+
 
 class Payment(Base):
     __tablename__ = "Payment"
