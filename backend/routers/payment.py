@@ -33,3 +33,6 @@ def update_payment(id: int,
 
     return paymentRepo.updatePayment(id, amount, type, bill_id, db)
 
+@router.delete("/{payment_id}")
+def delete_payment(payment_id: int, db: Session = Depends(get_db)):
+    return paymentRepo.deletePayment(payment_id, db)

@@ -1,4 +1,4 @@
-from fastapi import Query, HTTPException
+from fastapi import Query, HTTPException, Depends
 from sqlalchemy.orm import Session
 import models, schemas
 from typing import List, Optional
@@ -131,3 +131,40 @@ WHERE (:bill_id IS NULL OR P.bill_id = :bill_id)
   AND (:user_id IS NULL OR TR.user_id = :user_id);
 '''
 
+
+def updateTour(id: int, 
+               price: Optional[int] = None, 
+               location: Optional[str] = None, 
+               tour_guide_id: Optional[int] = None, 
+               db: Session = Depends):
+
+    # Fetch the Tour record by its ID
+    tour = db.query(models.Tour).filter(models.Tour.id == id).first()
+
+    if not tour:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tour ID not found")   
+    
+    # Update the Tour fields if they are provided
+    if price is not None:
+        tour.price = price
+    if location:
+        tour.location = location
+    if tour_guide_id:
+        tour.tour_guide_id = tour_guide_id
+    
+    # Commit the changes to the database
+    db.commit()
+    db.refresh(tour)
+    return tour
+
+def addTour(request: schemas.Tour, db: Session = Depends):
+    new_tour = models.Tour(
+        price=request.price,
+        location=request.location,
+        tour_guide_id=request.tour_guide_id
+    )
+    
+    db.add(new_tour)
+    db.commit()
+    db.refresh(new_tour)
+    return new_tour

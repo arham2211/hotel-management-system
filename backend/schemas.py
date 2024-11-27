@@ -186,7 +186,7 @@ class PartyHalls(BaseModel):
 
 
 class Tour(BaseModel):
-    id:int
+   # id:int
     price:int
     location:str
     tour_guide_id:int

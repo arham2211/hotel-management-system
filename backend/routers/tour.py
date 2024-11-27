@@ -37,3 +37,15 @@ def get_info_for_user(bill_id: Optional[int]=None,
                         db:Session=Depends(get_db)):
     info = tourRepo.get_info_for_user(db,bill_id,user_id)
     return info
+
+@router.put("/{id}")
+def update_tour(id: int,
+                price: Optional[int] = Query(None),
+                location: Optional[str] = Query(None),
+                tour_guide_id: Optional[int] = Query(None),
+                db: Session = Depends(get_db)):
+    return tourRepo.updateTour(id, price, location, tour_guide_id, db)
+
+@router.post("/add", response_model=schemas.Tour)
+def create_tour(request: schemas.Tour, db: Session = Depends(get_db)):
+    return tourRepo.addTour(request, db)
