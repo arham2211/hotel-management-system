@@ -415,7 +415,7 @@ function EventBooking() {
                     </label>
                     <input
                       type="text"
-                      name="name"
+                      name="first_name"
                       value={bookingDetails.first_name}
                       onChange={handleInputChange}
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
@@ -429,7 +429,7 @@ function EventBooking() {
                     </label>
                     <input
                       type="text"
-                      name="name"
+                      name="last_name"
                       value={bookingDetails.last_name}
                       onChange={handleInputChange}
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"

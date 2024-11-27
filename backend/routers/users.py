@@ -36,3 +36,5 @@ def del_user(id, db: Session= Depends(get_db)):
     return userRepo.deleteUser(id,db)
         
  
+
+ 

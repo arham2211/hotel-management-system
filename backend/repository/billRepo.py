@@ -47,8 +47,6 @@ WHERE (bill_id_param IS NULL OR b.id = bill_id_param)
 '''
 
 
-
-
 def add_new_bill(request:schemas.addBill,db:Session):
     newBill=models.Bill(user_id=request.user_id,
                         first_name=request.first_name,
