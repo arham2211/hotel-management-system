@@ -42,7 +42,6 @@ def add_new_booking(request:schemas.makeBooking, db:Session):
 
    # found_room = db.query(models.Room).filter(models.Room.category_id==request.room_cat_id).first()
 
-
    # print("hihihihi")
     new_booking = models.Booking(room_id=rid, 
                                  user_id=request.user_id,
