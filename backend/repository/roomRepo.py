@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 import  models, schemas
 from typing import List
 
-def createRoom(create: schemas.RoomCategory, db: Session):
+def createRoomCat(create: schemas.RoomCategory, db: Session):
     new_room = models.RoomCategory(type = create.type, 
                                    description = create.description, 
                                    price = create.price, 
@@ -17,8 +17,7 @@ def createRoom(create: schemas.RoomCategory, db: Session):
     return new_room
 '''
 INSERT INTO RoomCategory (type, description, price, beds, baths, image, rating)
-VALUES (type, description, price, beds,baths, image, rating)
-RETURNING *;
+VALUES (type, description, price, beds,baths, image, rating);
 '''
 
 def get_category_details(data,db: Session):
@@ -32,4 +31,6 @@ SELECT * FROM RoomCategory
 WHERE type = result        ---> result is the result of python processing on stirng
 LIMIT 1;
 '''
+
+
 

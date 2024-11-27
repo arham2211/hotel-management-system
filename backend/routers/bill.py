@@ -29,5 +29,16 @@ def show_detailed_bill_info(bill_id: Optional[int]=None,
 def add_new_bill(request:schemas.addBill,db:Session=Depends(get_db)):
     return billRepo.add_new_bill(request,db)
 
+@router.post("/update/{id}")
+def update_bill(id: int, 
+                total_amount: Optional[int] = Query(None),
+                first_name: Optional[str] = Query(None),
+                last_name: Optional[str] = Query(None),
+                phone_number: Optional[str] = Query(None),
+                db: Session = Depends(get_db)):
 
+    return billRepo.updateBill(id, total_amount, first_name, last_name, phone_number, db)
 
+@router.delete("/")
+def delete_bill(id,db:Session=Depends(get_db)):
+    return billRepo.delete_bill(id,db)

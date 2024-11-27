@@ -1,4 +1,6 @@
 from sqlalchemy.orm import Session, joinedload
+from fastapi import Depends,HTTPException
+
 import database, models, schemas
 from typing import Optional
 
@@ -77,3 +79,38 @@ END;
 /
 
 '''
+
+def updateBill(id: int, 
+               total_amount: Optional[int] = None, 
+               first_name: Optional[str] = None, 
+               last_name: Optional[str] = None, 
+               phone_number: Optional[str] = None, 
+               db: Session=Depends):
+
+    # Fetch the bill record by its ID
+    bill = db.query(models.Bill).filter(models.Bill.id == id).first()
+
+    if not bill:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Bill ID not found")   
+    
+    # Update the bill fields if they are provided
+    if total_amount is not None:
+        bill.total_amount = total_amount
+    if first_name:
+        bill.first_name = first_name
+    if last_name:
+        bill.last_name = last_name
+    if phone_number:
+        bill.phone_number = phone_number
+    
+    # Commit the changes to the database
+    db.commit()
+    db.refresh(bill)
+    return bill
+
+def delete_bill(id, db:Session):
+    bill=db.query(models.Bill).filter(models.Bill.id==id).first()
+    db.delete(bill)
+    db.commit()
+
+    return {"Detail":"Deleted Successfully."}

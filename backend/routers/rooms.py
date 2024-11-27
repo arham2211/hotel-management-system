@@ -36,9 +36,9 @@ def get_all_rooms(db:Session = Depends(get_db)):
 
 @router.get("/available/{cat_id}", response_model=List[schemas.ShowRooms])
 def get_all_rooms_category(cat_id, db:Session = Depends(get_db)):
-    
     rooms=db.query(models.Room).filter(models.Room.category_id==cat_id)
     return rooms
+
 @router.get("/catprice/{type}", response_model=List[schemas.roomCatPrice])
 def get_category_with_price(type, db: Session = Depends(get_db)):
     
@@ -50,3 +50,14 @@ def get_category_with_price(type, db: Session = Depends(get_db)):
 @router.get("/category/{data}")
 def get_category_details(data,db: Session=Depends(get_db)):
     return roomRepo.get_category_details(data,db)
+
+@router.get("/allavailable/")
+def get_all_available(db:Session=Depends(get_db)):
+    info = db.query(models.Room).filter(models.Room.booked_status==0).all()
+    return info
+
+@router.get("/allbooked/")
+def get_all_booked(db:Session=Depends(get_db)):
+    info = db.query(models.Room).filter(models.Room.booked_status==1).all()
+    return info
+
