@@ -24,3 +24,12 @@ def make_payment(request:schemas.Payment, db:Session=Depends(get_db)):
     return paymentRepo.make_payment(request,db)
 
 
+@router.put("/update/{id}")
+def update_payment(id: int, 
+                   amount: Optional[int] = Query(None),
+                   type: Optional[str] = Query(None),
+                   bill_id: Optional[int] = Query(None),
+                   db: Session = Depends(get_db)):
+
+    return paymentRepo.updatePayment(id, amount, type, bill_id, db)
+

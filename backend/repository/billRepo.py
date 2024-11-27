@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session, joinedload
 from fastapi import Depends,HTTPException
+from sqlalchemy import func
 
 import database, models, schemas
 from typing import Optional
@@ -114,3 +115,26 @@ def delete_bill(id, db:Session):
     db.commit()
 
     return {"Detail":"Deleted Successfully."}
+
+
+def getMaxBill(db: Session):
+    # Subquery to find the maximum total_amount
+    max_total_amount = db.query(func.max(models.Bill.total_amount)).scalar()
+
+    # Query to find the bill_id and user_id with the maximum total_amount
+    max_bill = db.query(
+        models.Bill.id.label('bill_id'),
+        models.Bill.user_id,
+        models.Bill.total_amount
+    ).filter(models.Bill.total_amount == max_total_amount).first()
+
+    return max_bill
+
+
+def getTotalAmountSum(db: Session):
+    # Use SUM() aggregate function to calculate the total sum of the total_amount column
+    total_sum = db.query(func.sum(models.Bill.total_amount)).scalar()
+    return total_sum
+
+#SELECT SUM(total_amount) AS total_sum FROM bills;
+

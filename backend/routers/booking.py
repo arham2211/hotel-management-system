@@ -41,3 +41,8 @@ def update_booking(id,
                    db:Session=Depends(get_db)
                    ):
     return bookingRepo.updateBooking(id,room_id,start_date,end_date,num_people,db)
+
+@router.get("/total_count/")
+def get_booking_total_count(db: Session = Depends(get_db)):
+    total_bookings = bookingRepo.getTotalBookingsCount(db)
+    return {"total_bookings": total_bookings}

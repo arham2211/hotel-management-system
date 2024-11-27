@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, Query,HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 import database, models, schemas
 from typing import List, Optional
 from repository import billRepo, paymentRepo
@@ -60,7 +61,7 @@ def add_new_booking(request: schemas.makeBooking, db: Session):
             ),
             db
         )
-        #pid = new_payment.id
+        pid = new_payment.id
 
         # Create a new booking
         new_booking = models.Booking(
@@ -68,7 +69,7 @@ def add_new_booking(request: schemas.makeBooking, db: Session):
             user_id=request.user_id,
             start_date=request.start_date,
             end_date=request.end_date,
-            payment_id=new_payment.id,
+            payment_id=pid,
             num_people=request.num_people,
             bill_id=bid
         )
@@ -184,3 +185,10 @@ SET room_id = NVL(:room_id, room_id),
     num_people = NVL(:num_people, num_people)
 WHERE id = :old_id;
 '''
+
+
+def getTotalBookingsCount(db: Session):
+    # Use COUNT() aggregate function to count the total number of rows in the Booking table
+    total_bookings = db.query(func.count(models.Booking.id)).scalar()
+    return total_bookings
+#SELECT COUNT(*) AS total_bookings FROM bookings;

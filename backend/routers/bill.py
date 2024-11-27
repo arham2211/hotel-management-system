@@ -42,3 +42,19 @@ def update_bill(id: int,
 @router.delete("/")
 def delete_bill(id,db:Session=Depends(get_db)):
     return billRepo.delete_bill(id,db)
+
+
+@router.get("/max/")
+def get_bill_max(db: Session = Depends(get_db)):
+    max_bill = billRepo.getMaxBill(db)
+
+    return {
+        "bill_id": max_bill.bill_id,
+        "user_id": max_bill.user_id,
+        "max_total_amount": max_bill.total_amount
+    }
+
+@router.get("/sum/")
+def get_bill_total_amount_sum(db: Session = Depends(get_db)):
+    total_sum = billRepo.getTotalAmountSum(db)
+    return {"total_sum": total_sum}
