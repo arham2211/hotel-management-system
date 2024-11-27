@@ -29,8 +29,8 @@ def getUserInfo(id:int, db:Session):
 # WHERE id =id 
 
 
-def deleteUser(id:int, db:Session):
-    user = db.query(models.User).filter(models.User.id == id).first()
+def deleteUser(username:str, db:Session):
+    user = db.query(models.User).filter(models.User.username == username).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = "User not found")
     

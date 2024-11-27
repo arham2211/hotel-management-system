@@ -31,9 +31,9 @@ def get_user_id(username,db: Session = Depends(get_db)):
     return userRepo.getUserId(username,db)
     
 
-@router.delete("/{id}")
-def del_user(id, db: Session= Depends(get_db)):
-    return userRepo.deleteUser(id,db)
+@router.delete("/{username}")
+def del_user(username, db: Session= Depends(get_db)):
+    return userRepo.deleteUser(username,db)
         
 @router.post("/update/{username}")
 def update_user(username,
