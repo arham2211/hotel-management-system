@@ -36,7 +36,7 @@ class Login(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
-    role:str
+    role:str = "admin"
 
 
 class TokenData(BaseModel):

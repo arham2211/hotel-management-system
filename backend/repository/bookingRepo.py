@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query,HTTPException
+from fastapi import APIRouter, Depends, Query,HTTPException, status
 from sqlalchemy.orm import Session
 import database, models, schemas
 from typing import List, Optional
@@ -60,7 +60,7 @@ def add_new_booking(request: schemas.makeBooking, db: Session):
             ),
             db
         )
-        #pid = new_payment.id
+        pid = new_payment.id
 
         # Create a new booking
         new_booking = models.Booking(
@@ -68,14 +68,14 @@ def add_new_booking(request: schemas.makeBooking, db: Session):
             user_id=request.user_id,
             start_date=request.start_date,
             end_date=request.end_date,
-            payment_id=new_payment.id,
+            payment_id=pid,
             num_people=request.num_people,
             bill_id=bid
         )
         db.add(new_booking)
         
         # Update room booked status
-        found_room.booked_status = 1
+        # found_room.booked_status = 1
         db.commit()
         db.refresh(new_booking)
 
