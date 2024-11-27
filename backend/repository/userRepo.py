@@ -41,3 +41,28 @@ def deleteUser(id:int, db:Session):
 # DELETE FROM User WHERE id = id;
 # COMMIT;
 
+def updateUser(request:schemas.updateUser, db:Session):
+    user=db.query(models.User).filter(models.User.username==request.old_username).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail = "User not found")   
+    
+    # Update the user fields if they are provided
+    if request.new_username:
+        user.username = request.new_username
+    if request.new_email:
+        user.email = request.new_email
+    if request.new_password:
+        user.password = Hash.get_password_hash(request.new_password)  # Make sure to hash the password if necessary
+    
+    # Commit the changes to the database
+    db.commit()
+    db.refresh(user)
+    return user
+'''
+-- Assume the user exists
+UPDATE users
+SET username = NVL('new_username', username),
+    email = NVL('new_email', email),
+    password = NVL('hashed_new_password', password)
+WHERE username = 'old_username';
+'''

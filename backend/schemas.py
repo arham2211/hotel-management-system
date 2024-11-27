@@ -14,6 +14,15 @@ class User(BaseModel):
     class Config:
         from_attributes = True
 
+class updateUser(BaseModel):
+    old_username : str
+    new_username : Optional[str]
+    new_email : Optional[str]
+    new_password: Optional[str]
+    class Config:
+        from_attributes = True
+
+
 class Staff(BaseModel):
     username: str
     email: str

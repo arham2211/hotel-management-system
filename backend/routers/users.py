@@ -35,6 +35,8 @@ def get_user_id(username,db: Session = Depends(get_db)):
 def del_user(id, db: Session= Depends(get_db)):
     return userRepo.deleteUser(id,db)
         
- 
+@router.post("/update/")
+def update_user(request:schemas.updateUser, db:Session=Depends(get_db)):
+    return userRepo.updateUser(request,db)
 
  
