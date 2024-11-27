@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from hashing import Hash
 import database, models, schemas
-from typing import Annotated
+from typing import Annotated, Optional
 import oauth2
 from repository import userRepo
 
@@ -35,8 +35,12 @@ def get_user_id(username,db: Session = Depends(get_db)):
 def del_user(id, db: Session= Depends(get_db)):
     return userRepo.deleteUser(id,db)
         
-@router.post("/update/")
-def update_user(request:schemas.updateUser, db:Session=Depends(get_db)):
-    return userRepo.updateUser(request,db)
+@router.post("/update/{username}")
+def update_user(username,
+                new_username:Optional[str]= Query(None),
+                new_email:Optional[str]=Query(None),
+                new_password: Optional[str]=Query(None),
+                db:Session=Depends(get_db)):
+    return userRepo.updateUser(username,new_username,new_email,new_password,db)
 
  

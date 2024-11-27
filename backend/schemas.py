@@ -95,6 +95,13 @@ class Booking(BaseModel):
     class Config:
         from_attributes = True
 
+class updateBooking(BaseModel):
+    old_id : int        
+    room_id: int
+    start_date: Optional[date]
+    end_date: Optional[date]
+    num_people: Optional[int]
+
 class addBill(BaseModel):
     user_id:int
     first_name:str
