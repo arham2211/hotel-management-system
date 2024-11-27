@@ -52,13 +52,20 @@ def updateUser(old_username,new_username,new_email,new_password, db:Session):
     if new_email:
         user.email = new_email
     if new_password:
+        if new_password == user.password:
+            # Commit the changes to the database
+            db.commit()
+            db.refresh(user)
+            return user
+
         user.password = Hash.get_password_hash(new_password)  # Make sure to hash the password if necessary
-    
+   
     # Commit the changes to the database
     db.commit()
     db.refresh(user)
     return user
 
+    
 '''
 -- Assume the user exists
 UPDATE users

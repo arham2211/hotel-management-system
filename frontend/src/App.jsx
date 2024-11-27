@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Home from "./routes/Home";
 import About from "./routes/About";
 import Booking from "./routes/Booking";
@@ -12,7 +17,9 @@ import Event from "./routes/Event";
 import Tour from "./routes/Tour";
 import Profile from "./routes/Profile";
 import ScrollToTop from "./context/ScrollToTop";
+import AdminPanel from "./components/AdminPanel";
 import { AuthProvider } from "./context/UserContext";
+import Users from "./components/adminComponents/User"
 import "./App.css";
 
 function App() {
@@ -31,8 +38,12 @@ function App() {
           <Route path="/events" element={<Event />} />
           <Route path="/tours" element={<Tour />} />
           <Route path="/profile/:username" element={<Profile />} />
+          <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/admin/users" element={<Users />} />
+
         </Routes>
-        <Newsletter />
+        {/* Conditionally render the Newsletter */}
+        {location.pathname !== "/admin" && location.pathname !== "/profile/users" && <Newsletter />}
         <Footer />
       </AuthProvider>
     </Router>

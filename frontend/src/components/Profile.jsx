@@ -98,9 +98,9 @@ const Profile = () => {
     setExpandedEvent(expandedEvent === eventId ? null : eventId);
   };
 
-  const togglePaymentDetails = (paymentId) => {
-    setExpandedPayment(expandedPayment === paymentId ? null : paymentId);
-  };
+  // const togglePaymentDetails = (paymentId) => {
+  //   setExpandedPayment(expandedPayment === paymentId ? null : paymentId);
+  // };
 
   // Calculate total for each booking and its associated tours
   const calculateBookingTotal = (booking) => {

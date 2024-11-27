@@ -15,11 +15,18 @@ router = APIRouter(
 get_db = database.get_db
 
 
+# @router.get("/")
+# def get_all_users(db: Session = Depends(get_db),current_user: schemas.User = Depends(oauth2.get_current_user)
+# ):
+#     users = db.query(models.User).all()
+#     return users
+
+
 @router.get("/")
-def get_all_users(db: Session = Depends(get_db),current_user: schemas.User = Depends(oauth2.get_current_user)
-):
+def get_all_users(db: Session = Depends(get_db)):
     users = db.query(models.User).all()
     return users
+
 
 @router.get("/{id}",response_model=schemas.User)
 def get_user(id, db: Session= Depends(get_db)):
