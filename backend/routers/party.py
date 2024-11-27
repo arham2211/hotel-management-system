@@ -36,3 +36,14 @@ def get_info_for_user(bill_id: Optional[int]=None,
                         db:Session=Depends(get_db)):
     info = partyRepo.get_info_for_user(db,bill_id,user_id)
     return info
+
+
+@router.post("/updatehall/{id}")
+def update_party_hall(id: int, 
+                      name: Optional[str] = Query(None),
+                      capacity: Optional[int] = Query(None),
+                      price: Optional[int] = Query(None),
+                      available: Optional[bool] = Query(None),
+                      db: Session = Depends(get_db)):
+
+    return partyRepo.updatePartyHall(db,id, name, capacity, price, available)

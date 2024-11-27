@@ -29,7 +29,7 @@ def show_detailed_bill_info(bill_id: Optional[int]=None,
 def add_new_bill(request:schemas.addBill,db:Session=Depends(get_db)):
     return billRepo.add_new_bill(request,db)
 
-@router.post("/update/{id}")
+@router.put("/update/{id}")
 def update_bill(id: int, 
                 total_amount: Optional[int] = Query(None),
                 first_name: Optional[str] = Query(None),

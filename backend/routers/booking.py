@@ -32,7 +32,7 @@ def add_new_booking(request:schemas.makeBooking, db:Session=Depends(get_db)):
 def cancel_booking(id, db:Session=Depends(get_db)):
     return bookingRepo.cancel_booking(id,db)
 
-@router.post("/update/{id}")
+@router.put("/update/{id}")
 def update_booking(id,
                    room_id:Optional[int] = Query(None),
                    start_date:Optional[date] = Query(None),

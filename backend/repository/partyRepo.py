@@ -133,3 +133,32 @@ JOIN Payment p ON pr.payment_id = p.id
 WHERE (:bill_id IS NULL OR p.bill_id = :bill_id)
   AND (:user_id IS NULL OR pr.user_id = :user_id);
 '''
+
+def updatePartyHall(db,
+                    id: int, 
+                    name: Optional[str] = None, 
+                    capacity: Optional[int] = None, 
+                    price: Optional[int] = None, 
+                    available: Optional[bool] = None 
+                    ):
+
+    # Fetch the PartyHall record by its ID
+    party_hall = db.query(models.PartyHalls).filter(models.PartyHalls.id == id).first()
+
+    if not party_hall:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Party Hall ID not found")   
+    
+    # Update the PartyHall fields if they are provided
+    if name:
+        party_hall.name = name
+    if capacity:
+        party_hall.capacity = capacity
+    if price:
+        party_hall.price = price
+    if available is not None:  # Check if available is explicitly provided (as it can be True or False)
+        party_hall.available = available
+    
+    # Commit the changes to the database
+    db.commit()
+    db.refresh(party_hall)
+    return party_hall
