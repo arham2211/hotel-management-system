@@ -76,7 +76,7 @@ def add_new_booking(request: schemas.makeBooking, db: Session):
         db.add(new_booking)
         
         # Update room booked status
-        # found_room.booked_status = 1
+        found_room.booked_status = 1
         db.commit()
         db.refresh(new_booking)
 

@@ -61,3 +61,18 @@ def get_all_booked(db:Session=Depends(get_db)):
     info = db.query(models.Room).filter(models.Room.booked_status==1).all()
     return info
 
+@router.put("/makeAvailable/{id}")
+def update_availability(id,db:Session=Depends(get_db)):
+    room= db.query(models.Room).filter(models.Room.id==id).first()
+    room.booked_status=0
+    db.commit()
+    db.refresh(room)
+    return room
+
+@router.put("/makeUnavailable/{id}")
+def update_availability(id,db:Session=Depends(get_db)):
+    room= db.query(models.Room).filter(models.Room.id==id).first()
+    room.booked_status=1
+    db.commit()
+    db.refresh(room)
+    return room

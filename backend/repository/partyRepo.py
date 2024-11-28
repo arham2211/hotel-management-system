@@ -13,6 +13,7 @@ def add_new_party(request: schemas.makePartyReservation, db: Session):
             raise HTTPException(status_code=404, detail="Bill not found. You haven't booked a room yet. First book a room and then try to reserve a party hall.")
 
         hall = db.query(models.PartyHalls).filter(models.PartyHalls.id == request.hall_id).first()
+    #    hall= hall.filter(models.PartyHalls.available==1).first()
         if not hall:
             raise HTTPException(status_code=404, detail="Party hall not found.")
 
@@ -25,6 +26,7 @@ def add_new_party(request: schemas.makePartyReservation, db: Session):
             start_time=request.start_time,
             end_time=request.end_time,
         )
+     #   hall.available=0
 
         # Add and commit the new reservation
         db.add(new_reservation)
@@ -162,3 +164,11 @@ def updatePartyHall(db,
     db.commit()
     db.refresh(party_hall)
     return party_hall
+
+
+def updateAvailability(id,status,db):
+    hall= db.query(models.PartyHalls).filter(models.PartyHalls.id==id).first()
+    hall.available=status
+    db.commit()
+    db.refresh(hall)
+    return hall

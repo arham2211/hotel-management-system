@@ -47,3 +47,10 @@ def update_party_hall(id: int,
                       db: Session = Depends(get_db)):
 
     return partyRepo.updatePartyHall(db,id, name, capacity, price, available)
+
+
+@router.put("/updateAvailability/{id}/")
+def updateAvailability(id:int,
+                       status:bool,
+                       db:Session=Depends(get_db)):
+    return partyRepo.updateAvailability(id,status,db)
