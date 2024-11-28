@@ -7,9 +7,10 @@ from repository import billRepo, paymentRepo
 from sqlalchemy.exc import SQLAlchemyError
 
 
-def get_all_bookings(db: Session, user_id: Optional[int] = Query(None), room_id: Optional[int] = Query(None)):
+def get_all_bookings(db: Session, user_id: Optional[int] = Query(None), room_id: Optional[int] = Query(None), booking_id: Optional[int] = Query(None)):
     bookings = db.query(models.Booking)
-    
+    if booking_id is not None:
+        bookings = bookings.filter(models.Booking.id == booking_id)
     if user_id is not None:
         bookings = bookings.filter(models.Booking.user_id == user_id)
     if room_id is not None:
