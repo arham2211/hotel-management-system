@@ -31,10 +31,22 @@ export default function Header() {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
+
+    if (storedToken) {
+      setToken(storedToken);
+      const extractedRole = storedToken.split("_").pop(); // Assuming token structure allows this
+      setRole(extractedRole);
+    }
+  }, [setToken, setRole, role]); // Add `role` to dependency array
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
       const extractedRole = storedToken.split("_").pop();
       setRole(extractedRole);
+
+      console.log(role);
     }
     const fetchUsername = async () => {
       try {
@@ -52,6 +64,10 @@ export default function Header() {
 
   const handleUserClick = () => {
     navigate(`/profile/${username}`); // Navigate to profile page when username is clicked
+  };
+
+  const handleAdminClick = () => {
+    navigate("/admin"); // Navigate to profile page when username is clicked
   };
 
   const navItems = [
@@ -100,16 +116,26 @@ export default function Header() {
 
           {/* Register or Logout Button */}
           <div className="hidden md:block">
-            {token && role === "user" ? (
-              <div className="flex items-center gap-4">
+            {token ? (
+              role === "admin" ? (
                 <button
-                  onClick={handleUserClick}
+                  onClick={handleAdminClick}
                   className="inline-flex items-center 2xl:text-[1.6rem] bg-[#ff8c00] text-[#ffffff] sm:px-4 sm:py-2 md:px-3 md:py-2 lg:px-6 lg:py-[0.7rem] 2xl:px-6 2xl:py-3 rounded-full transition-colors duration-300 ease-in-out hover:text-[#002366]"
                 >
                   <FontAwesomeIcon icon={faUser} />
-                  <span className="ml-1 sm:ml-2">{username || "User"}</span>
+                  <span className="ml-1 sm:ml-2">Admin</span>
                 </button>
-              </div>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={handleUserClick}
+                    className="inline-flex items-center 2xl:text-[1.6rem] bg-[#ff8c00] text-[#ffffff] sm:px-4 sm:py-2 md:px-3 md:py-2 lg:px-6 lg:py-[0.7rem] 2xl:px-6 2xl:py-3 rounded-full transition-colors duration-300 ease-in-out hover:text-[#002366]"
+                  >
+                    <FontAwesomeIcon icon={faUser} />
+                    <span className="ml-1 sm:ml-2">{username || "User"}</span>
+                  </button>
+                </div>
+              )
             ) : (
               <button
                 onClick={toggleSignUp}

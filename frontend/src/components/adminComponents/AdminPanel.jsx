@@ -1,8 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
+import api from "../../Api";
 
 function AdminPanel() {
-  
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [bookingCount, setBookingCount] = useState(0);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchTotalRevenueAndBookingCount = async () => {
+      try {
+        const [revenueResponse, bookingResponse] = await Promise.all([
+          api.get("/bill/sum/"),
+          api.get("/bookings/total_count/"),
+        ]);
+
+        setTotalRevenue(revenueResponse.data);
+        setBookingCount(bookingResponse.data); // Assuming you want to set booking count as well
+      } catch (err) {
+        setError("Failed to fetch revenue or booking details");
+        console.error("Error:", err);
+      }
+    };
+
+    fetchTotalRevenueAndBookingCount();
+  }, []);
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -10,7 +33,7 @@ function AdminPanel() {
         <div className="p-4 bg-gray-900">
           <h1 className="text-xl font-bold">Hotel Admin</h1>
         </div>
-      <Sidebar />
+        <Sidebar />
       </div>
 
       {/* Main Content */}
@@ -28,7 +51,9 @@ function AdminPanel() {
               <h3 className="text-gray-500 text-sm font-medium">
                 Total Bookings
               </h3>
-              <p className="text-2xl font-bold">1,234</p>
+              <p className="text-2xl font-bold">
+                {bookingCount.total_bookings}
+              </p>
             </div>
             <div className="bg-white rounded-lg shadow p-6">
               <h3 className="text-gray-500 text-sm font-medium">
@@ -40,7 +65,7 @@ function AdminPanel() {
               <h3 className="text-gray-500 text-sm font-medium">
                 Total Revenue
               </h3>
-              <p className="text-2xl font-bold">$52,389</p>
+              <p className="text-2xl font-bold">${totalRevenue.total_sum}</p>
             </div>
             <div className="bg-white rounded-lg shadow p-6">
               <h3 className="text-gray-500 text-sm font-medium">Total Staff</h3>
