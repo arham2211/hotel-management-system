@@ -17,6 +17,7 @@ import AdminPanel from "./components/adminComponents/AdminPanel";
 import Users from "./components/adminComponents/User";
 import Bill from "./components/adminComponents/Bill";
 import Payment from "./components/adminComponents/Payment";
+import Bookings from "./components/adminComponents/Booking";
 import "./App.css";
 
 function App() {
@@ -39,12 +40,13 @@ function App() {
           <Route path="/admin/users" element={<Users />} />
           <Route path="/admin/bills" element={<Bill />} />
           <Route path="/admin/payments" element={<Payment />} />
+          <Route path="/admin/bookings" element={<Bookings />} />
         </Routes>
         {/* Conditionally render the Newsletter */}
         {location.pathname !== "/admin" &&
           location.pathname !== "/admin/users"&&
           location.pathname !== "/admin/bills"&&
-          location.pathname !== "/admin/payments" && (<Newsletter /> && 
+          location.pathname !== "/admin/bookings" && (<Newsletter /> && 
             <Footer />
           )}
       </AuthProvider>
@@ -53,4 +55,5 @@ function App() {
 }
 
 export default App;
+
 

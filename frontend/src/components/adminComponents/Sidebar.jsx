@@ -6,7 +6,6 @@ import {
   faUser,
   faTicket,
   faCreditCard,
-  faTags,
   faDoorOpen,
   faUserCircle,
   faBookmark,
