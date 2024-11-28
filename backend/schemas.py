@@ -85,6 +85,7 @@ class roomCatPrice(BaseModel):
         from_attributes = True    
 
 class Booking(BaseModel):
+    id: int
     room_id: int
     user_id: int
     start_date: date
@@ -126,12 +127,12 @@ class makeBooking(BaseModel):
 
 
 class Payment(BaseModel):
-    id:int
     amount:int
     type: str
     bill_id: int
 
 class ShowPayment(Payment):
+    id:int
     class Config:
         from_attributes = True
 
