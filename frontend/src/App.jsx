@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Home from "./routes/Home";
 import About from "./routes/About";
 import Booking from "./routes/Booking";
@@ -20,40 +20,48 @@ import Payment from "./components/adminComponents/Payment";
 import Bookings from "./components/adminComponents/Booking";
 import "./App.css";
 
+function AppContent() {
+  const location = useLocation(); // Safely access location within the Router context
+
+  return (
+    <>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/booking" element={<Booking />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/services" element={<Service />} />
+        <Route path="/roomdetails/:roomType" element={<ViewRoom />} />
+        <Route path="/events" element={<Event />} />
+        <Route path="/tours" element={<Tour />} />
+        <Route path="/profile/:username" element={<Profile />} />
+        <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/admin/users" element={<Users />} />
+        <Route path="/admin/bills" element={<Bill />} />
+        <Route path="/admin/payments" element={<Payment />} />
+        <Route path="/admin/bookings" element={<Bookings />} />
+      </Routes>
+      {/* Conditionally render the Newsletter and Footer */}
+      {!(location.pathname.startsWith("/admin")) && (
+        <>
+          <Newsletter />
+          <Footer />
+        </>
+      )}
+    </>
+  );
+}
+
 function App() {
   return (
     <Router>
       <AuthProvider>
         <ScrollToTop />
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/booking" element={<Booking />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/services" element={<Service />} />
-          <Route path="/roomdetails/:roomType" element={<ViewRoom />} />
-          <Route path="/events" element={<Event />} />
-          <Route path="/tours" element={<Tour />} />
-          <Route path="/profile/:username" element={<Profile />} />
-          <Route path="/admin" element={<AdminPanel />} />
-          <Route path="/admin/users" element={<Users />} />
-          <Route path="/admin/bills" element={<Bill />} />
-          <Route path="/admin/payments" element={<Payment />} />
-          <Route path="/admin/bookings" element={<Bookings />} />
-        </Routes>
-        {/* Conditionally render the Newsletter */}
-        {location.pathname !== "/admin" &&
-          location.pathname !== "/admin/users"&&
-          location.pathname !== "/admin/bills"&&
-          location.pathname !== "/admin/bookings" && (<Newsletter /> && 
-            <Footer />
-          )}
+        <AppContent />
       </AuthProvider>
     </Router>
   );
 }
 
 export default App;
-
-

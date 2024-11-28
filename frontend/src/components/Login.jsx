@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import api from "../Api.jsx";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { AuthContext } from "../context/UserContext";
-
+import { useNavigate } from "react-router-dom";
 const Login = ({ setIsSignUpVisible }) => {
   const [formValues, setFormValues] = useState({ username: "", password: "" });
   const [showSignUp, setShowSignUp] = useState(false);
@@ -10,6 +10,7 @@ const Login = ({ setIsSignUpVisible }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [errors, setErrors] = useState({});
   const [passwordVisible, setPasswordVisible] = useState(false);
+
 
   const togglePasswordVisibility = () => {
     setPasswordVisible((prev) => !prev);
@@ -45,13 +46,15 @@ const Login = ({ setIsSignUpVisible }) => {
         // Store token in localStorage
         localStorage.setItem("token", data.access_token + "_" + data.role);
         setToken(data.access_token);
+        setRole(data.role);
+        if ((data.role === "user")) {
+          console.log(data.role);
+          const user_id = await api.get(`/users/info/${formValues.username}/`);
 
-        const user_id = await api.get(`/users/info/${formValues.username}/`);
-
-        
-        localStorage.setItem("user_id", user_id.data);
-        setUserId(user_id.data);
-
+          localStorage.setItem("user_id", user_id.data);
+          setUserId(user_id.data);
+        }
+        // window.location.reload();
       } else {
         setErrorMessage(data.detail);
       }
@@ -59,7 +62,6 @@ const Login = ({ setIsSignUpVisible }) => {
     } catch (error) {
       // Error handling
       if (error.response) {
-        
         const errorDetail = error.response.data.detail;
 
         if (errorDetail === "Wrong Credentials") {

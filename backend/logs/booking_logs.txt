@@ -1,0 +1,4 @@
+2024-11-28 10:59:44 - New booking created with ID: 10, User: 2, Room ID: 1, Start Date: 2024-11-28, End Date: 2024-11-28
+2024-11-28 11:04:44 - Booking with ID 10 canceled by user 2.
+2024-11-28 11:04:44 - Bill with ID 7 deleted for booking 10.
+2024-11-28 11:04:44 - Payment with ID 24 deleted for booking 10.

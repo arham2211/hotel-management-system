@@ -1,0 +1,9 @@
+2024-11-28 11:14:25 - Payment of amount 5000, of type Tour created for Bill ID 6.
+2024-11-28 11:14:25 - Bill ID 6 updated. New total amount: 5000.
+2024-11-28 11:17:20 - Payment ID 23 deleted successfully.
+2024-11-28 11:17:21 - Payment ID 22 deleted successfully.
+2024-11-28 11:17:21 - Payment ID 21 deleted successfully.
+2024-11-28 11:17:22 - Payment ID 20 deleted successfully.
+2024-11-28 11:17:22 - Payment ID 19 deleted successfully.
+2024-11-28 11:17:22 - Payment ID 18 deleted successfully.
+2024-11-28 11:17:23 - Payment ID 17 deleted successfully.
