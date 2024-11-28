@@ -48,7 +48,6 @@ const Tour = () => {
   useEffect(() => {
     // Validate card details
     const validateCardDetails = () => {
-      console.log("Card Details: ", cardHolder, cardNumber, expiry, cvv);
       return (
         cardHolder.trim().length > 0 &&
         cardNumber.trim().length === 19 && // Validate formatted card number
@@ -58,8 +57,7 @@ const Tour = () => {
         isFormComplete
       );
     };
-    console.log("Form complete: ", isFormComplete);
-    console.log("Card Detail: ", validateCardDetails());
+
     setIsPaymentComplete(validateCardDetails());
   }, [cardHolder, cardNumber, expiry, cvv, isFormComplete]);
 
@@ -67,8 +65,8 @@ const Tour = () => {
     const fetchLocations = async () => {
       try {
         const response = await api.get("/tour/");
+
         setLocations(response.data);
-        console.log(response.data);
       } catch (err) {
         setError("Failed to fetch locations");
         console.error("Error fetching locations:", err);
@@ -110,7 +108,6 @@ const Tour = () => {
       };
 
       const response = await api.post("/tour/", reservationData);
-      console.log("Reservation successful:", reservationData);
 
       // Reset all forms
       setFormData(initialBookingState);
@@ -153,7 +150,7 @@ const Tour = () => {
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto rounded-xl overflow-hidden">
-      <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center">
           <div className="bg-[#ff8c00] w-[45px] h-[2px]"></div>
           <h2 className="text-[1.2rem] text-[#ff8c00] font-bold uppercase py-3 px-1">
             Planning

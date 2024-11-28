@@ -1,26 +1,14 @@
 import React, { useState, useEffect } from "react";
 import api from "../../Api";
+import Sidebar from "./Sidebar";
 
 function User() {
-  const menuItems = [
-    { id: 1, name: "Bills", icon: "receipt" },
-    { id: 2, name: "Bookings", icon: "calendar" },
-    { id: 3, name: "Users", icon: "user" },
-    { id: 4, name: "Party Halls", icon: "building" },
-    { id: 5, name: "Party Reservations", icon: "ticket" },
-    { id: 6, name: "Payments", icon: "credit-card" },
-    { id: 7, name: "Receptionist", icon: "user" },
-    { id: 8, name: "Room Categories", icon: "tags" },
-    { id: 9, name: "Rooms", icon: "door-open" },
-    { id: 10, name: "Staff", icon: "users" },
-    { id: 11, name: "Tours", icon: "map" },
-    { id: 12, name: "Tour Reservations", icon: "bookmark" },
-    { id: 13, name: "Users", icon: "user-circle" },
-  ];
   const [userDetails, setUserDetails] = useState([]);
   const [error, setError] = useState(null);
   const [editingUser, setEditingUser] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); // New state for search query
+  const [searchedUser, setSearchedUser] = useState(null); // State to store the searched user
 
   // Fetch all users
   useEffect(() => {
@@ -36,6 +24,26 @@ function User() {
     fetchAllUsers();
   }, []);
 
+  // Fetch a specific user based on ID
+  const fetchUserById = async (id) => {
+    try {
+      console.log(id);
+      const response = await api.get(`/users/${id}`);
+      setSearchedUser(response.data); // Store the specific user data
+    } catch (err) {
+      setError("User not found");
+      console.error("Error fetching user:", err);
+    }
+  };
+
+  // Handle search submit
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery) {
+      fetchUserById(searchQuery); // Fetch the user by ID
+    }
+  };
+
   // Delete user function
   const deleteUser = async (username) => {
     try {
@@ -50,17 +58,14 @@ function User() {
   // Update user function
   const updateUser = async (updatedUser) => {
     try {
-        const response = await api.post(
-          `/users/update/${editingUser.previousUsername}?new_username=${updatedUser.username}&new_email=${updatedUser.email}&new_password=${updatedUser.password}`
-        );
-      
-
+      const response = await api.post(
+        `/users/update/${editingUser.previousUsername}?new_username=${updatedUser.username}&new_email=${updatedUser.email}&new_password=${updatedUser.password}`
+      );
       setUserDetails((prevDetails) =>
         prevDetails.map((user) =>
           user.username === editingUser.previousUsername ? response.data : user
         )
       );
-      console.log(userDetails);
       setModalOpen(false);
       setEditingUser(null);
       setError(null);
@@ -86,18 +91,7 @@ function User() {
         <div className="p-4 bg-gray-900">
           <h1 className="text-xl font-bold">Hotel Admin</h1>
         </div>
-        <nav className="mt-4">
-          {menuItems.map((item) => (
-            <a
-              key={item.id}
-              href={`/admin/${item.name.toLowerCase()}`}
-              className="flex items-center px-4 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
-            >
-              <i className={`fas fa-${item.icon} w-6`}></i>
-              <span>{item.name}</span>
-            </a>
-          ))}
-        </nav>
+        <Sidebar />
       </div>
 
       {/* Main Content */}
@@ -109,12 +103,120 @@ function User() {
         </header>
 
         <main className="p-6">
+          {/* Display searched user */}
+          {searchedUser && (
+            <div className="bg-white rounded-lg shadow-md mb-6 overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+                <h3 className="text-xl font-semibold text-white flex items-center">
+                  <svg
+                    className="w-5 h-5 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                  Search Result
+                </h3>
+              </div>
+              <div className="p-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center">
+                      <span className="text-gray-600 font-medium w-24">
+                        Username:
+                      </span>
+                      <span className="text-gray-800">
+                        {searchedUser.username}
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="text-gray-600 font-medium w-24">
+                        Email:
+                      </span>
+                      <span className="text-gray-800">
+                        {searchedUser.email}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-end">
+                    <button
+                      onClick={() => handleEditClick(searchedUser)}
+                      className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-150 ease-in-out mr-2"
+                    >
+                      <svg
+                        className="w-4 h-4 mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                        />
+                      </svg>
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deleteUser(searchedUser.username)}
+                      className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-150 ease-in-out"
+                    >
+                      <svg
+                        className="w-4 h-4 mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           {/* Data Table */}
           <div className="bg-white rounded-lg shadow">
             <div className="p-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-800">
-                User Activities
-              </h3>
+              <div className="flex justify-between">
+                <h3 className="text-lg font-semibold text-gray-800">
+                  User Activities
+                </h3>
+
+                <div className="mb-4">
+                  <form
+                    onSubmit={handleSearchSubmit}
+                    className="flex items-center"
+                  >
+                    <input
+                      type="text"
+                      placeholder="Search user by ID"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="px-3 py-2 border rounded mr-2"
+                    />
+                    <button
+                      type="submit"
+                      className="px-4 py-2 bg-blue-600 text-white rounded"
+                    >
+                      Search
+                    </button>
+                  </form>
+                </div>
+              </div>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -150,14 +252,40 @@ function User() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <button
                             onClick={() => handleEditClick(user)}
-                            className="text-blue-600 hover:text-blue-900 mr-3"
+                            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-150 ease-in-out mr-2"
                           >
-                            Update
+                            <svg
+                              className="w-4 h-4 mr-2"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                              />
+                            </svg>
+                            Edit
                           </button>
                           <button
                             onClick={() => deleteUser(user.username)}
-                            className="text-red-600 hover:text-red-900"
+                            className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-150 ease-in-out"
                           >
+                            <svg
+                              className="w-4 h-4 mr-2"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                              />
+                            </svg>
                             Delete
                           </button>
                         </td>
