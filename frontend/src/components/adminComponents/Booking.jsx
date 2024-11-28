@@ -9,7 +9,7 @@ export default function Booking() {
   const [modalOpen, setModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchedBooking, setSearchedBooking] = useState(null);
-  ill;
+
 
   // Fetch all bookings
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function Booking() {
   // Fetch a specific booking based on ID
   const fetchBookingById = async (id) => {
     try {
-      const response = await api.get(`/bookings/${id}`);
+      const response = await api.get(`/bookings/?booking_id=${id}`);
       setSearchedBooking(response.data);
     } catch (err) {
       setError("Booking not found");
@@ -47,7 +47,7 @@ export default function Booking() {
   // Delete booking function
   const deleteBooking = async (bookingId) => {
     try {
-      await api.delete(`/bookings/${bookingId}`);
+      await api.delete(`/bookings/delete/${bookingId}`);
       setBookingDetails(
         bookingDetails.filter((booking) => booking.id !== bookingId)
       );
@@ -61,7 +61,7 @@ export default function Booking() {
   const updateBooking = async (updatedBooking) => {
     try {
       const response = await api.put(
-        `/bookings/${editingBooking.id}`,
+        `/bookings/update/${editingBooking.id}?room_id=${updatedBooking.room_id}&start_date=${updatedBooking.start_date}&end_date=${updatedBooking.end_date}&num_people=${updatedBooking.num_people}`,
         updatedBooking
       );
       setBookingDetails((prevDetails) =>
@@ -118,39 +118,64 @@ export default function Booking() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-3">
                     <div className="flex items-center">
-                      <span className="text-gray-600 font-medium pe-10">
-                        Full Name:
+                      <span className="text-gray-600 font-medium">
+                        Booking ID:
                       </span>
                       <span className="text-gray-800">
-                        {searchedBill[0].first_name} {searchedBill[0].last_name}
+                        
+                      {searchedBooking[0].id}
                       </span>
                     </div>
                     <div className="flex items-center">
-                      <span className="text-gray-600 font-medium pe-1">
-                        Phone Number:
+                      <span className="text-gray-600 font-medium">
+                        Room ID:
                       </span>
                       <span className="text-gray-800">
-                        {searchedBill[0].phone_number}
+                        {searchedBooking[0].room_id}
                       </span>
                     </div>
                     <div className="flex items-center">
-                      <span className="text-gray-600 font-medium pe-4">
-                        Total Amount:
+                      <span className="text-gray-600 font-medium">
+                        User ID:
                       </span>
                       <span className="text-gray-800">
-                        {searchedBill[0].total_amount}
+                        {searchedBooking[0].user_id}
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="text-gray-600 font-medium">
+                        Start Date:
+                      </span>
+                      <span className="text-gray-800">
+                        {searchedBooking[0].start_date}
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="text-gray-600 font-medium">
+                        End Date:
+                      </span>
+                      <span className="text-gray-800">
+                        {searchedBooking[0].end_date}
+                      </span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="text-gray-600 font-medium">
+                        Number Of People
+                      </span>
+                      <span className="text-gray-800">
+                        {searchedBooking[0].num_people}
                       </span>
                     </div>
                   </div>
                   <div className="flex items-center justify-end">
                     <button
-                      onClick={() => handleEditClick(searchedBill[0])}
+                      onClick={() => handleEditClick(searchedBooking[0])}
                       className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-150 ease-in-out mr-2"
                     >
                       Edit
                     </button>
                     <button
-                      onClick={() => deleteBill(searchedBill[0].id)}
+                      onClick={() => deleteBooking(searchedBooking[0].id)}
                       className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-150 ease-in-out"
                     >
                       Delete
@@ -175,7 +200,7 @@ export default function Booking() {
                   >
                     <input
                       type="text"
-                      placeholder="Search bill by ID"
+                      placeholder="Search booking by ID"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="px-3 py-2 border rounded mr-2"
@@ -210,7 +235,7 @@ export default function Booking() {
                       End Date
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      End Date
+                      No. of People
                     </th>
                   </tr>
                 </thead>
@@ -231,17 +256,21 @@ export default function Booking() {
                           {booking.start_date}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          {booking.start_date}
+                          {booking.end_date}
+                        </td>
+
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {booking.num_people}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <button
-                            onClick={() => handleEditClick(bill)}
+                            onClick={() => handleEditClick(booking)}
                             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-150 ease-in-out mr-2"
                           >
                             Edit
                           </button>
                           <button
-                            onClick={() => deleteBill(bill.id)}
+                            onClick={() => deleteBooking(booking.id)}
                             className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-150 ease-in-out"
                           >
                             Delete
@@ -252,7 +281,7 @@ export default function Booking() {
                   ) : (
                     <tr>
                       <td colSpan="5" className="text-center px-6 py-4">
-                        No bills found
+                        No Bookings found
                       </td>
                     </tr>
                   )}
@@ -262,84 +291,86 @@ export default function Booking() {
           </div>
 
           {/* Modal for editing bill */}
-          {modalOpen && editingBill && (
+          {modalOpen && editingBooking && (
             <div className="fixed inset-0 bg-gray-900 bg-opacity-50 z-50">
               <div className="relative max-w-lg mx-auto mt-16 bg-white rounded-lg shadow-xl">
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-4">
-                    Edit Bill Details
+                    Edit Booking Details
                   </h3>
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
-                      updateBill({
-                        total_amount: e.target.total_amount.value,
-                        first_name: e.target.first_name.value,
-                        last_name: e.target.last_name.value,
-                        phone_number: e.target.phone_number.value,
+                      updateBooking({
+                        room_id: e.target.room_id.value,
+                        start_date: e.target.start_date.value,
+                        end_date: e.target.end_date.value,
+                        num_people: e.target.num_people.value,
+                        
                       });
                     }}
                   >
                     <div className="mb-4">
                       <label
-                        htmlFor="first_name"
+                        htmlFor="room_id"
                         className="block text-gray-600 font-medium"
                       >
-                        First Name
+                        Room ID
                       </label>
                       <input
                         type="text"
-                        id="first_name"
-                        name="first_name"
-                        defaultValue={editingBill.first_name}
+                        id="room_id"
+                        name="room_id"
+                        defaultValue={editingBooking.room_id}
                         className="mt-1 block w-full px-3 py-2 border rounded-md"
                       />
                     </div>
                     <div className="mb-4">
                       <label
-                        htmlFor="last_name"
+                        htmlFor="start_date"
                         className="block text-gray-600 font-medium"
                       >
-                        Last Name
+                        Start Date
                       </label>
                       <input
                         type="text"
-                        id="last_name"
-                        name="last_name"
-                        defaultValue={editingBill.last_name}
+                        id="start_date"
+                        name="start_date"
+                        defaultValue={editingBooking.start_date}
                         className="mt-1 block w-full px-3 py-2 border rounded-md"
                       />
                     </div>
                     <div className="mb-4">
                       <label
-                        htmlFor="phone_number"
+                        htmlFor="end_date"
                         className="block text-gray-600 font-medium"
                       >
-                        Phone Number
+                        End Date
                       </label>
                       <input
                         type="text"
-                        id="phone_number"
-                        name="phone_number"
-                        defaultValue={editingBill.phone_number}
+                        id="end_date"
+                        name="end_date"
+                        defaultValue={editingBooking.end_date}
                         className="mt-1 block w-full px-3 py-2 border rounded-md"
                       />
                     </div>
                     <div className="mb-4">
                       <label
-                        htmlFor="total_amount"
+                        htmlFor="num_people"
                         className="block text-gray-600 font-medium"
                       >
-                        Total Amount
+                        Number Of People
                       </label>
                       <input
                         type="text"
-                        id="total_amount"
-                        name="total_amount"
-                        defaultValue={editingBill.total_amount}
+                        id="num_people"
+                        name="num_people"
+                        defaultValue={editingBooking.num_people}
                         className="mt-1 block w-full px-3 py-2 border rounded-md"
                       />
                     </div>
+                   
 
                     <div className="flex justify-end space-x-3">
                       <button

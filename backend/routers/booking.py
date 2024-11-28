@@ -17,9 +17,10 @@ get_db = database.get_db
 @router.get("/", response_model=List[schemas.Booking])
 def get_all_bookings(db: Session = Depends(get_db),
                     user_id: Optional[int] = Query(None),
-                    room_id: Optional[int] = Query(None)):
+                    room_id: Optional[int] = Query(None),
+                    booking_id: Optional[int]=Query(None)):
 
-    bookings = bookingRepo.get_all_bookings(db,user_id,room_id)
+    bookings = bookingRepo.get_all_bookings(db,user_id,room_id,booking_id)
     return bookings
     
 
