@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, Query, HTTPException, status
 from sqlalchemy.orm import Session
 import database, models, schemas
 from typing import List, Optional
+from datetime import datetime
 
 def get_all_payments(db: Session,
                     bill_id: Optional[int] = Query(None),
@@ -19,6 +20,15 @@ WHERE (bill_id = bill_id)
   AND (type = type);
 '''
 
+def log_to_file(message: str):
+    log_file_path = "C:\\Users\\Asim PC\\Desktop\\DB-Project\\backend\\logs\\payment_logs.txt" 
+    
+    try:
+        with open(log_file_path, "a") as log_file:  # Open the file in append mode
+            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Current timestamp
+            log_file.write(f"{current_time} - {message}\n")  # Write message with timestamp
+    except Exception as e:
+        print(f"Error logging to file: {e}")
 
 
 def make_payment(request:schemas.Payment, db:Session):
@@ -27,9 +37,12 @@ def make_payment(request:schemas.Payment, db:Session):
         db.add(new_payment)
         db.commit()
 
+        log_to_file(f"Payment of amount {request.amount}, of type {request.type} created for Bill ID {request.bill_id}.")
+
         curr_bill = db.query(models.Bill).filter(models.Bill.id==new_payment.bill_id).first()
         curr_bill.total_amount = curr_bill.total_amount+request.amount
         db.commit()
+        log_to_file(f"Bill ID {curr_bill.id} updated. New total amount: {curr_bill.total_amount}.")
 
         db.refresh(new_payment)
         return new_payment
@@ -97,4 +110,5 @@ def deletePayment(payment_id: int, db: Session):
     
     db.delete(payment)
     db.commit()
+    log_to_file(f"Payment ID {payment_id} deleted successfully.")    
     return {"detail": "Payment deleted successfully"}

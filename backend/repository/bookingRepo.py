@@ -5,6 +5,7 @@ import database, models, schemas
 from typing import List, Optional
 from repository import billRepo, paymentRepo
 from sqlalchemy.exc import SQLAlchemyError
+from datetime import datetime
 
 
 def get_all_bookings(db: Session, user_id: Optional[int] = Query(None), room_id: Optional[int] = Query(None)):
@@ -24,7 +25,15 @@ WHERE (user_id IS NULL OR user_id = user_id_param)
   AND (room_id IS NULL OR room_id = room_id_param);
 '''
 
-
+def log_to_file(message: str):
+    log_file_path = "C:\\Users\\Asim PC\\Desktop\\DB-Project\\backend\\logs\\booking_logs.txt" 
+    
+    try:
+        with open(log_file_path, "a") as log_file:  # Open the file in append mode
+            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Current timestamp
+            log_file.write(f"{current_time} - {message}\n")  # Write message with timestamp
+    except Exception as e:
+        print(f"Error logging to file: {e}")
 
 
 def add_new_booking(request: schemas.makeBooking, db: Session):
@@ -76,10 +85,11 @@ def add_new_booking(request: schemas.makeBooking, db: Session):
         db.add(new_booking)
         
         # Update room booked status
-        found_room.booked_status = 1
+       # found_room.booked_status = 1
         db.commit()
         db.refresh(new_booking)
-
+        log_to_file(f"New booking created with ID: {new_booking.id}, User: {request.user_id}, Room ID: {rid}, Start Date: {request.start_date}, End Date: {request.end_date}")
+        
         return new_booking
     except (SQLAlchemyError, ValueError) as e:
         db.rollback()
@@ -142,10 +152,15 @@ def cancel_booking(id, db: Session):
     bill = db.query(models.Bill).filter(models.Bill.id == booking.bill_id).first()
     payment = db.query(models.Payment).filter(models.Payment.id == booking.payment_id).first()
 
+    log_to_file(f"Booking with ID {id} canceled by user {booking.user_id}.")
+
+
     if bill:
         db.delete(bill)
+        log_to_file(f"Bill with ID {bill.id} deleted for booking {id}.")
     if payment:
         db.delete(payment)
+        log_to_file(f"Payment with ID {payment.id} deleted for booking {id}.")
 
     db.delete(booking)
     db.commit()

@@ -27,3 +27,4 @@ app.include_router(rooms.router)
 app.include_router(booking.router)
 app.include_router(party.router)
 app.include_router(tour.router)
+

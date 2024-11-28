@@ -4,6 +4,7 @@ from hashing import Hash
 import database, models, schemas, JWTtoken
 import oauth2
 from fastapi.security import OAuth2PasswordRequestForm
+from datetime import datetime
 
 def loginFunc(logIn: OAuth2PasswordRequestForm, db: Session):
     role = ""
@@ -28,6 +29,15 @@ def loginFunc(logIn: OAuth2PasswordRequestForm, db: Session):
         data={"sub": user.email, "role": role}
     )
     return schemas.Token(access_token=access_token, token_type="bearer", role=role)
+
+
+def log_to_file(message: str):
+    try:
+        with open("../logs/signup_logs.txt", "a") as log_file:  # Open the file in append mode
+            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Current timestamp
+            log_file.write(f"{current_time} - {message}\n")  # Write message with timestamp
+    except Exception as e:
+        print(f"Error logging to file: {e}")
 
 
 def signUpFunc(request: schemas.UserSignUp, db: Session):  

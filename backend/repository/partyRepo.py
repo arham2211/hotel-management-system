@@ -5,19 +5,39 @@ import models, schemas
 from typing import List, Optional
 from repository import paymentRepo
 
+
+def updateAvailability(id,status,db):
+    hall= db.query(models.PartyHalls).filter(models.PartyHalls.id==id).first()
+    hall.available=status
+    db.commit()
+    db.refresh(hall)
+    return hall
+
 def add_new_party(request: schemas.makePartyReservation, db: Session):
     try:
+        # Get the latest bill for the user
         bill = db.query(models.Bill).filter(models.Bill.user_id == request.user_id).order_by(models.Bill.id.desc()).first()
 
         if not bill:
             raise HTTPException(status_code=404, detail="Bill not found. You haven't booked a room yet. First book a room and then try to reserve a party hall.")
 
-        hall = db.query(models.PartyHalls).filter(models.PartyHalls.id == request.hall_id).first()
-    #    hall= hall.filter(models.PartyHalls.available==1).first()
-        if not hall:
-            raise HTTPException(status_code=404, detail="Party hall not found.")
+        # Query the party hall with the specified ID and ensure it is available
+        hall = db.query(models.PartyHalls).filter(
+            models.PartyHalls.id == request.hall_id,
+            models.PartyHalls.available == True
+        ).first()
 
+        if not hall:
+            raise HTTPException(status_code=404, detail="Party hall not found or not available.")
+
+        hall.available = False
+       # db.commit()
+        #db.refresh(hall)
+
+        # Create a new payment
         new_payment = paymentRepo.make_payment(schemas.Payment(amount=request.total_amount, type="Party", bill_id=bill.id), db)
+        
+        # Create a new party reservation
         new_reservation = models.PartyReservation(
             type=request.type,
             hall_id=request.hall_id,
@@ -26,12 +46,13 @@ def add_new_party(request: schemas.makePartyReservation, db: Session):
             start_time=request.start_time,
             end_time=request.end_time,
         )
-     #   hall.available=0
-
-        # Add and commit the new reservation
+        
+        # Mark the hall as unavailable
+        # Add and commit the new reservation and update the hall status
         db.add(new_reservation)
         db.commit()
         db.refresh(new_reservation)
+        db.refresh(hall)
         
         return new_reservation
     
@@ -41,7 +62,9 @@ def add_new_party(request: schemas.makePartyReservation, db: Session):
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         # Close the database session
-        db.close()    
+        db.close()
+
+
 '''''
 DECLARE
     v_bill_id NUMBER;
@@ -136,6 +159,8 @@ WHERE (:bill_id IS NULL OR p.bill_id = :bill_id)
   AND (:user_id IS NULL OR pr.user_id = :user_id);
 '''
 
+
+
 def updatePartyHall(db,
                     id: int, 
                     name: Optional[str] = None, 
@@ -166,9 +191,3 @@ def updatePartyHall(db,
     return party_hall
 
 
-def updateAvailability(id,status,db):
-    hall= db.query(models.PartyHalls).filter(models.PartyHalls.id==id).first()
-    hall.available=status
-    db.commit()
-    db.refresh(hall)
-    return hall
