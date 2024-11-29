@@ -134,6 +134,14 @@ class makeBooking(BaseModel):
             from_attributes = True
 
 
+class checkConstraints(BaseModel):
+    booking_id: int
+    room_cat_id: int
+    room_id: int
+    check_in_date: int
+    check_out_date: int
+
+
 class Payment(BaseModel):
     amount:int
     type: str

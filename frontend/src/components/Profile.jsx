@@ -237,7 +237,7 @@ const Profile = () => {
                             <div>
                               <p className="text-gray-600">Bill No.</p>
                               <p className="font-semibold">
-                                #{payment.bill_id}
+                                #{index + 1}
                               </p>
                             </div>
                             <div>

@@ -18,13 +18,34 @@ const Tour = () => {
     tour_id: null,
     user_id: parseInt(userId),
   });
-  const [cardHolder, setCardHolder] = useState("YOUR NAME");
-  const [cardNumber, setCardNumber] = useState("•••• •••• •••• ••••");
-  const [expiry, setExpiry] = useState("MM/YY");
+  const [cardHolder, setCardHolder] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
   const [cvv, setCvv] = useState("");
   const [isFormComplete, setIsFormComplete] = useState(false);
   const [isPaymentComplete, setIsPaymentComplete] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [fetchCardConsent, setFetchCardConsent] = useState(false);
+
+  const [startDate, setStartDate] = useState(""); // Store the start date
+  const [endDate, setEndDate] = useState("");
+
+  useEffect(() => {
+    // Fetch the booking period from the API (adjust the endpoint as necessary)
+    const fetchBookingPeriod = async () => {
+      try {
+        const response = await api.get(`/bookings/recent_booking/${userId}`); // Example API endpoint
+        if (response.data) {
+          setStartDate(response.data.start_date); // Assume response contains start_date and end_date
+          setEndDate(response.data.end_date);
+        }
+      } catch (err) {
+        setError("Failed to fetch booking period");
+        console.error("Error fetching booking period:", err);
+      }
+    };
+    fetchBookingPeriod();
+  }, []);
 
   useEffect(() => {
     // Check if all required fields are filled
@@ -46,14 +67,36 @@ const Tour = () => {
   }, [formData]);
 
   useEffect(() => {
+    const fetchCardDetails = async () => {
+      if (!fetchCardConsent) return;
+
+      try {
+        const response = await api.get(`/cardDetails/${userId}/details`);
+        if (response.data) {
+          const { card_holder, card_number, expiry_date } = response.data;
+
+          setCardHolder((prev) => (prev === "" ? card_holder || prev : prev));
+          setCardNumber((prev) => (prev === "" ? card_number || prev : prev));
+          setExpiry((prev) => (prev === "" ? expiry_date || prev : prev));
+        }
+      } catch (error) {
+        setError("Unable to pre-fill card details.");
+      }
+    };
+
+    fetchCardDetails();
+  }, [fetchCardConsent, userId]);
+
+  useEffect(() => {
     // Validate card details
     const validateCardDetails = () => {
       return (
-        cardHolder.trim().length > 0 &&
-        cardNumber.trim().length === 19 && // Validate formatted card number
-        expiry.trim().length === 5 && // MM/YY format
-        /^\d{2}\/\d{2}$/.test(expiry) && // Regex for MM/YY format
-        /^\d{3}$/.test(document.querySelector('[placeholder="CVV"]').value) && // Validate CVV
+        cardHolder.trim().length > 0 && // Cardholder name must not be empty
+        /^[a-zA-Z\s]+$/.test(cardHolder) && // Cardholder name must only contain letters and spaces
+        cardNumber.trim().replace(/\s/g, "").length === 19 && // Card number should have 16 digits (ignore spaces)
+        /^\d+$/.test(cardNumber.trim().replace(/\s/g, "")) && // Card number should consist only of digits
+        /^\d{2}\/\d{2}$/.test(expiry) && // Expiry date should match MM/YY format
+        /^\d{3}$/.test(cvv) && // CVV should be exactly 3 digits
         isFormComplete
       );
     };
@@ -113,9 +156,9 @@ const Tour = () => {
       setFormData(initialBookingState);
 
       // Reset individual card form states
-      setCardHolder("YOUR NAME");
-      setCardNumber("•••• •••• •••• ••••");
-      setExpiry("MM/YY");
+      setCardHolder("");
+      setCardNumber("");
+      setExpiry("");
       setCvv("");
 
       // Reset the actual form input values
@@ -145,6 +188,12 @@ const Tour = () => {
     }
     setLoading(true);
     setError(null);
+  };
+
+  const handleFetchCardConsent = () => {
+    if (window.confirm("Would you like us to pre-fill your card details?")) {
+      setFetchCardConsent(true);
+    }
   };
 
   return (
@@ -214,7 +263,8 @@ const Tour = () => {
                     }
                     className="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                     required
-                    min={new Date().toISOString().split("T")[0]}
+                    min={startDate} // Disable dates before the start date
+                    max={endDate}
                   />
                 </div>
 
@@ -258,15 +308,21 @@ const Tour = () => {
                 </svg>
               </div>
               <div className="mt-16">
-                <div className="text-xl tracking-widest mb-2">{cardNumber}</div>
+                <div className="text-xl tracking-widest mb-2">
+                  {cardNumber === "" ? "•••• •••• •••• ••••" : cardNumber}
+                </div>
                 <div className="flex justify-between">
                   <div>
                     <div className="text-xs opacity-75">Card Holder</div>
-                    <div className="text-sm">{cardHolder}</div>
+                    <div className="text-sm">
+                      {cardHolder === "" ? "Your Name" : cardHolder}
+                    </div>
                   </div>
                   <div>
                     <div className="text-xs opacity-75">Expires</div>
-                    <div className="text-sm">{expiry}</div>
+                    <div className="text-sm">
+                      {expiry === "" ? "MM/YY" : expiry}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -278,7 +334,8 @@ const Tour = () => {
                   type="text"
                   className="card-input block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
                   placeholder=""
-                  onChange={(e) => setCardHolder(e.target.value || "YOUR NAME")}
+                  value={cardHolder} // Always respect state
+                  onChange={(e) => setCardHolder(e.target.value || "")}
                 />
                 <label className="absolute left-4 -top-2.5 bg-white px-1 text-sm text-gray-500">
                   Card Holder Name
@@ -290,10 +347,11 @@ const Tour = () => {
                   type="text"
                   className="card-input block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
                   placeholder=""
-                  maxLength="19"
+                  value={cardNumber}
                   onChange={(e) =>
                     setCardNumber(e.target.value || "•••• •••• •••• ••••")
                   }
+                  maxLength="19"
                 />
                 <label className="absolute left-4 -top-2.5 bg-white px-1 text-sm text-gray-500">
                   Card Number
@@ -304,10 +362,11 @@ const Tour = () => {
                 <div className="relative">
                   <input
                     type="text"
-                    className="card-input block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none placeholder-transparent"
+                    className="card-input block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
                     placeholder=""
-                    maxLength="5"
+                    value={expiry}
                     onChange={(e) => setExpiry(e.target.value || "MM/YY")}
+                    maxLength="5"
                   />
                   <label className="absolute left-4 -top-2.5 bg-white px-1 text-sm text-gray-500">
                     Expiry Date
@@ -316,8 +375,10 @@ const Tour = () => {
                 <div className="relative">
                   <input
                     type="password"
-                    className="card-input block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none placeholder-transparent"
-                    placeholder="CVV"
+                    className="card-input block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
+                    placeholder=""
+                    value={cvv}
+                    onChange={(e) => setCvv(e.target.value)}
                     maxLength="3"
                   />
                   <label className="absolute left-4 -top-2.5 bg-white px-1 text-sm text-gray-500">
@@ -325,6 +386,14 @@ const Tour = () => {
                   </label>
                 </div>
               </div>
+
+              <button
+                type="button"
+                onClick={handleFetchCardConsent}
+                className="mb-4 w-full bg-[#ff8c00] text-white py-3 px-4 rounded-lg"
+              >
+                Pre-fill Card Details
+              </button>
               <button
                 type="submit"
                 disabled={!isPaymentComplete}

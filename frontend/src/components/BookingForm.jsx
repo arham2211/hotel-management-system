@@ -113,6 +113,31 @@ const BookingForm = () => {
     }
   };
 
+  const isBookingFormComplete = () => {
+    return (
+      formData.first_name &&
+      formData.last_name &&
+      formData.phone_number &&
+      formData.start_date &&
+      formData.end_date &&
+      extraInformation.room_cat_name &&
+      (extraInformation.adults > 0 || extraInformation.kids > 0) &&
+      error === ""
+    );
+  };
+  // Add new states for payment visibility and form completion
+  const [isPaymentComplete, setIsPaymentComplete] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [isBookingComplete, setIsBookingComplete] = useState(false);
+  const [isCardDetailsComplete, setIsCardDetailsComplete] = useState(false);
+  const [rooms, setRooms] = useState([]);
+
+  // Payment form states
+  const [cardHolder, setCardHolder] = useState("YOUR NAME");
+  const [cardNumber, setCardNumber] = useState("•••• •••• •••• ••••");
+  const [expiry, setExpiry] = useState("MM/YY");
+  const [cvv, setCvv] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -138,6 +163,25 @@ const BookingForm = () => {
 
     try {
       const response = await api.post("/bookings/", formattedData);
+      const data = await api.get(`/bookings/recent_booking/${userId}`);
+      const bookingId = data.data.id;
+      console.log(bookingId);
+
+      const cardDetailsData = {
+        card_holder: cardHolder,
+        card_number: cardNumber,
+        expiry_date: expiry,
+        booking_id: bookingId,
+      };
+      const get_user_id = await api.get(`/cardDetails/${userId}`);
+      console.log("ANS: ",get_user_id);
+      if (!get_user_id.data) {
+        const response2 = await api.post("/cardDetails/", cardDetailsData);
+      } else {
+        const response2 = await api.put(
+          `/cardDetails/${userId}?card_holder=${cardDetailsData.card_holder}&card_number=${cardDetailsData.card_number}&expiry_date=${cardDetailsData.expiry_date}&booking_id=${cardDetailsData.booking_id}`
+        );
+      }
 
       setFormData(defaultFormData);
       setExtraInformation(defaultExtraInformation);
@@ -147,30 +191,6 @@ const BookingForm = () => {
       console.error("Error:", error);
     }
   };
-  const isBookingFormComplete = () => {
-    return (
-      formData.first_name &&
-      formData.last_name &&
-      formData.phone_number &&
-      formData.start_date &&
-      formData.end_date &&
-      extraInformation.room_cat_name &&
-      (extraInformation.adults > 0 || extraInformation.kids > 0) &&
-      error === ""
-    );
-  };
-  // Add new states for payment visibility and form completion
-  const [isPaymentComplete, setIsPaymentComplete] = useState(false);
-  const [showPayment, setShowPayment] = useState(false);
-  const [isBookingComplete, setIsBookingComplete] = useState(false);
-  const [isCardDetailsComplete, setIsCardDetailsComplete] = useState(false);
-  const [rooms, setRooms] = useState([]);
-
-  // Payment form states
-  const [cardHolder, setCardHolder] = useState("YOUR NAME");
-  const [cardNumber, setCardNumber] = useState("•••• •••• •••• ••••");
-  const [expiry, setExpiry] = useState("MM/YY");
-  const [cvv, setCvv] = useState("");
 
   const handleProceedToPayment = () => {
     setShowPayment(true);
@@ -306,6 +326,8 @@ const BookingForm = () => {
                       value={formData.start_date}
                       onChange={handleChange}
                       className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent px-4 py-3"
+                      required
+                      min={new Date().toISOString().split('T')[0]}
                     />
                   </div>
                   <div className="space-y-2">
@@ -318,6 +340,10 @@ const BookingForm = () => {
                       value={formData.end_date}
                       onChange={handleChange}
                       className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent px-4 py-3"
+                      required
+                      min={formData.start_date ? 
+                        new Date(new Date(formData.start_date).getTime() + (3 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] 
+                        : new Date().toISOString().split('T')[0]}
                     />
                   </div>
                 </div>

@@ -1,2 +1,32 @@
 2024-11-29 08:48:12 - Payment of amount 1600, of type Booking created for Bill ID 1.
 2024-11-29 08:48:12 - Bill ID 1 updated. New total amount: 1600.
+2024-11-29 11:14:55 - Payment of amount 150, of type Booking created for Bill ID 2.
+2024-11-29 11:14:55 - Bill ID 2 updated. New total amount: 150.
+2024-11-29 12:08:13 - Payment of amount 0, of type Booking created for Bill ID 3.
+2024-11-29 12:08:13 - Bill ID 3 updated. New total amount: 0.
+2024-11-29 12:12:16 - Payment of amount 700, of type Booking created for Bill ID 4.
+2024-11-29 12:12:16 - Bill ID 4 updated. New total amount: 700.
+2024-11-29 12:18:59 - Payment of amount 2500, of type Booking created for Bill ID 5.
+2024-11-29 12:18:59 - Bill ID 5 updated. New total amount: 2500.
+2024-11-29 12:43:12 - Payment of amount 1250, of type Booking created for Bill ID 3.
+2024-11-29 12:43:12 - Bill ID 3 updated. New total amount: 1250.
+2024-11-29 12:46:50 - Payment of amount 600, of type Booking created for Bill ID 3.
+2024-11-29 12:46:50 - Bill ID 3 updated. New total amount: 600.
+2024-11-29 12:49:37 - Payment of amount 1050, of type Booking created for Bill ID 4.
+2024-11-29 12:49:37 - Bill ID 4 updated. New total amount: 1050.
+2024-11-29 14:24:14 - Payment of amount 5000, of type Tour created for Bill ID 4.
+2024-11-29 14:24:14 - Bill ID 4 updated. New total amount: 6050.
+2024-11-29 14:33:43 - Payment of amount 3000, of type Tour created for Bill ID 4.
+2024-11-29 14:33:43 - Bill ID 4 updated. New total amount: 9050.
+2024-11-29 14:44:20 - Payment of amount 5000, of type Tour created for Bill ID 4.
+2024-11-29 14:44:20 - Bill ID 4 updated. New total amount: 14050.
+2024-11-29 15:28:46 - Payment of amount 1300, of type Booking created for Bill ID 5.
+2024-11-29 15:28:46 - Bill ID 5 updated. New total amount: 1300.
+2024-11-29 15:35:51 - Payment of amount 6500, of type Booking created for Bill ID 5.
+2024-11-29 15:35:51 - Bill ID 5 updated. New total amount: 6500.
+2024-11-29 15:42:40 - Payment of amount 1950, of type Booking created for Bill ID 5.
+2024-11-29 15:42:40 - Bill ID 5 updated. New total amount: 1950.
+2024-11-29 15:44:20 - Payment of amount 1950, of type Booking created for Bill ID 5.
+2024-11-29 15:44:20 - Bill ID 5 updated. New total amount: 1950.
+2024-11-29 15:47:42 - Payment of amount 3000, of type Tour created for Bill ID 5.
+2024-11-29 15:47:42 - Bill ID 5 updated. New total amount: 4950.

@@ -1,9 +1,7 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter,Depends,HTTPException,status
 from sqlalchemy.orm import Session
 from hashing import Hash
 import database, models, schemas
-from typing import Annotated, Optional
-import oauth2
 from repository import userRepo
 
 
@@ -14,6 +12,75 @@ router = APIRouter(
 )
 
 get_db = database.get_db
+
+
+@router.put("/{user_id}")
+def update_card_details(
+    user_id: int,
+    card_holder: str,
+    card_number: int,
+    expiry_date: str,
+    booking_id: int,
+    db: Session = Depends(get_db)
+):
+    # Fetch the card details by user ID
+    card_details = db.query(models.CardDetails).join(
+        models.Booking, models.CardDetails.booking_id == models.Booking.id
+    ).join(
+        models.User, models.Booking.user_id == models.User.id
+    ).filter(
+        models.User.id == user_id
+    ).first()
+
+    # Handle case where no matching card details are found
+    if not card_details:
+        raise HTTPException(status_code=404, detail="Card details not found for the given user.")
+
+    # Update the card details
+    card_details.card_holder = card_holder
+    card_details.card_number = card_number
+    card_details.expiry_date = expiry_date
+
+    card_details.booking_id = booking_id
+
+
+    # Save the changes to the database
+    db.commit()
+    db.refresh(card_details)
+
+    return  card_details
+
+@router.get("/{user_id}/details")
+def get_specific_card_details(user_id:int,db: Session = Depends(get_db)):
+    card_details = db.query(models.CardDetails).join(
+        models.Booking, models.CardDetails.booking_id == models.Booking.id
+    ).join(
+        models.User, models.Booking.user_id == models.User.id
+    ).filter(
+        models.User.id == user_id
+    ).first()
+
+    return card_details
+
+@router.get("/{id}")
+def get_user_id(id:int, db: Session = Depends(get_db)):
+    # Query to find the User ID based on the Card Details and Booking relationships
+    user = db.query(models.User.id).join(
+        models.Booking, models.User.id == models.Booking.user_id
+    ).join(
+        models.CardDetails, models.Booking.id == models.CardDetails.booking_id
+    ).filter(
+        models.User.id == id
+    ).first()
+
+    # Check if a matching user was found
+    if user:
+        return True
+    else:
+        return False
+
+
+    
 
 
 @router.post("/")

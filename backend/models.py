@@ -55,6 +55,18 @@ class CardDetails(Base):
     booking_id = Column(Integer,ForeignKey('Booking.id'))
 
     associated_booking = relationship("Booking", back_populates="card_details")
+
+
+class CheckConstraints(Base):
+    __tablename__ = "CheckConstraints"
+    id = Column(Integer, primary_key=True, index=True)
+    booking_id = Column(Integer,ForeignKey('Booking.id'))
+    room_id = Column(Integer)
+    room_cat_id = Column(Integer)
+    check_in_date = Column(String)
+    check_out_date = Column(String)
+
+    associated_booking = relationship("Booking", back_populates="check_constraints")
     
 
 class RoomCategory(Base):
@@ -93,6 +105,7 @@ class Booking(Base):
     associated_payment = relationship("Payment", back_populates="associated_booking")
     associated_bill = relationship("Bill", back_populates = "associated_booking")
     card_details = relationship("CardDetails", back_populates="associated_booking")
+    check_constraints = relationship("CheckConstraints", back_populates="associated_booking")
     
 
 class Bill(Base):

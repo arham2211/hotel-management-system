@@ -227,3 +227,14 @@ def getTotalBookingsCount(db: Session):
     total_bookings = db.query(func.count(models.Booking.id)).scalar()
     return total_bookings
 #SELECT COUNT(*) AS total_bookings FROM bookings;
+
+
+def get_recent_booking(user_id: int, db: Session):
+    
+    recent_booking = db.query(models.Booking).filter(
+        models.Booking.user_id == user_id
+    ).order_by(
+        models.Booking.id.desc()
+    ).first()
+
+    return recent_booking
