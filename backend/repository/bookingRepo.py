@@ -103,7 +103,7 @@ def add_new_booking(request: schemas.makeBooking, db: Session):
         db.add(new_booking)
         
         # Update room status
-        update_status(rid, db)
+        # update_status(rid, db)
         
         db.commit()
         db.refresh(new_booking)
