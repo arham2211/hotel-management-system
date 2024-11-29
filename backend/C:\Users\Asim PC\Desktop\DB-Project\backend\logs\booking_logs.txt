@@ -27,3 +27,18 @@
 2024-11-29 15:42:40 - New booking created with ID: 5, User: 4, Room ID: 1, Start Date: 2024-12-07, End Date: 2024-12-20
 2024-11-29 15:44:20 - Room status updated for Room ID: 2
 2024-11-29 15:44:20 - New booking created with ID: 5, User: 4, Room ID: 2, Start Date: 2024-12-07, End Date: 2024-12-20
+2024-11-29 17:20:20 - Room status updated for Room ID: 8
+2024-11-29 17:20:20 - New booking created with ID: 6, User: 4, Room ID: 8, Start Date: 2024-11-30, End Date: 2024-12-05
+2024-11-29 17:51:53 - Room status updated for Room ID: 4
+2024-11-29 17:51:53 - New booking created with ID: 7, User: 4, Room ID: 4, Start Date: 2024-12-07, End Date: 2024-12-19
+2024-11-29 18:01:38 - Room status updated for Room ID: 8
+2024-11-29 18:01:38 - New booking created with ID: 8, User: 4, Room ID: 8, Start Date: 2024-11-29, End Date: 2024-12-03
+2024-11-29 18:26:54 - Booking failed: No available room found for the selected category.
+2024-11-29 18:28:50 - Room status updated for Room ID: 8
+2024-11-29 18:28:50 - New booking created with ID: 8, User: 4, Room ID: 8, Start Date: 2024-12-05, End Date: 2024-12-18
+2024-11-29 18:28:50 - Booking with ID 8 canceled by user 4.
+2024-11-29 18:32:02 - Room status updated for Room ID: 8
+2024-11-29 18:32:02 - New booking created with ID: 8, User: 4, Room ID: 8, Start Date: 2024-12-10, End Date: 2025-01-03
+2024-11-29 18:32:02 - Booking with ID 8 canceled by user 4.
+2024-11-29 18:33:46 - Room status updated for Room ID: 8
+2024-11-29 18:33:46 - New booking created with ID: 8, User: 4, Room ID: 8, Start Date: 2024-12-30, End Date: 2025-01-17

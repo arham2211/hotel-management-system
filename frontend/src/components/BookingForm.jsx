@@ -27,6 +27,7 @@ const BookingForm = () => {
   );
   const { token, userId } = useContext(AuthContext);
   const [error, setError] = useState(""); // For error messages
+  const [locationId,SetLocationId] = useState(null);
 
   const calculateTotalCost = (price) => {
     if (formData.start_date && formData.end_date) {
@@ -60,6 +61,7 @@ const BookingForm = () => {
       try {
         const response = await api.get(`/rooms/catprice/${value}/`);
         const roomData = response.data[0];
+        SetLocationId(roomData.id)
         const totalCost = calculateTotalCost(roomData.price);
 
         setFormData((prevData) => ({
@@ -165,7 +167,35 @@ const BookingForm = () => {
       const response = await api.post("/bookings/", formattedData);
       const data = await api.get(`/bookings/recent_booking/${userId}`);
       const bookingId = data.data.id;
-      console.log(bookingId);
+
+      const constraints = await api.get(`/constraints/?room_id=${data.data.room_id}&room_cat_id=${locationId}`);
+
+      const checkDatesConflict = (constraints.data || []).some((constraint) => {
+        const { check_in_date: constraintStart, check_out_date: constraintEnd} = constraint;
+        return (
+          (formattedData.start_date >= constraintStart &&
+            formattedData.start_date <= constraintEnd) || // New start date in range
+          (formattedData.end_date >= constraintStart &&
+            formattedData.end_date <= constraintEnd) || // New end date in range
+          (constraintStart >= formattedData.start_date &&
+            constraintStart <= formattedData.end_date) || // Existing start in range
+          (constraintEnd >= formattedData.start_date &&
+            constraintEnd <= formattedData.end_date) // Existing end in range
+        );
+      });
+
+      if (checkDatesConflict) {
+        const deletePayment = await api.delete(`/payment/${data.data.payment_id}`);
+        const deleteBill = await api.delete(`/bill/?id=${data.data.bill_id}`);
+        const deleteBooking = await api.delete(`/bookings/delete/${data.data.id}`);
+        alert("The selected dates conflict with existing bookings.")
+        setFormData(defaultFormData);
+        setExtraInformation(defaultExtraInformation);
+        setIsBookingComplete(false);
+        throw new Error("The selected dates conflict with existing bookings.");
+      }
+
+      const response2 = await api.post("/constraints/",{booking_id: bookingId,room_id: data.data.room_id, check_in_date: formattedData.start_date, check_out_date: formattedData.end_date});
 
       const cardDetailsData = {
         card_holder: cardHolder,
@@ -174,7 +204,7 @@ const BookingForm = () => {
         booking_id: bookingId,
       };
       const get_user_id = await api.get(`/cardDetails/${userId}`);
-      console.log("ANS: ",get_user_id);
+      
       if (!get_user_id.data) {
         const response2 = await api.post("/cardDetails/", cardDetailsData);
       } else {

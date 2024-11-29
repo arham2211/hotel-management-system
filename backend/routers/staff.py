@@ -16,3 +16,9 @@ get_db = database.get_db
 def get_all_staff(db: Session = Depends(get_db)):
     staff=db.query(models.Staff).all()
     return staff
+
+
+@router.get("/{limit}")
+def get_specific_staff(limit:int,db: Session = Depends(get_db)):
+    staff=db.query(models.Staff).limit(limit).all()
+    return staff

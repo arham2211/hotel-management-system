@@ -11,7 +11,7 @@ export default function Home() {
     <>
       <Carousel />
       <AboutUs />
-      <Room />
+      <Room limit={3}/>
       <Services />
       <Testimonials />
       <Staff />

@@ -10,6 +10,8 @@ import Service from "./routes/Services";
 import ViewRoom from "./routes/ViewRoom";
 import Event from "./routes/Event";
 import Tour from "./routes/Tour";
+import Team from "./routes/Team";
+import Rooms from "./routes/Rooms";
 import Profile from "./routes/Profile";
 import ScrollToTop from "./context/ScrollToTop";
 import { AuthProvider } from "./context/UserContext";
@@ -36,6 +38,8 @@ function AppContent() {
         <Route path="/roomdetails/:roomType" element={<ViewRoom />} />
         <Route path="/events" element={<Event />} />
         <Route path="/tours" element={<Tour />} />
+        <Route path="/team" element={<Team />} />
+        <Route path="/rooms" element={<Rooms />} />
         <Route path="/profile/:username" element={<Profile />} />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/admin/users" element={<Users />} />

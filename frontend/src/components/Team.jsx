@@ -65,7 +65,7 @@ const Staff = () => {
   useEffect(() => {
     const fetchTeamMembers = async () => {
       try {
-        const response = await api.get("/staff/4");
+        const response = await api.get("/staff/8");
 
         const data = response.data;
 

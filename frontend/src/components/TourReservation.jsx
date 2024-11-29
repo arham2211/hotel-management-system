@@ -34,9 +34,9 @@ const Tour = () => {
     // Fetch the booking period from the API (adjust the endpoint as necessary)
     const fetchBookingPeriod = async () => {
       try {
-        const response = await api.get(`/bookings/recent_booking/${userId}`); // Example API endpoint
+        const response = await api.get(`/bookings/recent_booking/${userId}`); 
         if (response.data) {
-          setStartDate(response.data.start_date); // Assume response contains start_date and end_date
+          setStartDate(response.data.start_date); 
           setEndDate(response.data.end_date);
         }
       } catch (err) {

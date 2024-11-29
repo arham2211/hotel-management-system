@@ -26,12 +26,15 @@ function EventBooking() {
   const [halls, setHalls] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [cardHolder, setCardHolder] = useState("YOUR NAME");
-  const [cardNumber, setCardNumber] = useState("•••• •••• •••• ••••");
-  const [expiry, setExpiry] = useState("MM/YY");
+  const [cardHolder, setCardHolder] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
   const [cvv, setCvv] = useState("");
   const [isFormComplete, setIsFormComplete] = useState(false);
   const [isPaymentComplete, setIsPaymentComplete] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [fetchCardConsent, setFetchCardConsent] = useState(false);
 
   useEffect(() => {
     // Check if all required fields are filled
@@ -52,7 +55,7 @@ function EventBooking() {
       const isComplete = Object.values(requiredFields).every(
         (field) => field !== ""
       );
-      //   console.log(isFormComplete);
+    
       setIsFormComplete(isComplete);
     };
 
@@ -60,26 +63,70 @@ function EventBooking() {
   }, [bookingDetails]);
 
   useEffect(() => {
+    // Fetch the booking period from the API (adjust the endpoint as necessary)
+    const fetchBookingPeriod = async () => {
+      try {
+        const response = await api.get(`/bookings/recent_booking/${userId}`);
+        if (response.data) {
+          setStartDate(response.data.start_date);
+          setEndDate(response.data.end_date);
+        }
+      } catch (err) {
+        setError("Failed to fetch booking period");
+        console.error("Error fetching booking period:", err);
+      }
+    };
+    
+    fetchBookingPeriod();
+
+  }, []);
+
+
+
+  useEffect(() => {
+    const fetchCardDetails = async () => {
+      if (!fetchCardConsent) return;
+
+      try {
+        const response = await api.get(`/cardDetails/${userId}/details`);
+        console.log(response)
+        if (response.data) {
+          const { card_holder, card_number, expiry_date } = response.data;
+
+          setCardHolder((prev) => (prev === "" ? card_holder || prev : prev));
+          setCardNumber((prev) => (prev === "" ? card_number || prev : prev));
+          setExpiry((prev) => (prev === "" ? expiry_date || prev : prev));
+        }
+      } catch (error) {
+        setError("Unable to pre-fill card details.");
+      }
+    };
+
+    fetchCardDetails();
+  }, [fetchCardConsent, userId]);
+
+  useEffect(() => {
     // Validate card details
     const validateCardDetails = () => {
-      console.log("Card Details: ", cardHolder, cardNumber, expiry, cvv);
+     
       return (
-        cardHolder.trim().length > 0 &&
-        cardNumber.trim().length === 19 && // Validate formatted card number
-        expiry.trim().length === 5 && // MM/YY format
-        /^\d{2}\/\d{2}$/.test(expiry) && // Regex for MM/YY format
-        /^\d{3}$/.test(document.querySelector('[placeholder="CVV"]').value) && // Validate CVV
+        cardHolder.trim().length > 0 && // Cardholder name must not be empty
+        /^[a-zA-Z\s]+$/.test(cardHolder) && // Cardholder name must only contain letters and spaces
+        cardNumber.trim().replace(/\s/g, "").length === 19 && // Card number should have 16 digits (ignore spaces)
+        /^\d+$/.test(cardNumber.trim().replace(/\s/g, "")) && // Card number should consist only of digits
+        /^\d{2}\/\d{2}$/.test(expiry) && // Expiry date should match MM/YY format
+        /^\d{3}$/.test(cvv) && // CVV should be exactly 3 digits
         isFormComplete
       );
     };
-    console.log("Form complete: ", isFormComplete);
-    console.log("Card Detail: ", validateCardDetails());
+   
     setIsPaymentComplete(validateCardDetails());
   }, [cardHolder, cardNumber, expiry, cvv, isFormComplete]);
 
   const handlePaymentSubmit = async (e) => {
     e.preventDefault();
     if (!isPaymentComplete) return;
+    if (error != null) return
 
     setLoading(true);
     try {
@@ -95,15 +142,15 @@ function EventBooking() {
       };
 
       const response = await api.post("/party/", reservationData);
-      console.log("Reservation successful:", response.data);
+      alert("Reservation and Payment Succesful");
 
       // Reset all forms
       setBookingDetails(initialBookingState);
 
       // Reset individual card form states
-      setCardHolder("YOUR NAME");
-      setCardNumber("•••• •••• •••• ••••");
-      setExpiry("MM/YY");
+      setCardHolder("");
+      setCardNumber("");
+      setExpiry("");
       setCvv("");
 
       // Reset the actual form input values
@@ -114,8 +161,7 @@ function EventBooking() {
 
       setIsPaymentComplete(false);
 
-      // Show success message
-      alert("Booking successful!");
+      
     } catch (error) {
       setError("Failed to process payment or create booking");
       console.error("Error:", error);
@@ -128,7 +174,7 @@ function EventBooking() {
     const fetchHalls = async () => {
       try {
         const response = await api.get("/party/halls/");
-        console.log(response.data);
+
         setHalls(response.data);
       } catch (err) {
         setError("Failed to fetch halls");
@@ -151,13 +197,13 @@ function EventBooking() {
     { id: 4, name: "Photography Package", price: 400 },
   ];
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setBookingDetails((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setBookingDetails((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
 
   const handleServiceToggle = (serviceId) => {
     setBookingDetails((prev) => ({
@@ -181,12 +227,12 @@ function EventBooking() {
     return hallPrice + servicesTotal;
   };
 
-  const validateTimes = () => {
+  const validateTimes = (updatedBookingDetails) => {
     const startDateTime = new Date(
-      `${bookingDetails.date}T${bookingDetails.start_time}`
+      `${updatedBookingDetails.date}T${updatedBookingDetails.start_time}`
     );
     const endDateTime = new Date(
-      `${bookingDetails.date}T${bookingDetails.end_time}`
+      `${updatedBookingDetails.date}T${updatedBookingDetails.end_time}`
     );
     return endDateTime > startDateTime;
   };
@@ -200,21 +246,54 @@ function EventBooking() {
     }
   }, [userId]);
 
-  const validateForm = () => {
-    if (!bookingDetails.hall_id) {
+  const validateForm = (updatedBookingDetails) => {
+    const selectedHall = halls.find(
+      (h) => h.id === parseInt(updatedBookingDetails.hall_id)
+    );
+  
+    if (!selectedHall) {
       setError("Please select a hall");
       return false;
     }
-    if (!validateTimes()) {
+  
+    if (!validateTimes(updatedBookingDetails)) {
       setError("End time must be after start time");
       return false;
     }
-    if (bookingDetails.guestCount <= 0) {
+  
+    if (updatedBookingDetails.guestCount <= 0) {
       setError("Please enter a valid guest count");
       return false;
     }
+  
+    // Check if guest count exceeds hall capacity
+    if (updatedBookingDetails.guestCount > selectedHall.capacity) {
+      setError(
+        `Guest count exceeds hall capacity. The selected hall can accommodate a maximum of ${selectedHall.capacity} guests.`
+      );
+      return false;
+    }
+  
+    setError(null); // Clear any previous errors if validation passes
     return true;
   };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setBookingDetails((prev) => {
+      const updatedBookingDetails = { ...prev, [name]: value };
+      // Validate the form on each change
+      validateForm(updatedBookingDetails);
+      return updatedBookingDetails;
+    });
+  };
+  
+  
+  useEffect(() => {
+    validateForm(bookingDetails); // Validate form on each update
+  }, [bookingDetails, halls]);
+  
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -223,10 +302,17 @@ function EventBooking() {
       alert("Please register or login first.");
       return;
     }
+    if (error != null) return
 
     if (!validateForm()) return;
     setLoading(true);
     setError(null);
+  };
+
+  const handleFetchCardConsent = () => {
+    if (window.confirm("Would you like us to pre-fill your card details?")) {
+      setFetchCardConsent(true);
+    }
   };
 
   return (
@@ -285,6 +371,8 @@ function EventBooking() {
                       onChange={handleInputChange}
                       className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                       required
+                      min={startDate} // Disable dates before the start date
+                      max={endDate}
                     />
                   </div>
 
@@ -408,7 +496,6 @@ function EventBooking() {
                   Contact Information
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  
                   <div>
                     <label className="block text-sm font-medium text-gray-700">
                       First Name
@@ -490,16 +577,20 @@ function EventBooking() {
                 </div>
                 <div className="mt-16">
                   <div className="text-xl tracking-widest mb-2">
-                    {cardNumber}
+                    {cardNumber === "" ? "•••• •••• •••• ••••" : cardNumber}
                   </div>
                   <div className="flex justify-between">
                     <div>
                       <div className="text-xs opacity-75">Card Holder</div>
-                      <div className="text-sm">{cardHolder}</div>
+                      <div className="text-sm">
+                        {cardHolder === "" ? "Your Name" : cardHolder}
+                      </div>
                     </div>
                     <div>
                       <div className="text-xs opacity-75">Expires</div>
-                      <div className="text-sm">{expiry}</div>
+                      <div className="text-sm">
+                        {expiry === "" ? "MM/YY" : expiry}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -511,9 +602,8 @@ function EventBooking() {
                     type="text"
                     className="card-input block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
                     placeholder=""
-                    onChange={(e) =>
-                      setCardHolder(e.target.value || "YOUR NAME")
-                    }
+                    value={cardHolder} // Always respect state
+                    onChange={(e) => setCardHolder(e.target.value || "")}
                   />
                   <label className="absolute left-4 -top-2.5 bg-white px-1 text-sm text-gray-500">
                     Card Holder Name
@@ -525,7 +615,7 @@ function EventBooking() {
                     type="text"
                     className="card-input block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
                     placeholder=""
-                    maxLength="19"
+                    value={cardNumber}
                     onChange={(e) =>
                       setCardNumber(e.target.value || "•••• •••• •••• ••••")
                     }
@@ -539,10 +629,11 @@ function EventBooking() {
                   <div className="relative">
                     <input
                       type="text"
-                      className="card-input block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none placeholder-transparent"
+                      className="card-input block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
                       placeholder=""
-                      maxLength="5"
+                      value={expiry}
                       onChange={(e) => setExpiry(e.target.value || "MM/YY")}
+                      maxLength="5"
                     />
                     <label className="absolute left-4 -top-2.5 bg-white px-1 text-sm text-gray-500">
                       Expiry Date
@@ -551,8 +642,10 @@ function EventBooking() {
                   <div className="relative">
                     <input
                       type="password"
-                      className="card-input block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none placeholder-transparent"
-                      placeholder="CVV"
+                      className="card-input block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
+                      placeholder=""
+                      value={cvv}
+                      onChange={(e) => setCvv(e.target.value)}
                       maxLength="3"
                     />
                     <label className="absolute left-4 -top-2.5 bg-white px-1 text-sm text-gray-500">
@@ -560,6 +653,13 @@ function EventBooking() {
                     </label>
                   </div>
                 </div>
+                <button
+                  type="button"
+                  onClick={handleFetchCardConsent}
+                  className="mb-4 w-full bg-[#ff8c00] text-white py-3 px-4 rounded-lg"
+                >
+                  Pre-fill Card Details
+                </button>
 
                 <button
                   type="submit"
