@@ -1,0 +1,2 @@
+2024-11-29 08:48:12 - Room status updated for Room ID: 6
+2024-11-29 08:48:12 - New booking created with ID: 1, User: 1, Room ID: 6, Start Date: 2024-11-29, End Date: 2024-12-07

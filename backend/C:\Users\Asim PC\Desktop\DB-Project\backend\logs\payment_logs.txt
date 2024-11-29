@@ -1,0 +1,2 @@
+2024-11-29 08:48:12 - Payment of amount 1600, of type Booking created for Bill ID 1.
+2024-11-29 08:48:12 - Bill ID 1 updated. New total amount: 1600.

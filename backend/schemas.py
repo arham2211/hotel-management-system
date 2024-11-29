@@ -42,6 +42,11 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     username: str | None = None
 
+class CardDetails(BaseModel):
+    card_holder: str
+    card_number: str
+    expiry_date: str
+    booking_id: int
 
 class Admin(BaseModel):
     email: str
@@ -59,6 +64,7 @@ class RoomCategory(BaseModel):
     bedtype: str
     view :str
     rating: int
+    capacity: int
 
 class ShowRoomCat(RoomCategory):
     type: str
@@ -67,6 +73,7 @@ class ShowRoomCat(RoomCategory):
     beds: int
     baths: int
     image: str
+    capacity: int
 
 class Rooms(BaseModel):
     id: int
@@ -81,6 +88,7 @@ class roomCatPrice(BaseModel):
     id:int
     type:str
     price:int
+    capacity:int
     class Config:  
         from_attributes = True    
 

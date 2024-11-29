@@ -46,6 +46,17 @@ class Room(Base):
     category = relationship("RoomCategory", back_populates='rooms')
     current_booking = relationship("Booking", back_populates='associated_room')
 
+class CardDetails(Base):
+    __tablename__ = "CardDetails"
+    id = Column(Integer, primary_key=True, index=True)
+    card_holder = Column(String)
+    card_number = Column(String)
+    expiry_date = Column(String)
+    booking_id = Column(Integer,ForeignKey('Booking.id'))
+
+    associated_booking = relationship("Booking", back_populates="card_details")
+    
+
 class RoomCategory(Base):
     __tablename__="RoomCategory"
     id = Column(Integer, primary_key=True, index=True) 
@@ -59,7 +70,8 @@ class RoomCategory(Base):
     size = Column(Integer)
     bedtype=Column(String)
     view = Column(String)
-    
+    capacity = Column(Integer)
+
     rooms = relationship("Room", back_populates='category')
 
 
@@ -80,7 +92,8 @@ class Booking(Base):
     associated_room = relationship("Room", back_populates='current_booking')
     associated_payment = relationship("Payment", back_populates="associated_booking")
     associated_bill = relationship("Bill", back_populates = "associated_booking")
-    #associated_bill_user_booking = relationship("Associated_Bill_User_Booking", back_populates="booking")
+    card_details = relationship("CardDetails", back_populates="associated_booking")
+    
 
 class Bill(Base):
     __tablename__ = "Bill"
@@ -95,21 +108,7 @@ class Bill(Base):
 
     customer = relationship("User", back_populates='associated_bill')
     all_payments=relationship("Payment", back_populates='associated_bill')
- #   associated_bill_user_booking = relationship("Associated_Bill_User_Booking", back_populates="bill")
-
-
-# class Associated_Bill_User_Booking(Base):
-#     __tablename__ = "Associated_Bill_User_Booking"
-#     id = Column(Integer, primary_key=True, index=True)
-#     user_id = Column(Integer, ForeignKey(User.id))
-#     bill_id = Column(Integer, ForeignKey(Bill.id))
-#     booking_id = Column(Integer, ForeignKey(Booking.id))    
-#     # Relationships
-#     user = relationship("User", back_populates="associated_bill_user_booking")
-#     bill = relationship("Bill", back_populates="associated_bill_user_booking")
-#    # booking = relationship("Booking", back_populates="associated_bill_user_booking")
-
-
+ 
 class Payment(Base):
     __tablename__ = "Payment"
     id = Column(Integer, primary_key=True, index=True) 
