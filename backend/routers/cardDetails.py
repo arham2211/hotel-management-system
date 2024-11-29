@@ -30,6 +30,6 @@ def add_card_details(request:schemas.CardDetails, db:Session=Depends(get_db)):
     db.refresh(new_card)
     return new_card
 
-def 
+
 
 

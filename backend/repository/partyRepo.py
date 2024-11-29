@@ -30,7 +30,7 @@ def add_new_party(request: schemas.makePartyReservation, db: Session):
         if not hall:
             raise HTTPException(status_code=404, detail="Party hall not found or not available.")
 
-        hall.available = False
+        #hall.available = False
        # db.commit()
         #db.refresh(hall)
 
@@ -52,7 +52,7 @@ def add_new_party(request: schemas.makePartyReservation, db: Session):
         db.add(new_reservation)
         db.commit()
         db.refresh(new_reservation)
-        db.refresh(hall)
+      #  db.refresh(hall)
         
         return new_reservation
     

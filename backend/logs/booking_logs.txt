@@ -1,0 +1,10 @@
+2024-11-28 10:59:44 - New booking created with ID: 10, User: 2, Room ID: 1, Start Date: 2024-11-28, End Date: 2024-11-28
+2024-11-28 11:04:44 - Booking with ID 10 canceled by user 2.
+2024-11-28 11:04:44 - Bill with ID 7 deleted for booking 10.
+2024-11-28 11:04:44 - Payment with ID 24 deleted for booking 10.
+2024-11-28 12:55:06 - New booking created with ID: 5, User: 3, Room ID: 7, Start Date: 2024-11-29, End Date: 2024-12-05
+2024-11-28 14:40:45 - New booking created with ID: 6, User: 4, Room ID: 7, Start Date: 2024-11-28, End Date: 2024-12-05
+2024-11-28 14:43:36 - New booking created with ID: 7, User: 4, Room ID: 1, Start Date: 2024-11-28, End Date: 2024-11-29
+2024-11-28 14:44:23 - New booking created with ID: 8, User: 4, Room ID: 1, Start Date: 2024-11-28, End Date: 2024-11-29
+2024-11-28 14:45:26 - New booking created with ID: 9, User: 4, Room ID: 1, Start Date: 2024-11-28, End Date: 2024-11-29
+2024-11-28 14:46:09 - New booking created with ID: 10, User: 4, Room ID: 1, Start Date: 2024-11-28, End Date: 2024-11-29

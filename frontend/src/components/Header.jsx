@@ -45,6 +45,8 @@ export default function Header() {
       setToken(storedToken);
       const extractedRole = storedToken.split("_").pop();
       setRole(extractedRole);
+
+      console.log(role);
     }
     const fetchUsername = async () => {
       try {

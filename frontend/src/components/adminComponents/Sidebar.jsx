@@ -16,11 +16,11 @@ const Sidebar = () => {
     { id: 1, name: "Bills", icon: faReceipt },
     { id: 2, name: "Bookings", icon: faCalendar },
     { id: 3, name: "Users", icon: faUser },
-    { id: 4, name: "Party Reservations", icon: faTicket },
-    { id: 5, name: "Payments", icon: faCreditCard },
-    { id: 6, name: "Rooms", icon: faDoorOpen },
-    { id: 7, name: "Staff", icon: faUserCircle },
-    { id: 8, name: "Tour Reservations", icon: faBookmark },
+    
+    { id: 4, name: "Payments", icon: faCreditCard },
+    
+    { id: 5, name: "Staff", icon: faUserCircle },
+   
   ];
 
   return (

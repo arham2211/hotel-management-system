@@ -23,11 +23,11 @@ class updateUser(BaseModel):
         from_attributes = True
 
 
-class Staff(BaseModel):
-    username: str
-    email: str
-    password: str
-    type: str
+# class Staff(BaseModel):
+#     username: str
+#     email: str
+#     password: str
+#     type: str
 
 class Login(BaseModel):
     email: str
@@ -157,6 +157,8 @@ class Staff(BaseModel):
     designation:str
     salary:int
     manager_id:int
+    class Config:
+        from_attributes = True
 
 class Bill(BaseModel):
     id:int
