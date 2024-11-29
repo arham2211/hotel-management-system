@@ -18,6 +18,7 @@ import Users from "./components/adminComponents/User";
 import Bill from "./components/adminComponents/Bill";
 import Payment from "./components/adminComponents/Payment";
 import Bookings from "./components/adminComponents/Booking";
+import Staff from "./components/adminComponents/Staff";
 import "./App.css";
 
 function AppContent() {
@@ -41,6 +42,7 @@ function AppContent() {
         <Route path="/admin/bills" element={<Bill />} />
         <Route path="/admin/payments" element={<Payment />} />
         <Route path="/admin/bookings" element={<Bookings />} />
+        <Route path="/admin/staff" element={<Staff />} />
       </Routes>
       {/* Conditionally render the Newsletter and Footer */}
       {!(location.pathname.startsWith("/admin")) && (
