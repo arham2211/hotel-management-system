@@ -20,23 +20,20 @@ const BookingForm = () => {
     kids: 0,
     room_cat_name: "",
   };
-  // const gstRate = 0.18; // GST of 18%
-  // const subtotal = costPerNight * stayDuration;
-  // const gstAmount = subtotal * gstRate;
-  // const total = subtotal + gstAmount;
 
   const [formData, setFormData] = useState(defaultFormData);
   const [extraInformation, setExtraInformation] = useState(
     defaultExtraInformation
   );
   const { token, userId } = useContext(AuthContext);
+  const [error, setError] = useState(""); // For error messages
+  const [locationId,SetLocationId] = useState(null);
 
   const calculateTotalCost = (price) => {
     if (formData.start_date && formData.end_date) {
       const startDate = new Date(formData.start_date);
       const endDate = new Date(formData.end_date);
       const days = (endDate - startDate) / (1000 * 60 * 60 * 24);
-      console.log(days);
       return days > 0 ? days * price : 0;
     }
     return 0;
@@ -64,7 +61,7 @@ const BookingForm = () => {
       try {
         const response = await api.get(`/rooms/catprice/${value}/`);
         const roomData = response.data[0];
-        console.log(roomData);
+        SetLocationId(roomData.id)
         const totalCost = calculateTotalCost(roomData.price);
 
         setFormData((prevData) => ({
@@ -76,21 +73,40 @@ const BookingForm = () => {
           ...prevInfo,
           room_cat_name: value,
           room_price: roomData.price,
+          capacity: roomData.capacity, // Store capacity for validation
         }));
+        setError(""); // Clear error on valid room selection
       } catch (error) {
         console.error("Error fetching room details:", error);
+        setError("Failed to fetch room details. Please try again.");
       }
+    } else if (name === "adults" || name === "kids") {
+      const updatedPeople = {
+        ...extraInformation,
+        [name]: parseInt(value) || 0,
+      };
+      const totalPeople =
+        (updatedPeople.adults || 0) + (updatedPeople.kids || 0);
+
+      // Check against room capacity
+      if (
+        extraInformation.capacity &&
+        totalPeople > extraInformation.capacity
+      ) {
+        setError(
+          `The total number of people (${totalPeople}) exceeds the room capacity of ${extraInformation.capacity}.`
+        );
+      } else {
+        setError(""); // Clear error if within capacity
+      }
+
+      setExtraInformation(updatedPeople);
     } else if (name === "start_date" || name === "end_date") {
       setFormData((prevData) => {
         const updatedFormData = { ...prevData, [name]: value };
         const totalCost = calculateTotalCost(extraInformation.room_price);
         return { ...updatedFormData, total_cost: totalCost };
       });
-    } else if (name === "adults" || name === "kids") {
-      setExtraInformation((prevInfo) => ({
-        ...prevInfo,
-        [name]: parseInt(value) || 0,
-      }));
     } else {
       setFormData((prevData) => ({
         ...prevData,
@@ -98,6 +114,31 @@ const BookingForm = () => {
       }));
     }
   };
+
+  const isBookingFormComplete = () => {
+    return (
+      formData.first_name &&
+      formData.last_name &&
+      formData.phone_number &&
+      formData.start_date &&
+      formData.end_date &&
+      extraInformation.room_cat_name &&
+      (extraInformation.adults > 0 || extraInformation.kids > 0) &&
+      error === ""
+    );
+  };
+  // Add new states for payment visibility and form completion
+  const [isPaymentComplete, setIsPaymentComplete] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [isBookingComplete, setIsBookingComplete] = useState(false);
+  const [isCardDetailsComplete, setIsCardDetailsComplete] = useState(false);
+  const [rooms, setRooms] = useState([]);
+
+  // Payment form states
+  const [cardHolder, setCardHolder] = useState("YOUR NAME");
+  const [cardNumber, setCardNumber] = useState("•••• •••• •••• ••••");
+  const [expiry, setExpiry] = useState("MM/YY");
+  const [cvv, setCvv] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -108,6 +149,12 @@ const BookingForm = () => {
     }
 
     const numPeople = extraInformation.adults + extraInformation.kids;
+    if (numPeople > extraInformation.capacity) {
+      setError(
+        `Cannot proceed: total number of people (${numPeople}) exceeds the room capacity of ${extraInformation.capacity}.`
+      );
+      return;
+    }
     const formattedData = {
       ...formData,
       start_date: formatDate(formData.start_date),
@@ -115,41 +162,65 @@ const BookingForm = () => {
       user_id: parseInt(userId),
       num_people: numPeople,
     };
-    console.log(formattedData);
 
     try {
       const response = await api.post("/bookings/", formattedData);
-      console.log("Response:", response.data);
+      const data = await api.get(`/bookings/recent_booking/${userId}`);
+      const bookingId = data.data.id;
+
+      const constraints = await api.get(`/constraints/?room_id=${data.data.room_id}&room_cat_id=${locationId}`);
+
+      const checkDatesConflict = (constraints.data || []).some((constraint) => {
+        const { check_in_date: constraintStart, check_out_date: constraintEnd} = constraint;
+        return (
+          (formattedData.start_date >= constraintStart &&
+            formattedData.start_date <= constraintEnd) || // New start date in range
+          (formattedData.end_date >= constraintStart &&
+            formattedData.end_date <= constraintEnd) || // New end date in range
+          (constraintStart >= formattedData.start_date &&
+            constraintStart <= formattedData.end_date) || // Existing start in range
+          (constraintEnd >= formattedData.start_date &&
+            constraintEnd <= formattedData.end_date) // Existing end in range
+        );
+      });
+
+      if (checkDatesConflict) {
+        const deletePayment = await api.delete(`/payment/${data.data.payment_id}`);
+        const deleteBill = await api.delete(`/bill/?id=${data.data.bill_id}`);
+        const deleteBooking = await api.delete(`/bookings/delete/${data.data.id}`);
+        alert("The selected dates conflict with existing bookings.")
+        setFormData(defaultFormData);
+        setExtraInformation(defaultExtraInformation);
+        setIsBookingComplete(false);
+        throw new Error("The selected dates conflict with existing bookings.");
+      }
+
+      const response2 = await api.post("/constraints/",{booking_id: bookingId,room_id: data.data.room_id, check_in_date: formattedData.start_date, check_out_date: formattedData.end_date});
+
+      const cardDetailsData = {
+        card_holder: cardHolder,
+        card_number: cardNumber,
+        expiry_date: expiry,
+        booking_id: bookingId,
+      };
+      const get_user_id = await api.get(`/cardDetails/${userId}`);
+      
+      if (!get_user_id.data) {
+        const response2 = await api.post("/cardDetails/", cardDetailsData);
+      } else {
+        const response2 = await api.put(
+          `/cardDetails/${userId}?card_holder=${cardDetailsData.card_holder}&card_number=${cardDetailsData.card_number}&expiry_date=${cardDetailsData.expiry_date}&booking_id=${cardDetailsData.booking_id}`
+        );
+      }
+
       setFormData(defaultFormData);
       setExtraInformation(defaultExtraInformation);
       setIsBookingComplete(true);
+      alert("Booking and Payment successful!");
     } catch (error) {
       console.error("Error:", error);
     }
   };
-  // Add new states for payment visibility and form completion
-  const [isPaymentComplete, setIsPaymentComplete] = useState(false);
-  const [showPayment, setShowPayment] = useState(false);
-  const [isBookingComplete, setIsBookingComplete] = useState(false);
-  const [isCardDetailsComplete, setIsCardDetailsComplete] = useState(false);
-  const [rooms, setRooms] = useState([]);
-
-  const isBookingFormComplete = () => {
-    return (
-      formData.first_name &&
-      formData.last_name &&
-      formData.phone_number &&
-      formData.start_date &&
-      formData.end_date &&
-      extraInformation.room_cat_name &&
-      (extraInformation.adults > 0 || extraInformation.kids > 0)
-    );
-  };
-
-  // Payment form states
-  const [cardHolder, setCardHolder] = useState("YOUR NAME");
-  const [cardNumber, setCardNumber] = useState("•••• •••• •••• ••••");
-  const [expiry, setExpiry] = useState("MM/YY");
 
   const handleProceedToPayment = () => {
     setShowPayment(true);
@@ -157,8 +228,7 @@ const BookingForm = () => {
 
   const handlePaymentSubmit = (e) => {
     e.preventDefault();
-    // Process payment first
-    console.log("Payment processed");
+
     setIsPaymentComplete(true);
     // Then trigger the main form submission to create the booking
     handleSubmit(e);
@@ -166,24 +236,26 @@ const BookingForm = () => {
   };
   useEffect(() => {
     const validateCardDetails = () => {
+      // Ensure all fields are valid
       return (
-        cardHolder.trim().length > 0 &&
-        cardNumber.trim().length === 19 && // Validate formatted card number
-        expiry.trim().length === 5 && // MM/YY format
-        /^\d{2}\/\d{2}$/.test(expiry) && // Regex for MM/YY format
-        /^\d{3}$/.test(document.querySelector('[placeholder="CVV"]').value) // Validate CVV
+        cardHolder.trim().length > 0 && // Cardholder name must not be empty
+        /^[a-zA-Z\s]+$/.test(cardHolder) && // Cardholder name must only contain letters and spaces
+        cardNumber.trim().replace(/\s/g, "").length === 19 && // Card number should have 16 digits (ignore spaces)
+        /^\d+$/.test(cardNumber.trim().replace(/\s/g, "")) && // Card number should consist only of digits
+        /^\d{2}\/\d{2}$/.test(expiry) && // Expiry date should match MM/YY format
+        /^\d{3}$/.test(cvv) && // CVV should be exactly 3 digits
+        error === "" // No existing errors
       );
     };
 
     setIsCardDetailsComplete(validateCardDetails());
-  }, [cardHolder, cardNumber, expiry]);
+  }, [cardHolder, cardNumber, expiry, cvv, error]);
 
   useEffect(() => {
     const fetchCategory = async () => {
       try {
         const response = await api.get("/rooms/");
         setRooms(response.data);
-        console.log(response.data);
       } catch (err) {
         setError("Failed to fetch locations");
         console.error("Error fetching locations:", err);
@@ -212,6 +284,7 @@ const BookingForm = () => {
             <div className="bg-white rounded-xl shadow-lg p-8">
               {/* Original booking form */}
               <form onSubmit={handleSubmit} className="space-y-6">
+                {error && <p style={{ color: "red" }}>{error}</p>}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
                     Full Name
@@ -283,6 +356,8 @@ const BookingForm = () => {
                       value={formData.start_date}
                       onChange={handleChange}
                       className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent px-4 py-3"
+                      required
+                      min={new Date().toISOString().split('T')[0]}
                     />
                   </div>
                   <div className="space-y-2">
@@ -295,6 +370,10 @@ const BookingForm = () => {
                       value={formData.end_date}
                       onChange={handleChange}
                       className="block w-full rounded-lg border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent px-4 py-3"
+                      required
+                      min={formData.start_date ? 
+                        new Date(new Date(formData.start_date).getTime() + (3 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0] 
+                        : new Date().toISOString().split('T')[0]}
                     />
                   </div>
                 </div>
@@ -427,9 +506,12 @@ const BookingForm = () => {
                           <input
                             type="password"
                             className="card-input block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none placeholder-transparent"
-                            placeholder="CVV"
+                            placeholder=""
                             maxLength="3"
+                            value={cvv}
+                            onChange={(e) => setCvv(e.target.value)}
                           />
+
                           <label className="absolute left-4 -top-2.5 bg-white px-1 text-sm text-gray-500">
                             CVV
                           </label>

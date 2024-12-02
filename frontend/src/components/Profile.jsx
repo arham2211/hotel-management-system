@@ -90,6 +90,20 @@ const Profile = () => {
     setToken(null);
     navigate("/"); // Redirect to the home page
   };
+  const handleCheckout = async () => {
+    try {
+      const data = await api.get(`/bookings/recent_booking/${userId}`);
+      const bookingId = data.data.id;
+      const response = await api.delete(`/constraints/${bookingId}`);
+    } catch (err) {
+      console.error(`Error fetching recent booking: `, err);
+    }
+    localStorage.removeItem("token");
+    localStorage.removeItem("user_id");
+    setUserId(null);
+    setToken(null);
+    navigate("/"); // Redirect to the home page
+  };
 
   const toggleTourDetails = (tourId) => {
     setExpandedTour(expandedTour === tourId ? null : tourId);
@@ -98,9 +112,9 @@ const Profile = () => {
     setExpandedEvent(expandedEvent === eventId ? null : eventId);
   };
 
-  // const togglePaymentDetails = (paymentId) => {
-  //   setExpandedPayment(expandedPayment === paymentId ? null : paymentId);
-  // };
+  const togglePaymentDetails = (paymentId) => {
+    setExpandedPayment(expandedPayment === paymentId ? null : paymentId);
+  };
 
   // Calculate total for each booking and its associated tours
   const calculateBookingTotal = (booking) => {
@@ -123,7 +137,7 @@ const Profile = () => {
       bookingTotal: bookingPaymentsTotal,
       partyTotal: partyPaymentsTotal,
       tourTotal: tourPaymentsTotal,
-      total: bookingPaymentsTotal + tourPaymentsTotal + partyPaymentsTotal
+      total: bookingPaymentsTotal + tourPaymentsTotal + partyPaymentsTotal,
     };
   };
 
@@ -145,7 +159,26 @@ const Profile = () => {
     );
   }
 
-  if (!userData.length) return null;
+  if (!userData.length) {
+    return (
+      <div className="min-h-screen bg-gray-100 py-8">
+        <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+          {/* User Header Section */}
+
+          <div className="flex justify-between">
+            <h1 className="text-3xl font-bold text-gray-800">User Profile</h1>
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center 2xl:text-[1.6rem] bg-[#ff8c00] text-[#ffffff] sm:px-4 sm:py-2 md:px-3 md:py-2 lg:px-6 lg:py-[0.7rem] 2xl:px-6 2xl:py-3 rounded-full transition-colors duration-300 ease-in-out hover:text-[#002366]"
+            >
+              <FontAwesomeIcon icon={faSignOutAlt} />
+              <span className="ml-1 sm:ml-2">Logout</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Calculate grand total
   const grandTotal = userData.reduce((sum, booking) => {
@@ -160,13 +193,22 @@ const Profile = () => {
         <div className="border-b pb-6">
           <div className="flex justify-between">
             <h1 className="text-3xl font-bold text-gray-800">User Profile</h1>
-            <button
-              onClick={handleLogout}
-              className="inline-flex items-center 2xl:text-[1.6rem] bg-[#ff8c00] text-[#ffffff] sm:px-4 sm:py-2 md:px-3 md:py-2 lg:px-6 lg:py-[0.7rem] 2xl:px-6 2xl:py-3 rounded-full transition-colors duration-300 ease-in-out hover:text-[#002366]"
-            >
-              <FontAwesomeIcon icon={faSignOutAlt} />
-              <span className="ml-1 sm:ml-2">Logout</span>
-            </button>
+            <div>
+              <button
+                onClick={handleLogout}
+                className="inline-flex me-10 items-center 2xl:text-[1.6rem] bg-[#ff8c00] text-[#ffffff] sm:px-4 sm:py-2 md:px-3 md:py-2 lg:px-6 lg:py-[0.7rem] 2xl:px-6 2xl:py-3 rounded-full transition-colors duration-300 ease-in-out hover:text-[#002366]"
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} />
+                <span className="ml-1 sm:ml-2">Logout</span>
+              </button>
+              <button
+                onClick={handleCheckout}
+                className="inline-flex items-center 2xl:text-[1.6rem] bg-[#ff8c00] text-[#ffffff] sm:px-4 sm:py-2 md:px-3 md:py-2 lg:px-6 lg:py-[0.7rem] 2xl:px-6 2xl:py-3 rounded-full transition-colors duration-300 ease-in-out hover:text-[#002366]"
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} />
+                <span className="ml-1 sm:ml-2">Checkout</span>
+              </button>
+            </div>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-4">
             <div>
@@ -236,9 +278,7 @@ const Profile = () => {
                           <div className="grid grid-cols-3 gap-4">
                             <div>
                               <p className="text-gray-600">Bill No.</p>
-                              <p className="font-semibold">
-                                #{payment.bill_id}
-                              </p>
+                              <p className="font-semibold">#{index + 1}</p>
                             </div>
                             <div>
                               <p className="text-gray-600">Amount</p>
@@ -318,7 +358,9 @@ const Profile = () => {
                                 </div>
                                 <div>
                                   <p className="text-gray-600">Capacity</p>
-                                  <p className="font-semibold">{eventData.associated_hall.capacity}</p>
+                                  <p className="font-semibold">
+                                    {eventData.associated_hall.capacity}
+                                  </p>
                                 </div>
                                 <div>
                                   <p className="text-gray-600">Amount</p>

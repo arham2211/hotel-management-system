@@ -47,3 +47,8 @@ def update_booking(id,
 def get_booking_total_count(db: Session = Depends(get_db)):
     total_bookings = bookingRepo.getTotalBookingsCount(db)
     return {"total_bookings": total_bookings}
+
+
+@router.get("/recent_booking/{id}")
+def get_recent_booking(id:int, db: Session = Depends(get_db)):
+    return bookingRepo.get_recent_booking(id,db)

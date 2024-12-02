@@ -17,8 +17,8 @@ def get_all_room_cat(db: Session = Depends(get_db)):
     rooms = db.query(models.RoomCategory).all()
     return rooms
 
-@router.get("/three/",response_model=List[schemas.ShowRoomCat])
-def get_three_rooms_cat(limit: int = 3, db: Session = Depends(get_db)):
+@router.get("/{limit}/",response_model=List[schemas.ShowRoomCat])
+def get_limit_rooms_cat(limit: int, db: Session = Depends(get_db)):
     rooms = db.query(models.RoomCategory).filter(models.RoomCategory.rating.in_([3, 4, 5])).limit(limit).all()
     if rooms:
         return rooms

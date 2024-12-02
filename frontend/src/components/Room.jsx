@@ -3,13 +3,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faStar,faBed,faBath,faWifi} from "@fortawesome/free-solid-svg-icons";
 import api from "../Api";
 
-export default function Room() {
+export default function Room(props) {
   const [roomData, setRoomData] = useState([]);
   const [imageSources, setImageSources] = useState({});
 
   const fetchRoomData = async () => {
     try {
-      const response = await api.get("/rooms/three/");
+      const response = await api.get(`/rooms/${props.limit}`);
       setRoomData(response.data);
       loadImages(response.data);
     } catch (error) {
@@ -55,9 +55,9 @@ export default function Room() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {roomData.length > 0 ? (
-          roomData.map((room) => (
+          roomData.map((room,index) => (
             <div
-              key={room.image}
+              key={index}
               className="shadow-[0_0.5rem_1rem_rgba(0,0,0,0.15)] rounded-2[px]"
             >
               <div className="relative">

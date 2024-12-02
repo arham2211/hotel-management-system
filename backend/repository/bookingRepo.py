@@ -37,13 +37,30 @@ def log_to_file(message: str):
         print(f"Error logging to file: {e}")
 
 
+def update_status(room_id: int, db: Session):
+    try:
+        # Update the room's booked status to True
+        room = db.query(models.Room).filter(models.Room.id == room_id).first()
+        if not room:
+            raise ValueError(f"Room with ID {room_id} not found.")
+        
+        room.booked_status = True
+        db.add(room)  # Mark for update
+        db.commit()
+        db.refresh(room)
+        log_to_file(f"Room status updated for Room ID: {room_id}")
+    except Exception as e:
+        log_to_file(f"Failed to update room status for Room ID: {room_id}. Error: {str(e)}")
+        raise e
+
 def add_new_booking(request: schemas.makeBooking, db: Session):
     try:
         # Start the transaction
         found_room = db.query(models.Room).filter(
             models.Room.category_id == request.room_cat_id,
-            models.Room.booked_status == 0
+            models.Room.booked_status == False
         ).first()
+        
         
         if not found_room:
             raise ValueError("No available room found for the selected category.")
@@ -85,8 +102,9 @@ def add_new_booking(request: schemas.makeBooking, db: Session):
         )
         db.add(new_booking)
         
-        # Update room booked status
-        found_room.booked_status = 1
+        # Update room status
+        # update_status(rid, db)
+        
         db.commit()
         db.refresh(new_booking)
         log_to_file(f"New booking created with ID: {new_booking.id}, User: {request.user_id}, Room ID: {rid}, Start Date: {request.start_date}, End Date: {request.end_date}")
@@ -94,6 +112,7 @@ def add_new_booking(request: schemas.makeBooking, db: Session):
         return new_booking
     except (SQLAlchemyError, ValueError) as e:
         db.rollback()
+        log_to_file(f"Booking failed: {str(e)}")
         raise e
 '''
 DECLARE
@@ -208,3 +227,14 @@ def getTotalBookingsCount(db: Session):
     total_bookings = db.query(func.count(models.Booking.id)).scalar()
     return total_bookings
 #SELECT COUNT(*) AS total_bookings FROM bookings;
+
+
+def get_recent_booking(user_id: int, db: Session):
+    
+    recent_booking = db.query(models.Booking).filter(
+        models.Booking.user_id == user_id
+    ).order_by(
+        models.Booking.id.desc()
+    ).first()
+
+    return recent_booking
