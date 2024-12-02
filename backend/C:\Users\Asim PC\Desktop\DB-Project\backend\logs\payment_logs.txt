@@ -54,3 +54,5 @@
 2024-11-29 21:11:46 - Bill ID 7 updated. New total amount: 10465.
 2024-11-29 21:13:14 - Payment of amount 5000, of type Tour created for Bill ID 7.
 2024-11-29 21:13:14 - Bill ID 7 updated. New total amount: 15465.
+2024-12-02 21:37:55 - Payment of amount 1750, of type Booking created for Bill ID 8.
+2024-12-02 21:37:55 - Bill ID 8 updated. New total amount: 1750.

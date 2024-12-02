@@ -51,6 +51,13 @@ def get_details(
     return details
 
 
+@router.delete("/{book_id}")
+def delete_info(book_id:int,db:Session=Depends(get_db)):
+    row = db.query(models.CheckConstraints).filter(models.CheckConstraints.booking_id==book_id).first()
+    db.delete(row)
+    db.commit()
+    return "deleted"
+
 
 
 
