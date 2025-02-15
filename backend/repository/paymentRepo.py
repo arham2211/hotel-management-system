@@ -13,22 +13,17 @@ def get_all_payments(db: Session,
     if type:
         all_payments=all_payments.filter(models.Payment.type==type)
     return all_payments
-''''
-SELECT * 
-FROM Payment
-WHERE (bill_id = bill_id)
-  AND (type = type);
-'''
 
-def log_to_file(message: str):
-    log_file_path = "C:\\Users\\Asim PC\\Desktop\\DB-Project\\backend\\logs\\payment_logs.txt" 
+
+# def log_to_file(message: str):
+#     log_file_path = "C:\\Users\\Asim PC\\Desktop\\DB-Project\\backend\\logs\\payment_logs.txt" 
     
-    try:
-        with open(log_file_path, "a") as log_file:  # Open the file in append mode
-            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Current timestamp
-            log_file.write(f"{current_time} - {message}\n")  # Write message with timestamp
-    except Exception as e:
-        print(f"Error logging to file: {e}")
+#     try:
+#         with open(log_file_path, "a") as log_file:  # Open the file in append mode
+#             current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Current timestamp
+#             log_file.write(f"{current_time} - {message}\n")  # Write message with timestamp
+#     except Exception as e:
+#         print(f"Error logging to file: {e}")
 
 
 def make_payment(request:schemas.Payment, db:Session):
@@ -37,12 +32,11 @@ def make_payment(request:schemas.Payment, db:Session):
         db.add(new_payment)
         db.commit()
 
-        log_to_file(f"Payment of amount {request.amount}, of type {request.type} created for Bill ID {request.bill_id}.")
-
+    
         curr_bill = db.query(models.Bill).filter(models.Bill.id==new_payment.bill_id).first()
         curr_bill.total_amount = curr_bill.total_amount+request.amount
         db.commit()
-        log_to_file(f"Bill ID {curr_bill.id} updated. New total amount: {curr_bill.total_amount}.")
+    
 
         db.refresh(new_payment)
         return new_payment
@@ -54,28 +48,6 @@ def make_payment(request:schemas.Payment, db:Session):
         # Close the database session
         db.close()    
 
-'''''
-DECLARE
-    v_bill_id NUMBER;
-    v_total_amount NUMBER;
-BEGIN
-    INSERT INTO Payment (amount, type, bill_id) 
-    VALUES (amount_value, type_value, bill_id_value)
-    RETURNING bill_id INTO v_bill_id;
-
-    SELECT total_amount 
-    INTO v_total_amount
-    FROM Bill 
-    WHERE id = v_bill_id;
-
-    UPDATE Bill
-    SET total_amount = v_total_amount + amount_value
-    WHERE id = v_bill_id;
-    
-    COMMIT;
-END;
-/
-'''
 
 def updatePayment(id: int, 
                   amount: Optional[int] = None, 
@@ -110,5 +82,4 @@ def deletePayment(payment_id: int, db: Session):
     
     db.delete(payment)
     db.commit()
-    log_to_file(f"Payment ID {payment_id} deleted successfully.")    
     return {"detail": "Payment deleted successfully"}
