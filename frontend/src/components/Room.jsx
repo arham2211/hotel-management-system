@@ -9,7 +9,8 @@ export default function Room(props) {
 
   const fetchRoomData = async () => {
     try {
-      const response = await api.get(`/rooms/${props.limit}`);
+      console.log("arham");
+      const response = await api.get(`/rooms/3`);
       setRoomData(response.data);
       loadImages(response.data);
     } catch (error) {
