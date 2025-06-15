@@ -28,11 +28,18 @@ A full-stack Hotel Management System built with **React.js**, **FastAPI**, and *
 ```bash
 git clone https://github.com/<your-username>/hotel-management-system.git
 cd hotel-management-system
+```
 
 ### 2. Backend Setup (FastAPI)
 
+```
 cd backend
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r ../requirements.txt
 uvicorn main:app --reload
+
+```
+- The API will be available at: `http://127.0.0.1:8000`
+  
+### 3. Frontend Setup (React.js)
