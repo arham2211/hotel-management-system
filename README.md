@@ -61,7 +61,7 @@ npm start
 ## 🌐 Live Demo
 
 Frontend is hosted on **Vercel**:  
-[https://hotel-management-system.vercel.app](https://fast-hotel.vercel.app/)  
+[https://fast-hotel.vercel.app/](https://fast-hotel.vercel.app/)  
 
 ---
 
@@ -79,6 +79,11 @@ Frontend is hosted on **Vercel**:
 - `react`
 - `axios`
 - `react-router-dom`
-- `tailwindcss` *(optional)*
+- `tailwindcss`
 
 ---
+
+## 👤 Author
+
+**Arham**  
+GitHub: [@arham2211](https://github.com/arham2211
